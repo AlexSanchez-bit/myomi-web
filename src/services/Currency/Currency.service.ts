@@ -1,18 +1,12 @@
-import { TableCrudService } from "@/utils/service/TableCrudService";
+import { ListerService } from "@/utils/service/TableService";
 
 export interface ICurrency {
   name: string;
   change_value: number;
 }
 
-export class CurrencyService extends TableCrudService<ICurrency> {
+export class CurrencyService extends ListerService<ICurrency> {
   constructor() {
     super("currency", ["id", "name", "change_value"]);
-  }
-
-  public buildSelect() {
-    return this.builder.select(this.search_fields.join(" , "), {
-      count: "exact",
-    });
   }
 }

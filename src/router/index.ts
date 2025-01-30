@@ -1,10 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
-import MainLayout from "../components/Layout/components/MainLayout.vue";
 import { useAuthStore } from "@/stores/AuthStore";
 import { useSplashStore } from "@/stores/SplashScreen";
-import { userRoutes } from "./modules/user";
-import { shopRoutes } from "./modules/shop";
-import { currencyRoutes } from "./modules/currency";
+import DefaultLayout from "@/layouts/default.vue";
 
 const router = createRouter({
   history: createWebHistory("#"),
@@ -12,22 +9,24 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: MainLayout,
+      component: DefaultLayout,
       children: [
         {
           path: "",
-          name: "default",
-          component: () => import("@/components/Default/Default.vue"),
+          name: "home-view",
+          component: () => import("@/pages/index.vue"),
         },
-        ...userRoutes,
-        ...shopRoutes,
-        ...currencyRoutes,
       ],
     },
     {
       path: "/login",
       name: "login",
       component: () => import("@/pages/Auth/Login.vue"),
+    },
+    {
+      path: "/register",
+      name: "register",
+      component: () => import("@/pages/Auth/Register.vue"),
     },
     {
       path: "/:pathMatch(.*)*",

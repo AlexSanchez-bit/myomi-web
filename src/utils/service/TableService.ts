@@ -1,79 +1,19 @@
 import { Filter } from "../entities/Filter";
 import { Pagination } from "../entities/Pagination";
-import { useToastStorage } from "@/stores/ToasterStorage";
 import { supabase } from "@/setup";
 import { Sorter } from "../entities/Sorters";
 import { FilterMatchMode } from "primevue/api";
-import { useAuthStore } from "@/stores/AuthStore";
 import moment from "moment-timezone";
 
-export abstract class TableService<T> {
+export abstract class ListerService<T> {
   public data!: T[];
   public totalCount: number = 0;
   protected tablename: string;
   protected search_fields: string[];
-  protected readonly notify;
   private readonly user_id: string;
-  private _filters: any | null = null;
-  private _pagination: any | null = null;
-  private _orders: any | null = null;
-
-  public get filters() {
-    if (this._filters == null) {
-      try {
-        return JSON.parse(
-          localStorage.getItem(this.user_id + this.tablename + "filter")!,
-        );
-      } catch (e) {
-        return null;
-      }
-    }
-    return this._filters;
-  }
-
-  public set filters(value: any) {
-    this._filters = value;
-    localStorage.setItem(
-      this.user_id + this.tablename + "filter",
-      JSON.stringify(value),
-    );
-  }
-
-  public get pagination() {
-    return this._pagination;
-  }
-
-  private set pagination(value: any) {
-    this._pagination = value;
-    localStorage.setItem(
-      this.user_id + this.tablename + "pagination",
-      JSON.stringify(value),
-    );
-  }
-
-  public get orders() {
-    if (this._orders == null) {
-      try {
-        return JSON.parse(
-          localStorage.getItem(this.user_id + this.tablename + "orders")!,
-        );
-      } catch (e) {
-        return null;
-      }
-    }
-    return this._orders;
-  }
-
-  private set orders(value: any) {
-    this._orders = value;
-    localStorage.setItem(
-      this.user_id + this.tablename + "orders",
-      JSON.stringify(value),
-    );
-  }
 
   constructor(tablename: string, searchFields: string[]) {
-    this.notify = useToastStorage();
+    // this.notify = useToastStorage();
     this.tablename = tablename;
     this.search_fields = searchFields;
     this.user_id = "jj";
@@ -113,7 +53,7 @@ export abstract class TableService<T> {
     let { data, error } = await query;
 
     if (error) {
-      this.notify.notify("error", "Ocurrio un error", error.message, 4000);
+      // this.notify.notify("error", "Ocurrio un error", error.message, 4000);
       const keys: any = {} as any;
       for (let field in this.search_fields) {
         keys[field] = null as any;
@@ -130,18 +70,6 @@ export abstract class TableService<T> {
     pagination: Pagination,
     orders: Sorter[] | null,
   ): Promise<{ data: any[]; totalCount: number }> {
-    if (
-      this.pagination == null ||
-      pagination.ammount != this.pagination.ammount ||
-      pagination.page != this.pagination.page
-    ) {
-      this.pagination = pagination;
-    }
-
-    if (orders !== this.orders) {
-      this.orders = orders;
-    }
-
     const { totalCount } = await this.getCount(filters);
 
     let paginationResult = await this.getAll(filters, pagination, orders);
@@ -159,7 +87,7 @@ export abstract class TableService<T> {
     let { data, error } = await query;
 
     if (error) {
-      this.notify.notify("error", "Ocurrio un error", error.message, 5000);
+      // this.notify.notify("error", "Ocurrio un error", error.message, 5000);
       return { totalCount: 0 };
     }
 
@@ -168,23 +96,18 @@ export abstract class TableService<T> {
 
   private applyFilters(query: any, filters: Filter<any>[]) {
     for (let filter of filters) {
+      if (filter.matchMode == "IS") {
+        query = query.is(filter.field, filter.value);
+      }
+      if (filter.matchMode == "ISNOT") {
+        query = query.not.is(filter.field, filter.value);
+      }
       if (filter.value != null) {
         let field = filter.field;
-
-        if (field == "username") {
-          field = "receiver->>name";
-        }
-        if (field == "userPhone") {
-          field = "receiver->>landLinePhone";
-        }
-        if (field == "userCellPhone") {
-          field = "receiver->>phone";
-        }
-        if (field == "userCard") {
-          field = "receiver->>card";
-        }
-
         switch (filter.matchMode) {
+          case FilterMatchMode.IN:
+            query = query.in(field, filter.value);
+            break;
           case FilterMatchMode.EQUALS:
             query = query.eq(field, filter.value);
             break;
@@ -256,7 +179,6 @@ export abstract class TableService<T> {
             const formatted_before = date_before.format(
               "YYYY-MM-DD HH:mm:ss[+00:00]",
             );
-            console.log("UTC date", formatted_before);
             query = query.lte(field, formatted_before);
             break;
         }

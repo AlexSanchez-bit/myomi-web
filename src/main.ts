@@ -16,7 +16,6 @@ import { i18n } from "./setup";
 const app = createApp(App);
 app.use(ConfirmationService);
 
-app.use(createPinia());
 app.use(ToastService);
 app.use(router);
 app.use(i18n);
@@ -24,4 +23,5 @@ app.use(PrimeVue);
 app.use(ConfirmationService);
 app.directive("tooltip", Tooltip);
 
+app.use(createPinia());
 app.mount("#app");

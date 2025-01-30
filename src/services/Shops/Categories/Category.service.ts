@@ -1,19 +1,22 @@
-import { TableCrudService } from "@/utils/service/TableCrudService";
+import { ListerService } from "@/utils/service/TableService";
 
 export interface ICategory {
+  id?: number;
   name: string;
-  parent: number;
-  icon: string;
-  description: string;
+  parent?: number;
+  icon?: string;
+  description?: string;
+  parent_category?: { id: number; name: string };
 }
 
-export class CategoryService extends TableCrudService<ICategory> {
+export class CategoryService extends ListerService<ICategory> {
   constructor() {
     super("category", [
       "id",
       "name",
       "icon",
-      "category:parent(id, name),created_at ",
+      "parent",
+      "parent_category:parent(id, name),created_at ",
     ]);
   }
 
