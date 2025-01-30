@@ -6,8 +6,9 @@
       {{ $t("all_categories") }}
     </h6>
     <div class="flex flex-wrap gap-3">
-      <div
-        class="w-60 h-60 rounded-xl overflow-hidden"
+      <router-link
+        :to="{ name: 'category.details', params: { id: category.id } }"
+        class="w-60 h-60 rounded-xl overflow-hidden relative category cursor-pointer"
         v-for="category in categories"
         :key="category.id"
       >
@@ -19,7 +20,15 @@
             @error="(e) => (e.target.src = '/noimage.webp')"
           />
         </picture>
-      </div>
+
+        <div
+          class="absolute top-0 left-0 w-full h-full bg-zinc-950/35 flex items-center justify-center"
+        >
+          <p class="text-white text-xl">
+            {{ category.name }}
+          </p>
+        </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -44,8 +53,18 @@ onMounted(async () => {
     new Pagination(0, 100),
     [],
   );
+  console.log(resp);
   if (resp) {
     categories.value = resp;
   }
 });
 </script>
+
+<style scoped>
+.category img {
+  transition: all 0.3s ease-in-out;
+}
+.category:hover img {
+  scale: 1.1;
+}
+</style>

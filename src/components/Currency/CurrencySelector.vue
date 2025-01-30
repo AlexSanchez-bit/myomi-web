@@ -6,11 +6,15 @@
     aria-haspopup="true"
     aria-controls="overlay_menu"
   >
-    {{ selected_currency.name }}
+    <span class="flex flex-row items-center gap-0.5">
+      <img :src="selected_currency.icon" alt="" class="w-3 h-3 object-fill" />
+      {{ selected_currency.name }}
+    </span>
   </Button>
   <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
     <template #item="{ item }">
-      <span>
+      <span class="flex flex-row items-center gap-0.5">
+        <img :src="item.icon" alt="" class="w-3 h-3 object-fill" />
         {{ item.name }}
       </span>
     </template>
@@ -30,15 +34,11 @@ const menu = ref();
 const selected_currency = ref<ICurrency>({
   name: "USD",
   change_value: 1,
+  icon: "",
 });
 const items = ref<{ items: any[] }[]>([
   {
-    items: [
-      {
-        name: "USD",
-        change_value: 1,
-      },
-    ],
+    items: [],
   },
 ]);
 

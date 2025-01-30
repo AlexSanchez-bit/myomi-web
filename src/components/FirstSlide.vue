@@ -18,7 +18,7 @@ onMounted(() => {});
 
 <template>
   <div class="relative w-full h-[75dvh]" id="main">
-    <div class="absolute z-10 overflow-hidden w-full h-[75dvh]">
+    <div class="absolute z-10 overflow-hidden w-full h-[70dvh]">
       <Carousel
         :value="image_list"
         :numScroll="1"
@@ -31,11 +31,11 @@ onMounted(() => {});
           <div class="w-full">
             <img
               :src="data"
-              class="object-cover hidden lg:block z-10 w-full h-full"
+              class="object-cover hidden lg:block z-10 w-full h-[70dvh]"
             />
             <img
               :src="data"
-              class="object-cover block lg:hidden z-10 w-full h-full"
+              class="object-cover block lg:hidden z-10 w-full h-[70dvh]"
             />
           </div>
         </template>

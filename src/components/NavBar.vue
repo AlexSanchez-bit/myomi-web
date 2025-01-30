@@ -1,14 +1,15 @@
 <template>
   <nav
-    class="fixed px-4 z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-row justify-between items-center header w-full top-0 opacity-95"
+    class="p-4 z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-row justify-between items-center header w-full top-0 opacity-95"
     :class="{
       'text-white': scrolled <= 60 && route.path == '/',
       'text-black': scrolled > 43,
       'pt-2 ': scrolled <= 43 && route.path == '/',
       'pt-1 ': scrolled > 43 || route.path != '/',
-      'bg-darkblue': scrolled > 43 || route.path != '/',
-      'bg-transparent': scrolled < 43 && route.path === '/',
-      fixed: scrolled > 100 || route.path != '/',
+      'bg-darkblue ': scrolled > 43 || route.path != '/',
+      'bg-transparent ': scrolled < 43 && route.path === '/',
+      fixed: route.path == '/',
+      sticky: route.path != '/',
     }"
   >
     <div

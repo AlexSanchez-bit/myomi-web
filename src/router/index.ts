@@ -16,6 +16,11 @@ const router = createRouter({
           name: "home-view",
           component: () => import("@/pages/index.vue"),
         },
+        {
+          path: "category/:id",
+          name: "category.details",
+          component: () => import("@/pages/filters.vue"),
+        },
       ],
     },
     {
