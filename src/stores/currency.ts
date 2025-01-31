@@ -4,6 +4,7 @@ import { defineStore } from "pinia";
 export interface ICurrency {
   name: string;
   change_value: number;
+  icon?: string;
 }
 
 export const useCurrencyStore = defineStore("currency", () => {

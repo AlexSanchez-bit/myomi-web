@@ -6,6 +6,10 @@
       {{ $t("all_categories") }}
     </h6>
     <div class="flex flex-wrap gap-3">
+      <div class="w-60 h-60" v-for="i in loading ? 6 : 0" :key="i">
+        <Skeleton class="w-full !h-full" style=""></Skeleton>
+      </div>
+
       <router-link
         :to="{ name: 'category.details', params: { id: category.id } }"
         class="w-60 h-60 rounded-xl overflow-hidden relative category cursor-pointer"
@@ -36,12 +40,15 @@
 import { useCategoryService } from "@/composables/Shop/Category/useCategoryService";
 import { ICategory } from "@/services/Shops/Categories/Category.service";
 import { Pagination } from "@/utils/entities/Pagination";
+import Skeleton from "primevue/skeleton";
 import { onMounted, ref } from "vue";
 
 const service = useCategoryService();
 const categories = ref<ICategory[]>([]);
+const loading = ref(false);
 
 onMounted(async () => {
+  loading.value = true;
   const resp = await service.getAll(
     [
       {
@@ -53,7 +60,8 @@ onMounted(async () => {
     new Pagination(0, 100),
     [],
   );
-  console.log(resp);
+  loading.value = false;
+
   if (resp) {
     categories.value = resp;
   }
