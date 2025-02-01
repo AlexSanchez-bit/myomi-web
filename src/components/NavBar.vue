@@ -1,11 +1,11 @@
 <template>
   <nav
-    class="p-4 z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-row justify-between items-center header w-full top-0 opacity-95"
+    class="p-4 z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-row justify-between items-center header w-full top-0 opacity-95 !text-black"
     :class="{
       'text-white': scrolled <= 60 && route.path == '/',
       'text-black': scrolled > 43,
-      'pt-2 ': scrolled <= 43 && route.path == '/',
-      'pt-1 ': scrolled > 43 || route.path != '/',
+      'py-4 ': scrolled <= 43 && route.path == '/',
+      'py-2 ': scrolled > 43 || route.path != '/',
       'bg-darkblue ': scrolled > 43 || route.path != '/',
       'bg-transparent ': scrolled < 43 && route.path === '/',
       fixed: route.path == '/',
@@ -21,17 +21,18 @@
           hidden: scrolled > 43 || route.path != '/',
           block: scrolled <= 43,
         }"
-        class="h-20 opacity-1 transition-all duration-200"
+        class="h-16 opacity-1 transition-all duration-200"
       />
       <img
         src="/logo/logo.png"
-        class="h-20 opacity-1 transition-all duration-200"
+        class="h-16 opacity-1 transition-all duration-200"
         :class="{
           hidden: scrolled <= 43 && route.path === '/',
           block: scrolled > 43 || route.path != '/',
         }"
       />
     </div>
+    <CategoryMenu />
     <div class="flex flex-row items-center gap-3">
       <span class="">
         <LanguageSelector />
@@ -215,14 +216,13 @@ import LanguageSelector from "./LanguageSelector.vue";
 import CurrencySelector from "@/components/Currency/CurrencySelector.vue";
 import Sidebar from "primevue/sidebar";
 import Button from "primevue/button";
+import CategoryMenu from "@/components/Categories/CategoryMenu.vue";
 
 import { ref, onMounted } from "vue";
 
 import { useRoute } from "vue-router";
 
 const route = useRoute();
-
-console.log(route.path);
 
 const visible = ref(false);
 const scrolled = ref<number>(0);

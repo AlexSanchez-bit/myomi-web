@@ -1,6 +1,7 @@
 <template>
-  {{ route.params.id }}
-  aa
+  <div class="h-screen">
+    {{ route.params.id }}
+  </div>
 </template>
 
 <script setup lang="ts">

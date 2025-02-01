@@ -26,3 +26,8 @@ body {
     min-height: 50vh;
   }
 }
+
+:root {
+  --surface-ground: transparent; /* Fondo del Menubar */
+  --text-color: black; /* Color del texto */
+}
