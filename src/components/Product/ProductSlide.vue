@@ -1,5 +1,12 @@
 <template>
-  <div class="">
+  <div
+    class="transition-all duration-1000 ease-in-out"
+    ref="container"
+    :class="{
+      'translate-y-full opacity-0': !onscreen,
+      'translate-y-0 opacity-100': onscreen,
+    }"
+  >
     <h6
       class="text-4xl text-center my-6 underline decoration-darkblue text-darkblue underline-offset-8"
     >
@@ -30,7 +37,7 @@
       :autoplayInterval="promotions.length > 3 ? 3000 : null"
       :numVisible="3"
       :numScroll="1"
-      class="min-h-80 w-full max-w-screen"
+      class="w-full max-w-screen"
     >
       <template #item="slotProps">
         <div
@@ -45,7 +52,7 @@
                     : '/noimage.webp'
                 "
                 :alt="slotProps.data.name"
-                class="rounded h-80 object-contain"
+                class="rounded object-contain"
                 @error="(e) => (e.target.src = '/noimage.webp')"
               />
             </div>
@@ -92,6 +99,8 @@ import Skeleton from "primevue/skeleton";
 import { onMounted, ref } from "vue";
 
 const loading = ref(true);
+const onscreen = ref(false);
+const container = ref();
 const { selected_currency } = storeToRefs(useCurrencyStore());
 const service = useProductService();
 
@@ -99,6 +108,16 @@ const service = useProductService();
 const promotions = ref<IProduct[]>([]);
 
 onMounted(async () => {
+  const observer = new IntersectionObserver(() => (onscreen.value = true), {
+    root: null, // Usa el viewport completo como área de visualización
+    threshold: 0.8, // Ejecuta el callback cuando el 10% del elemento esté en pantalla
+  });
+
+  // Comenzamos a observar el elemento
+  if (container.value) {
+    observer.observe(container.value);
+  }
+
   loading.value = true;
   // Llamada al servicio ajustada para obtener solo promociones
   const resp = await service.getAll(

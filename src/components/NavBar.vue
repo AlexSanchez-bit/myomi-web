@@ -12,7 +12,8 @@
       sticky: route.path != '/',
     }"
   >
-    <div
+    <router-link
+      to="/"
       class="flex flex-col z-10 gap-2 justify-center items-center bg-white rounded-full"
     >
       <img
@@ -31,19 +32,19 @@
           block: scrolled > 43 || route.path != '/',
         }"
       />
-    </div>
-    <CategoryMenu />
-    <div class="flex flex-row items-center gap-3">
+    </router-link>
+    <CategoryMenu class="hidden lg:block" />
+    <div class="flex-row items-center gap-3 hidden lg:flex">
       <span class="">
         <LanguageSelector />
       </span>
       <CurrencySelector />
-      <Button
-        icon="pi pi-bars"
-        class="block sm:hidden"
-        @click="visible = true"
-      />
     </div>
+    <Button
+      icon="pi pi-bars"
+      class="block lg:hidden bg-transparent border-none"
+      @click="visible = true"
+    />
   </nav>
   <Sidebar
     v-model:visible="visible"
