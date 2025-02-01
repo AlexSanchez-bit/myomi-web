@@ -1,18 +1,18 @@
 <template>
-  <div class="flex flex-col gap-2 items-center py-3 px-20">
+  <div class="flex flex-col gap-2 items-center py-3 md:px-20 px-6 mb-4">
     <h6
       class="text-4xl my-6 underline decoration-darkblue text-darkblue underline-offset-8"
     >
       {{ $t("all_categories") }}
     </h6>
-    <div class="flex flex-wrap gap-3">
+    <div class="flex flex-wrap gap-3 items-center">
       <div class="w-60 h-60" v-for="i in loading ? 6 : 0" :key="i">
         <Skeleton class="w-full !h-full" style=""></Skeleton>
       </div>
 
       <router-link
         :to="{ name: 'category.details', params: { id: category.id } }"
-        class="w-60 h-60 rounded-xl overflow-hidden relative category cursor-pointer"
+        class="md:w-60 md:h-60 h-80 w-full rounded-xl overflow-hidden relative category cursor-pointer"
         v-for="category in categories"
         :key="category.id"
       >
