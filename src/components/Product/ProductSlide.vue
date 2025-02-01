@@ -40,49 +40,7 @@
       class="w-full max-w-screen"
     >
       <template #item="slotProps">
-        <div
-          class="border rounded w-full p-3 h-full flex flex-col justify-between"
-        >
-          <div class="mb-4">
-            <div class="relative mx-auto">
-              <img
-                :src="
-                  slotProps.data.images.length > 0
-                    ? slotProps.data.images[0]
-                    : '/noimage.webp'
-                "
-                :alt="slotProps.data.name"
-                class="rounded object-contain"
-                @error="(e) => (e.target.src = '/noimage.webp')"
-              />
-            </div>
-          </div>
-          <div>
-            <div class="mb-4 font-bold text-lg text-zinc-700">
-              {{ slotProps.data.name }}
-            </div>
-            <div class="mb-4 font-medium text-sm line-clamp-2 text-gray-600">
-              {{ slotProps.data.short_description }}
-            </div>
-            <div class="flex justify-between items-center">
-              <div
-                class="mt-0 font-semibold text-xl flex text-zinc-800 flex-row items-center gap-2"
-              >
-                <img class="w-5 h-5" :src="selected_currency.icon" alt="" />
-                {{
-                  (
-                    slotProps.data.price * selected_currency.change_value
-                  ).toFixed(2)
-                }}
-                {{ selected_currency.name }}
-              </div>
-              <span>
-                <Button icon="pi pi-heart" severity="secondary" outlined />
-                <Button icon="pi pi-shopping-cart" class="ml-2" />
-              </span>
-            </div>
-          </div>
-        </div>
+        <ProductItem :product="slotProps.data" />
       </template>
     </Carousel>
   </div>
@@ -97,6 +55,7 @@ import { storeToRefs } from "pinia";
 import Carousel from "primevue/carousel";
 import Skeleton from "primevue/skeleton";
 import { onMounted, ref } from "vue";
+import ProductItem from "./ProductItem.vue";
 
 const loading = ref(true);
 const onscreen = ref(false);

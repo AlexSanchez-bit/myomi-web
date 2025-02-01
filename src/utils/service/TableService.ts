@@ -11,7 +11,6 @@ export abstract class ListerService<T> {
   protected tablename: string;
   protected search_fields: string[];
   private readonly user_id: string;
-
   constructor(tablename: string, searchFields: string[]) {
     // this.notify = useToastStorage();
     this.tablename = tablename;
@@ -26,6 +25,15 @@ export abstract class ListerService<T> {
     return this.builder.select(this.search_fields.join(" , "), {
       count: "exact",
     });
+  }
+
+  public async getDetails(id: string | number) {
+    const { data } = await supabase
+      .from(this.tablename)
+      .select("*")
+      .eq("id", id)
+      .single();
+    return data;
   }
 
   public async getAll(

@@ -8,6 +8,7 @@ export interface IProduct {
   long_description?: string;
   price: number;
   stock: number;
+  created_at: string; //date ISO string
   images: string[];
   categories?: number[];
   materials?: number[];
