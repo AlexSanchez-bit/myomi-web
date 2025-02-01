@@ -1,36 +1,39 @@
 <template>
-  <Menubar :model="items" class="!bg-transparent custom-menubar">
-    <template #item="{ item, props, hasSubmenu }">
-      <router-link
-        v-if="item.route"
-        v-slot="{ href, navigate }"
-        :to="item.route"
-        custom
-      >
-        <a
-          v-ripple
-          :href="href"
-          v-bind="props.action"
-          @click="navigate"
-          class="text-black"
+  <div>
+    <Menubar :model="items" class="!bg-transparent custom-menubar text-xl">
+      <template #item="{ item, props, hasSubmenu }">
+        <router-link
+          class="hover:bg-gray-50/20"
+          v-if="item.route"
+          v-slot="{ href, navigate }"
+          :to="item.route"
+          custom
         >
-          <span>{{ item.label }}</span>
-          <span class="pi pi-angle-right" v-if="item.items?.length > 0" />
+          <a
+            v-ripple
+            :href="href"
+            v-bind="props.action"
+            @click="navigate"
+            class="text-white"
+          >
+            <span>{{ $t(item.label) }}</span>
+            <span class="pi pi-angle-right" v-if="item.items?.length > 0" />
+          </a>
+        </router-link>
+        <a
+          v-else
+          v-ripple
+          :href="item.url"
+          :target="item.target"
+          v-bind="props.action"
+          class="text-white"
+        >
+          <span>{{ $t(item.label) }}</span>
+          <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
         </a>
-      </router-link>
-      <a
-        v-else
-        v-ripple
-        :href="item.url"
-        :target="item.target"
-        v-bind="props.action"
-      >
-        <span :class="item.icon" />
-        <span>{{ item.label }}</span>
-        <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
-      </a>
-    </template>
-  </Menubar>
+      </template>
+    </Menubar>
+  </div>
 </template>
 
 <script setup>
@@ -107,23 +110,28 @@ function buildMenuItems(categories) {
 .custom-menubar {
   background-color: transparent;
   border: none;
+  color: white !important;
 }
 
-::v-deep(.p-submenu-list) {
+::v-deep(.p-menubar-submenu) {
   background-color: #4da0ab;
+  color: white !important;
   border: none;
 }
-::v-deep(.p-menuitem-content:hover) {
+::v-deep(.p-menubar-item-content:hover) {
   background-color: transparent;
+  color: white !important;
 }
 
-::v-deep(.p-menuitem-content) {
+::v-deep(.p-menubar-item-content) {
   background-color: transparent !important;
+  color: white !important;
 }
 
-::v-deep(.p-menuitem-link:hover) {
-  background-color: transparent;
-  color: #111101 !important;
+::v-deep(.p-menubar-item-link:hover) {
+  background-color: rgba(255, 255, 255, 0.27) !important;
+
+  color: rgba(0, 0, 0, 0.47) !important;
 }
 ::v-deep(.p-menuitem-link) {
   background-color: transparent !important;
@@ -132,9 +140,11 @@ function buildMenuItems(categories) {
 
 ::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
   background: transparent; /* Fondo transparente */
+  color: white !important;
 }
 
 ::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
   background: transparent !important;
+  color: white !important;
 }
 </style>

@@ -58,7 +58,7 @@
             </div>
           </div>
           <div>
-            <div class="mb-4 font-bold text-lg">
+            <div class="mb-4 font-bold text-lg text-zinc-700">
               {{ slotProps.data.name }}
             </div>
             <div class="mb-4 font-medium text-sm line-clamp-2 text-gray-600">
@@ -66,7 +66,7 @@
             </div>
             <div class="flex justify-between items-center">
               <div
-                class="mt-0 font-semibold text-xl flex flex-row items-center gap-2"
+                class="mt-0 font-semibold text-xl flex text-zinc-800 flex-row items-center gap-2"
               >
                 <img class="w-5 h-5" :src="selected_currency.icon" alt="" />
                 {{

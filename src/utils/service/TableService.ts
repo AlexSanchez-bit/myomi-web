@@ -2,7 +2,7 @@ import { Filter } from "../entities/Filter";
 import { Pagination } from "../entities/Pagination";
 import { supabase } from "@/setup";
 import { Sorter } from "../entities/Sorters";
-import { FilterMatchMode } from "primevue/api";
+import { FilterMatchMode } from "@primevue/core/api";
 import moment from "moment-timezone";
 
 export abstract class ListerService<T> {

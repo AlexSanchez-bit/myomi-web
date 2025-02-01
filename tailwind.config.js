@@ -25,14 +25,6 @@ export default {
         salmon: "var(--secondary-color-salmon)",
         cyan: "var(--secondary-color-cyan)",
       },
-      fontFamily: {
-        "pier-sans-bold": ["PierSansBold", "sans-serif"],
-        "pier-sans-medium": ["PierSansMedium", "sans-serif"],
-        "pier-sans-regular": ["PierSansRegular", "sans-serif"],
-        "albra-serif-bold": ["AlbraSerifBold", "sans-serif"],
-        "albra-serif-medium": ["AlbraSerifMedium", "sans-serif"],
-        "albra-serif-regular": ["AlbraSerifRegular", "sans-serif"],
-      },
     },
   },
   variants: {

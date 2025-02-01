@@ -13,21 +13,20 @@ import Footer from "@/components/Footer.vue";
 </script>
 
 <style scoped>
-/* La clase para la fase activa de la transición en la entrada y salida */
 .page-opacity-enter-active,
 .page-opacity-leave-active {
-  transition: opacity 0.5s ease; /* Puedes ajustar la duración y el timing-function según necesites */
+  transition: all 0.3s ease;
 }
 
-/* Estado inicial de la entrada y estado final de la salida (transparente) */
 .page-opacity-enter-from,
 .page-opacity-leave-to {
+  scale: 0.95;
   opacity: 0;
 }
 
-/* Estado final de la entrada y estado inicial de la salida (visible) */
 .page-opacity-enter-to,
 .page-opacity-leave-from {
+  scale: 1;
   opacity: 1;
 }
 </style>

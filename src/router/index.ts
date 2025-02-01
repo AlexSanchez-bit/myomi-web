@@ -4,7 +4,7 @@ import { useSplashStore } from "@/stores/SplashScreen";
 import DefaultLayout from "@/layouts/default.vue";
 
 const router = createRouter({
-  history: createWebHistory("#"),
+  history: createWebHistory(""),
   routes: [
     {
       path: "/",

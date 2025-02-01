@@ -5,16 +5,26 @@
     @click="toggle"
     aria-haspopup="true"
     aria-controls="overlay_menu"
+    unstyled
   >
-    <span class="flex flex-row items-center gap-0.5">
+    <span class="flex flex-row items-center gap-0.5 font-sans">
       <img :src="selected_currency.icon" alt="" class="w-3 h-3 object-fill" />
       {{ selected_currency.name }}
     </span>
   </Button>
-  <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
+  <Menu
+    ref="menu"
+    id="overlay_menu"
+    :model="items"
+    :popup="true"
+    unstyled
+    class="left-1 bg-darkblue rounded-xl w-24"
+  >
     <template #item="{ item }">
-      <span class="flex flex-row items-center gap-0.5">
-        <img :src="item.icon" alt="" class="w-3 h-3 object-fill" />
+      <span
+        class="flex flex-row items-center gap-0.5 bg-darkblue text-white p-4 rounded border-none cursor-pointer min-w-24 hover:bg-gray-50/20"
+      >
+        <img :src="item.icon" alt="" class="w-3 h-3 object-fill invert" />
         {{ item.name }}
       </span>
     </template>

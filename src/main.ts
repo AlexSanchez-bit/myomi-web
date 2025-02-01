@@ -2,7 +2,8 @@ import "./assets/main.css";
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
-import "primevue/resources/themes/aura-light-green/theme.css";
+import Aura from "@primevue/themes/aura";
+
 import ToastService from "primevue/toastservice";
 import ConfirmationService from "primevue/confirmationservice";
 import PrimeVue from "primevue/config";
@@ -14,14 +15,21 @@ import router from "./router";
 import { i18n } from "./setup";
 
 const app = createApp(App);
+app.use(createPinia());
 app.use(ConfirmationService);
 
 app.use(ToastService);
 app.use(router);
 app.use(i18n);
-app.use(PrimeVue);
+app.use(PrimeVue, {
+  theme: {
+    preset: Aura,
+    options: {
+      darkModeSelector: false || "none",
+    },
+  },
+});
 app.use(ConfirmationService);
 app.directive("tooltip", Tooltip);
 
-app.use(createPinia());
 app.mount("#app");

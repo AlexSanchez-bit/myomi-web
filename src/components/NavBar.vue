@@ -33,18 +33,31 @@
         }"
       />
     </router-link>
-    <CategoryMenu class="hidden lg:block" />
+    <div class="flex flex-row gap-3 items-center">
+      <CategoryMenu class="hidden lg:block" />
+
+      <router-link
+        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-white p-2 rounded-sm cursor-pointer text-xl"
+        to="/about_us"
+        custom
+      >
+        <span>{{ $t("who_we_are") }}</span>
+      </router-link>
+    </div>
+
     <div class="flex-row items-center gap-3 hidden lg:flex">
       <span class="">
         <LanguageSelector />
       </span>
       <CurrencySelector />
     </div>
-    <Button
-      icon="pi pi-bars"
-      class="block lg:hidden bg-transparent border-none"
-      @click="visible = true"
-    />
+    <div class="lg:hidden">
+      <Button
+        icon="pi pi-bars"
+        class="bg-transparent border-none"
+        @click="visible = true"
+      />
+    </div>
   </nav>
   <Sidebar
     v-model:visible="visible"

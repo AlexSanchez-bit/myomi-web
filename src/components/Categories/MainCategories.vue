@@ -66,7 +66,6 @@ onMounted(async () => {
   });
 
   // Comenzamos a observar el elemento
-  console.log(container.value);
   if (container.value) {
     observer.observe(container.value);
   }

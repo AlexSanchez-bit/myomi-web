@@ -1,5 +1,6 @@
 <template>
   <Button
+    unstyled
     type="button"
     class="bg-transparent text-darkblue border-none !p-0"
     @click="toggle"
@@ -8,9 +9,18 @@
   >
     <img :src="'/' + language + '.svg'" class="w-6 h-5" alt="" />
   </Button>
-  <Menu ref="menu" id="overlay_menu" :model="items" :popup="true">
+  <Menu
+    ref="menu"
+    id="overlay_menu"
+    :model="items"
+    :popup="true"
+    unstyled
+    class="bg-darkblue border-none pl-2 rounded-lg pt-1 pb-2 pr-6"
+  >
     <template #item="{ item }">
-      <span class="flex flex-row gap-2 items-center">
+      <span
+        class="flex flex-row gap-2 items-center mb-3 cursor-pointer hover:bg-gradient-to-r from-white to-darkblue overflow-hidden rounded-full p-1 rounded-r-none"
+      >
         <img :src="'/' + item.icon + '.svg'" class="w-6 h-5" alt="" />
         {{ translateLang(item!.icon!) }}
       </span>
