@@ -1,6 +1,6 @@
 <template>
   <div
-    class="border rounded w-full p-3 h-full flex flex-col justify-between relative"
+    class="border rounded w-full p-2 h-full flex flex-col justify-between relative"
   >
     <!-- Imagen y badge -->
     <div class="mb-4">

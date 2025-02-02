@@ -58,7 +58,9 @@ export abstract class ListerService<T> {
       )
       .order("created_at", { ascending: false });
 
-    let { data, error } = await query;
+    let { data, count, error } = await query;
+
+    console.log(count);
 
     if (error) {
       // this.notify.notify("error", "Ocurrio un error", error.message, 4000);
@@ -78,17 +80,42 @@ export abstract class ListerService<T> {
     pagination: Pagination,
     orders: Sorter[] | null,
   ): Promise<{ data: any[]; totalCount: number }> {
-    const { totalCount } = await this.getCount(filters);
+    let query = this.buildSelect();
+    query = this.applyFilters(query, filters);
+    if (orders != null) {
+      for (let sortOrder of orders) {
+        query = query.order(sortOrder.field, {
+          ascending: sortOrder.order > 0,
+        });
+      }
+    }
 
-    let paginationResult = await this.getAll(filters, pagination, orders);
+    query = query
+      .range(
+        pagination.page * pagination.ammount,
+        pagination.page * pagination.ammount + pagination.ammount - 1,
+      )
+      .order("created_at", { ascending: false });
 
-    return { totalCount, data: paginationResult };
+    let { data, count, error } = await query;
+
+    if (error) {
+      // this.notify.notify("error", "Ocurrio un error", error.message, 4000);
+      const keys: any = {} as any;
+      for (let field in this.search_fields) {
+        keys[field] = null as any;
+      }
+
+      data = [keys];
+    }
+
+    return { totalCount: count ?? data.length, data };
   }
 
   public async getCount(
     filters: Filter<any>[],
   ): Promise<{ totalCount: number }> {
-    let query = supabase.from(this.tablename).select("count");
+    let query = this.buildSelect();
 
     query = this.applyFilters(query, filters);
 

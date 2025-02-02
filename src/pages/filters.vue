@@ -15,18 +15,26 @@
           {{ $t(category?.name ?? "") }}
         </h6>
       </div>
-      <LazyLoadScroll
-        :service="lazyLister"
-        :filter="{}"
-        display-class="grid grid-cols-3 px-2 py-4"
-      >
-        <template #item="{ item }">
-          <ProductItem :product="item" />
-        </template>
-        <template #skeletons>
-          <Skeleton class="!w-11/12 !h-60" />
-        </template>
-      </LazyLoadScroll>
+
+      <div class="flex flex-row items-center justify-between">
+        <div>
+          <SubCategories
+            :parent_category="parseInt(route.params.id as string)"
+          />
+          <LazyLoadScroll
+            :service="lazyLister"
+            :filter="{}"
+            display-class="transition-all duration-1000 ease-in-out flex flex-wrap  gap-2 px-1"
+          >
+            <template #item="{ item }">
+              <ProductItem :product="item" class="w-full md:w-1/3 lg:w-1/5" />
+            </template>
+            <template #skeletons>
+              <Skeleton class="!w-11/12 !h-80" />
+            </template>
+          </LazyLoadScroll>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -49,6 +57,7 @@ import type { IResponseModel } from "@/utils/entities/ResponseModel";
 import type { IListResponse } from "@/utils/entities/IListResponse";
 import { Skeleton } from "primevue";
 import ProductItem from "@/components/Product/ProductItem.vue";
+import SubCategories from "@/components/Categories/SubCategories.vue";
 const home = ref({
   icon: "pi pi-home",
 });
@@ -93,7 +102,13 @@ const product_service = useProductService();
 const lazyLister: IGenericLister<IProduct> = {
   GetAll: async (page: number, limit: number, filter: any) => {
     const resp = await product_service.getAllTotalCount(
-      [],
+      [
+        {
+          field: "product_category.category_id",
+          matchMode: FilterMatchMode.EQUALS,
+          value: route.params.id,
+        },
+      ],
       new Pagination(page, limit),
       [],
     );

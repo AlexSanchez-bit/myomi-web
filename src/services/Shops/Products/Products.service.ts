@@ -25,6 +25,7 @@ export class ProductsService extends ListerService<IProduct> {
       "stock",
       "images",
       "short_description",
+      "product_category!inner(*)",
     ]);
   }
 
