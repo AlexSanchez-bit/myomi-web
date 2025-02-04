@@ -1,6 +1,44 @@
 <template>
   <div>
-    <Menubar :model="items" class="!bg-transparent custom-menubar text-xl">
+    <Menu
+      :model="items"
+      class="!bg-transparent custom-menubar text-xl md:hidden !w-full !border-none !text-white"
+    >
+      <template #item="{ item, props, hasSubmenu }">
+        <router-link
+          class="hover:bg-gray-50/20"
+          v-if="item.route"
+          v-slot="{ href, navigate }"
+          :to="item.route"
+          custom
+        >
+          <a
+            v-ripple
+            :href="href"
+            v-bind="props.action"
+            @click="navigate"
+            class="text-white"
+          >
+            <span>{{ $t(item.label) }}</span>
+            <span class="pi pi-angle-right" v-if="item.items?.length > 0" />
+          </a>
+        </router-link>
+        <a
+          v-else
+          v-ripple
+          :href="item.url"
+          :target="item.target"
+          v-bind="props.action"
+          class="text-white"
+        >
+          <span>{{ $t(item.label) }}</span>
+        </a>
+      </template>
+    </Menu>
+    <Menubar
+      :model="items"
+      class="!bg-transparent custom-menubar text-xl !hidden sm:!block"
+    >
       <template #item="{ item, props, hasSubmenu }">
         <router-link
           class="hover:bg-gray-50/20"
@@ -40,6 +78,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
+import Menu from "primevue/menu";
 import { useCategoryService } from "@/composables/Shop/Category/useCategoryService";
 const router = useRouter();
 

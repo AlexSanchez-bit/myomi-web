@@ -37,7 +37,7 @@
       <CategoryMenu class="hidden lg:block" />
 
       <router-link
-        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-white p-2 rounded-sm cursor-pointer text-xl"
+        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-white p-2 rounded-sm cursor-pointer text-xl hidden lg:block"
         to="/about_us"
         custom
       >
@@ -45,18 +45,20 @@
       </router-link>
     </div>
 
-    <div class="flex-row items-center gap-3 hidden lg:flex">
-      <span class="">
-        <LanguageSelector />
+    <div class="flex-row items-center gap-3 flex">
+      <span class="!mb-0">
+        <LanguageSelector class="brightness-200" />
       </span>
       <CurrencySelector />
-    </div>
-    <div class="lg:hidden">
-      <Button
-        icon="pi pi-bars"
-        class="bg-transparent border-none"
-        @click="visible = true"
-      />
+      <div class="lg:hidden text-white ml-6">
+        <Button
+          icon="pi pi-bars"
+          class="bg-transparent border-none text-xl"
+          variant="text"
+          unstyled
+          @click="visible = true"
+        />
+      </div>
     </div>
   </nav>
   <Sidebar
@@ -67,159 +69,35 @@
   >
     <template #container="{ closeCallback }">
       <div
-        class="bg-yellow-200 h-full sm:pt-16 flex flex-row gap-3 justify-between z-50 items-center px-5 pt-10 sm:px-20 box-border"
+        class="bg-darkblue h-full sm:pt-16 pb-3 flex flex-row gap-3 justify-between z-50 items-center px-5 pt-10 sm:px-20 box-border"
       >
-        <img src="/logo/logo.png" class="h-20 z-50 brightness-0" />
-        <div class="sm:flex flex-row items-center gap-3 hidden">
-          <LanguageSelector />
-          <Button icon="pi pi-bars" @click="closeCallback" />
-        </div>
+        <picture class="overflow-hidden rounded-full bg-white">
+          <img src="/logo/logo.png" class="h-20 z-50" />
+        </picture>
         <Button
           type="button"
           @click="closeCallback"
           icon="pi pi-times"
           rounded
           outlined
-          class="h-2rem w-2rem sm:hidden"
+          unstyled
+          class="h-3rem w-3rem"
         ></Button>
       </div>
 
       <div
-        class="sm:px-32 px-10 bg-wood text-xl text-darkblue pt-10 box-border font-albra-serif-bold uppercase"
+        class="sm:px-32 px-10 bg-darkblue text-xl text-white pt-10 box-border font-albra-serif-bold uppercase"
       >
         {{ $t("slogan") }}
       </div>
-      <div class="w-full bg-wood pt-2">
-        <div class="sm:mx-32 mx-10 bg-darkblue text-xl pt-0.5 box-border"></div>
+      <div class="w-full bg-darkblue pt-2">
+        <div class="mx-10 bg-white text-xl pt-0.5 box-border"></div>
       </div>
 
       <div
-        class="bg-wood sm:px-32 px-10 flex flex-col justify-start items-start pt-8 pb-4 gap-2 text-darkblue"
+        class="bg-darkblue flex flex-col justify-start items-start pt-8 pb-4 gap-2 text-white px-3"
       >
-        <router-link to="/">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.main") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-        <router-link to="/#rooms">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#rooms"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.rooms") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-        <router-link to="/#activities">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#activities"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.activities") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-        <router-link to="/#excursions">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#excursions"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.excursions") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#events">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#retreats"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.events") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#retreats">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#retreats"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.retreats") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#team_building">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#team_building"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.team_building") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#eco_friendly">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#eco_friendly"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.eco_friendly") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#rosario_comunity">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.rosario_comunity") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#our_values">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              href="#our_values"
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.our_values") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#pricings">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.prices") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
-
-        <router-link to="/#directions">
-          <div @click="closeCallback" class="flex flex-row gap-1 items-center">
-            <a
-              class="font-albra-serif-regular text-lg decoration-brick hover:text-grass hover:underline"
-              >{{ $t("menu.directions") }}</a
-            >
-            <i class="pi pi-angle-right text-lg mt-1"></i>
-          </div>
-        </router-link>
+        <CategoryMenu />
       </div>
     </template>
   </Sidebar>

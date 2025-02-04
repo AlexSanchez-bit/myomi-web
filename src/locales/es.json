@@ -1,5 +1,17 @@
 {
   "all_categories": "Todas las Categorías",
   "best_sellers": "Lo más vendido",
-  "categories": "Categorías"
+  "categories": "Categorías",
+  "filters": "Filtros",
+  "materials": "Materiales",
+  "name": "Nombre",
+  "price_range": "Rango de precios",
+  "minimun": "Mínimo",
+  "maximun": "Máximo",
+  "none": "Ninguno",
+  "recent": "Reciente",
+  "price_asc": "Precio más alto",
+  "price_desc": "Precio más bajo",
+  "who_we_are": "Quiénes Somos?",
+  "slogan": "Myomi cuida tu piel"
 }

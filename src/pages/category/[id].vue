@@ -18,6 +18,7 @@
 
       <ProductFilters
         @update:filters="updateFilters"
+        @update:sort="updateSort"
         :filters="{ sort: 'recent' }"
       >
         <div>
@@ -29,13 +30,13 @@
             ref="lazyScroll"
             :service="lazyLister"
             :filter="{}"
-            display-class="transition-all duration-1000 ease-in-out flex flex-wrap  gap-2 px-1"
+            display-class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-2"
           >
             <template #item="{ item }">
-              <ProductItem :product="item" class="w-full md:w-1/3 lg:w-1/5" />
+              <ProductItem :product="item" />
             </template>
             <template #skeletons>
-              <Skeleton class="!w-11/12 !h-80" />
+              <Skeleton class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 !h-[40rem]" />
             </template>
           </LazyLoadScroll>
         </div>
@@ -67,6 +68,7 @@ import SubCategories from "@/components/Categories/SubCategories.vue";
 import ProductFilters from "@/components/Product/ProductFilters.vue";
 import { Filters } from "@/components/Product/Filters";
 import { Filter } from "@/utils/entities/Filter";
+import type { Sorter } from "@/utils/entities/Sorters";
 const home = ref({
   icon: "pi pi-home",
 });
@@ -81,6 +83,35 @@ const toast = useToastStorage();
 
 const filter_array = ref<Filter[]>([]);
 const lazyScroll = ref<any>();
+const sort = ref<Sorter[]>([]);
+
+const lastTimeout = ref<any>(-1);
+
+const reloadProducts = () => {
+  if (lastTimeout) {
+    clearTimeout(lastTimeout.value);
+  }
+  lastTimeout.value = setTimeout(() => {
+    lazyScroll.value.apply_filters();
+  }, 500);
+};
+
+function updateSort(_sort: string | null) {
+  if (!_sort) {
+    sort.value = [];
+  } else {
+    if (_sort == "recent") {
+      sort.value = [{ field: "created_at", order: 1 }];
+    }
+    if (_sort == "price_asc") {
+      sort.value = [{ field: "price", order: 1 }];
+    }
+    if (_sort == "price_desc") {
+      sort.value = [{ field: "price", order: -1 }];
+    }
+  }
+  reloadProducts();
+}
 
 function updateFilters(filters: Filters) {
   const filterConfig = [
@@ -137,7 +168,7 @@ function updateFilters(filters: Filters) {
       filter_array.value.splice(existingIndex, 1);
     }
   });
-  lazyScroll.value.apply_filters();
+  reloadProducts();
 }
 
 onMounted(async () => {
@@ -181,7 +212,7 @@ const lazyLister: IGenericLister<IProduct> = {
         ...filter_array.value,
       ],
       new Pagination(page, limit),
-      [],
+      [...sort.value],
     );
 
     return {
