@@ -1,10 +1,10 @@
 <template>
   <div
-    class="border rounded w-full p-2 h-full flex flex-col justify-between relative"
+    class="border rounded w-full p-2 h-[30rem] flex flex-col justify-between relative pb-3"
   >
     <!-- Imagen y badge -->
     <div class="mb-4">
-      <div class="relative mx-auto">
+      <div class="relative mx-auto cursor-pointer">
         <img
           :src="
             product?.images.length > 0 ? product?.images[0] : '/noimage.webp'

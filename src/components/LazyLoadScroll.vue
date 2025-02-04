@@ -134,7 +134,7 @@ async function loadData() {
 }
 
 const apply_filters = (nfilter?: any) => {
-  current_page.value = 1;
+  current_page.value = 0;
   items.value = [];
   filter.value = nfilter ?? filter.value;
   loadData();

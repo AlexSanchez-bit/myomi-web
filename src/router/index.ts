@@ -42,14 +42,9 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const authStore = useAuthStore();
   const { enable } = useSplashStore();
   enable();
-  if (!authStore.authenticated && to.name != "login") {
-    next("login");
-  } else {
-    next();
-  }
+  next();
 });
 
 router.afterEach((to, from) => {

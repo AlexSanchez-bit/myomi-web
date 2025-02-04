@@ -1,9 +1,12 @@
-import { TableService } from "@/utils/service/TableService";
 import { supabase } from "@/setup";
+import { useToastStorage } from "@/stores/ToasterStorage";
+import { ListerService } from "@/utils/service/TableService";
 
-export class MaterialService extends TableService<any> {
+export class MaterialService extends ListerService<any> {
+  notify: any;
   constructor() {
     super("material", ["id", "name"]);
+    this.notify = useToastStorage();
   }
 
   public buildSelect() {
@@ -22,33 +25,5 @@ export class MaterialService extends TableService<any> {
       this.notify.notify("error", "", error.message, 3000);
     }
     return { data, error };
-  }
-
-  async createMaterial(name: string, description: string) {
-    const { error } = await supabase.from(this.tablename).insert({
-      name,
-      description,
-    });
-    return error;
-  }
-
-  async updateMaterial(id: string, name: string, description: string) {
-    const { error } = await supabase
-      .from(this.tablename)
-      .update({
-        name,
-        description,
-      })
-      .eq("id", id);
-
-    if (error) {
-      this.notify.notify("error", "", error.message, 3000);
-    }
-
-    return error;
-  }
-
-  async deleteMaterial(id: string) {
-    return await supabase.from(this.tablename).delete().eq("id", id);
   }
 }

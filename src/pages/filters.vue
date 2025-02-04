@@ -16,12 +16,16 @@
         </h6>
       </div>
 
-      <div class="flex flex-row items-center justify-between">
+      <ProductFilters
+        @update:filters="updateFilters"
+        :filters="{ sort: 'recent' }"
+      >
         <div>
           <SubCategories
             :parent_category="parseInt(route.params.id as string)"
           />
           <LazyLoadScroll
+            ref="lazyScroll"
             :service="lazyLister"
             :filter="{}"
             display-class="transition-all duration-1000 ease-in-out flex flex-wrap  gap-2 px-1"
@@ -34,7 +38,7 @@
             </template>
           </LazyLoadScroll>
         </div>
-      </div>
+      </ProductFilters>
     </div>
   </div>
 </template>
@@ -42,6 +46,7 @@
 <script setup lang="ts">
 import { useRoute } from "vue-router";
 import Breadcrumb from "primevue/breadcrumb";
+
 const route = useRoute();
 import { onMounted, ref } from "vue";
 import { useCategoryService } from "@/composables/Shop/Category/useCategoryService";
@@ -58,6 +63,9 @@ import type { IListResponse } from "@/utils/entities/IListResponse";
 import { Skeleton } from "primevue";
 import ProductItem from "@/components/Product/ProductItem.vue";
 import SubCategories from "@/components/Categories/SubCategories.vue";
+import ProductFilters from "@/components/Product/ProductFilters.vue";
+import { Filters } from "@/components/Product/Filters";
+import { Filter } from "@/utils/entities/Filter";
 const home = ref({
   icon: "pi pi-home",
 });
@@ -69,6 +77,67 @@ const category = ref<ICategory | null>(null);
 const sub_category = ref<ICategory[]>([]);
 
 const toast = useToastStorage();
+
+const filter_array = ref<Filter[]>([]);
+const lazyScroll = ref<any>();
+
+function updateFilters(filters: Filters) {
+  const filterConfig = [
+    {
+      field: "name",
+      value: filters.name,
+      matchMode: FilterMatchMode.CONTAINS,
+      condition: !!filters.name?.trim(),
+    },
+    {
+      field: "price",
+      value: filters.minPrice,
+      matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO,
+      condition: filters.minPrice !== null && filters.minPrice !== undefined,
+    },
+    {
+      field: "price",
+      value: filters.maxPrice,
+      matchMode: FilterMatchMode.LESS_THAN_OR_EQUAL_TO,
+      condition: filters.maxPrice !== null && filters.maxPrice !== undefined,
+    },
+    {
+      field: "product_category.category_id",
+      value: filters.classes,
+      matchMode: FilterMatchMode.IN,
+      condition: !!filters.classes?.length,
+    },
+    {
+      field: "material",
+      value: filters.materials,
+      matchMode: FilterMatchMode.IN,
+      condition: !!filters.materials?.length,
+    },
+  ];
+
+  filterConfig.forEach((config) => {
+    const existingIndex = filter_array.value.findIndex(
+      (e) => e.field === config.field && e.matchMode === config.matchMode,
+    );
+
+    if (config.condition) {
+      const newEntry = {
+        field: config.field,
+        value: config.value,
+        matchMode: config.matchMode,
+      };
+
+      if (existingIndex >= 0) {
+        filter_array.value[existingIndex] = newEntry;
+      } else {
+        filter_array.value.push(newEntry);
+      }
+    } else if (existingIndex >= 0) {
+      filter_array.value.splice(existingIndex, 1);
+    }
+  });
+  lazyScroll.value.apply_filters();
+}
 
 onMounted(async () => {
   category.value = await service.getDetails(
@@ -105,9 +174,10 @@ const lazyLister: IGenericLister<IProduct> = {
       [
         {
           field: "product_category.category_id",
-          matchMode: FilterMatchMode.EQUALS,
-          value: route.params.id,
+          matchMode: FilterMatchMode.IN,
+          value: [route.params.id],
         },
+        ...filter_array.value,
       ],
       new Pagination(page, limit),
       [],
