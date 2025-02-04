@@ -112,8 +112,13 @@ const responsiveOptions = ref([
     numScroll: 1,
   },
   {
-    breakpoint: "768px", // pantallas medianas
+    breakpoint: "1000px", // pantallas grandes
     numVisible: 2,
+    numScroll: 1,
+  },
+  {
+    breakpoint: "768px", // pantallas medianas
+    numVisible: 1,
     numScroll: 1,
   },
   {

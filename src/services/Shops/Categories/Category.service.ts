@@ -31,8 +31,19 @@ export class CategoryService extends ListerService<ICategory> {
     if (this.cachedCategories.length > 0) {
       return (async () => this.cachedCategories)();
     } else {
-      return super.getAll(filters, pagination, orders);
+      return this.getAllCached(filters, pagination, orders);
     }
+  }
+
+  private async getAllCached(
+    filters: Filter<any>[],
+    pagination: Pagination,
+    orders: Sorter[],
+  ) {
+    const resp = await super.getAll(filters, pagination, orders);
+
+    this.cachedCategories = resp;
+    return resp;
   }
 
   public buildSelect() {
