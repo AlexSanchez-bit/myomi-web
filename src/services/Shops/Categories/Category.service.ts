@@ -28,6 +28,10 @@ export class CategoryService extends ListerService<ICategory> {
     pagination: Pagination,
     orders: Sorter[],
   ): Promise<any[]> {
+    if (filters.length > 0) {
+      return super.getAll(filters, pagination, orders);
+    }
+
     if (this.cachedCategories.length > 0) {
       return (async () => this.cachedCategories)();
     } else {

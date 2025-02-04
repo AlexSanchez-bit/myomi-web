@@ -3,14 +3,14 @@
     class="border rounded w-full p-2 h-full flex flex-col justify-between relative pb-3"
   >
     <!-- Imagen y badge -->
-    <div class="mb-4">
-      <div class="relative mx-auto cursor-pointer">
+    <div class="mb-4 w-full">
+      <picture class="relative w-full cursor-pointer">
         <img
           :src="
             product?.images.length > 0 ? product?.images[0] : '/noimage.webp'
           "
           :alt="product?.name"
-          class="rounded object-contain"
+          class="rounded object-contain mx-auto max-h-80"
           @error="(e) => (e.target.src = '/noimage.webp')"
         />
         <!-- Badge posicionado en la esquina superior izquierda si el producto es reciente -->
@@ -20,7 +20,7 @@
           severity="success"
           class="absolute top-2 left-2"
         />
-      </div>
+      </picture>
     </div>
 
     <!-- Información del producto -->
@@ -40,7 +40,7 @@
           {{ selected_currency?.name }}
         </div>
         <span>
-          <Button icon="pi pi-heart" severity="secondary" outlined />
+          <!-- <Button icon="pi pi-heart" severity="secondary" outlined /> -->
           <Button icon="pi pi-shopping-cart" class="ml-2" />
         </span>
       </div>

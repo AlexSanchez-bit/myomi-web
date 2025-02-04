@@ -63,7 +63,7 @@ const handleFilterUpdate = (field: keyof Filters, value: any) => {
 
     <!-- Desktop Filters -->
     <div class="flex flex-row gap-1 justify-start">
-      <div class="hidden lg:block w-1/3 h-full sticky top-16">
+      <div class="hidden lg:block w-1/4 h-full sticky top-16">
         <div class="p-3">
           <div class="p-4 shadow-sm">
             <h3 class="text-lg font-semibold mb-4">{{ $t("filters") }}</h3>

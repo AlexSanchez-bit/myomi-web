@@ -30,7 +30,7 @@
             ref="lazyScroll"
             :service="lazyLister"
             :filter="{}"
-            display-class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-5 gap-2"
+            display-class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2"
           >
             <template #item="{ item }">
               <ProductItem :product="item" />
