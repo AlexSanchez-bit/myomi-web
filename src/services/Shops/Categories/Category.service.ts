@@ -1,3 +1,6 @@
+import type { Filter } from "@/utils/entities/Filter";
+import type { Pagination } from "@/utils/entities/Pagination";
+import type { Sorter } from "@/utils/entities/Sorters";
 import { ListerService } from "@/utils/service/TableService";
 
 export interface ICategory {
@@ -10,6 +13,7 @@ export interface ICategory {
 }
 
 export class CategoryService extends ListerService<ICategory> {
+  private cachedCategories: ICategory[] = [];
   constructor() {
     super("category", [
       "id",
@@ -18,6 +22,17 @@ export class CategoryService extends ListerService<ICategory> {
       "parent",
       "parent_category:parent(id, name),created_at ",
     ]);
+  }
+  public getAll(
+    filters: Filter<any>[],
+    pagination: Pagination,
+    orders: Sorter[],
+  ): Promise<any[]> {
+    if (this.cachedCategories.length > 0) {
+      return (async () => this.cachedCategories)();
+    } else {
+      return super.getAll(filters, pagination, orders);
+    }
   }
 
   public buildSelect() {

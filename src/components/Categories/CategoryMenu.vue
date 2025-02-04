@@ -4,7 +4,7 @@
       :model="items"
       class="!bg-transparent custom-menubar text-xl md:hidden !w-full !border-none !text-white"
     >
-      <template #item="{ item, props, hasSubmenu }">
+      <template #item="{ item, props }">
         <router-link
           class="hover:bg-gray-50/20"
           v-if="item.route"
