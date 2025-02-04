@@ -23,6 +23,7 @@
         <div>
           <SubCategories
             :parent_category="parseInt(route.params.id as string)"
+            class="w-full mb-3"
           />
           <LazyLoadScroll
             ref="lazyScroll"

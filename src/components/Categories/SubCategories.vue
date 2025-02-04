@@ -2,13 +2,13 @@
   <div
     class="transition-all duration-1000 ease-in-outflex flex flex-wrap gap-3 items-center justify-start px-3"
   >
-    <div class="w-60 h-60" v-for="i in loading ? 6 : 0" :key="i">
+    <div class="w-40 h-40" v-for="i in loading ? 6 : 0" :key="i">
       <Skeleton class="w-full !h-full" style=""></Skeleton>
     </div>
 
     <router-link
       :to="{ name: 'category.details', params: { id: category.id } }"
-      class="md:w-60 md:h-60 w-40 h-40 rounded-xl overflow-hidden relative category cursor-pointer"
+      class="w-40 h-40 rounded-xl overflow-hidden relative category cursor-pointer"
       v-for="category in categories"
       :key="category.id"
     >
