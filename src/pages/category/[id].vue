@@ -36,7 +36,7 @@
               <ProductItem :product="item" />
             </template>
             <template #skeletons>
-              <Skeleton class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 !h-[40rem]" />
+              <Skeleton class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 !h-80" />
             </template>
           </LazyLoadScroll>
         </div>

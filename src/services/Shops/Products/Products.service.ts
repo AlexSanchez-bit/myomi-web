@@ -30,9 +30,11 @@ export class ProductsService extends ListerService<IProduct> {
   }
 
   public buildSelect() {
-    return this.builder.select(this.search_fields.join(" , "), {
-      count: "exact",
-    });
+    return this.builder
+      .select(this.search_fields.join(" , "), {
+        count: "exact",
+      })
+      .gt("stock", 0);
   }
 
   async getDetails(id: string | number) {
@@ -50,5 +52,19 @@ export class ProductsService extends ListerService<IProduct> {
     }
 
     return { data, error } as PostgrestSingleResponse<IProduct>;
+  }
+
+  async getMaterials(id: string | number) {
+    const { data, error } = await supabase
+      .from("product_materials")
+      .select("material:material (name,id)")
+      .eq("product_id", id);
+
+    if (!error) {
+      return { data: data.map((material) => material.material), error };
+    }
+    return { data, error } as PostgrestSingleResponse<
+      { name: string; id: number }[]
+    >;
   }
 }
