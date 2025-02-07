@@ -33,8 +33,10 @@ export const useAuthStore = defineStore("authStore", {
       if (!state._authenticated) {
         const user_saved_data = localStorage.getItem("userData");
         this._authenticated = user_saved_data != null;
-        this._userData = JSON.parse(user_saved_data!);
-        this._anonymous = this._userData.is_anonymous;
+        if (user_saved_data != null) {
+          this._userData = JSON.parse(user_saved_data!);
+          this._anonymous = this._userData.is_anonymous;
+        }
       }
       return this._authenticated;
     },
