@@ -50,6 +50,19 @@
         <LanguageSelector class="brightness-200" />
       </span>
       <CurrencySelector />
+      <router-link :to="{ name: 'cart' }">
+        <OverlayBadge
+          :value="quantity"
+          class="scale-75"
+          size="small"
+          severity="danger"
+        >
+          <i
+            class="pi-shopping-cart pi scale-[150%]"
+            style="font-size: 1.3rem"
+          ></i>
+        </OverlayBadge>
+      </router-link>
       <div class="lg:hidden text-white ml-6">
         <Button
           icon="pi pi-bars"
@@ -109,10 +122,14 @@ import CurrencySelector from "@/components/Currency/CurrencySelector.vue";
 import Sidebar from "primevue/sidebar";
 import Button from "primevue/button";
 import CategoryMenu from "@/components/Categories/CategoryMenu.vue";
-
 import { ref, onMounted } from "vue";
 
+import { useCartStore } from "@/stores/cartStore";
+const { quantity } = storeToRefs(useCartStore());
+
 import { useRoute } from "vue-router";
+import { OverlayBadge } from "primevue";
+import { storeToRefs } from "pinia";
 
 const route = useRoute();
 

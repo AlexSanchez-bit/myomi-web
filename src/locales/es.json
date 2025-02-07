@@ -15,5 +15,9 @@
   "who_we_are": "Quiénes Somos?",
   "slogan": "Myomi cuida tu piel",
   "recently_added": "Recientemente agregado",
-  "add_to_cart": "Añadir al carrito"
+  "add_to_cart": "Añadir al carrito",
+  "show_more": "Ver más",
+  "show_less": "Ver menos",
+  "product_added": "Producto agregado",
+  "product_successfully_added": "El producto ha sido agregado al carrito"
 }

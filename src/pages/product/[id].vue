@@ -77,51 +77,71 @@
           </div>
         </div>
 
-        <!-- Selector de cantidad y botón para agregar al carrito -->
-        <div class="mt-6 flex items-center gap-4">
-          <!-- Stepper de cantidad -->
-          <div class="flex items-center border border-gray-300 rounded">
-            <button
-              @click="quantity = quantity - 1"
-              class="px-2 py-1 focus:outline-none"
-            >
-              -
-            </button>
-            <input
-              type="number"
-              class="w-16 text-center outline-none bg-gray-50"
-              v-model.number="quantity"
-              min="0"
-              :max="product?.stock"
-              @update:modelValue="quantity = $event"
-            />
-            <button
-              @click="incrementQuantity"
-              class="px-2 py-1 focus:outline-none"
-            >
-              +
-            </button>
-          </div>
-          <!-- Botón agregar al carrito -->
-          <button
-            class="bg-[#449ca8] text-white px-4 py-2 rounded-lg focus:outline-none"
-            :class="{
-              'cursor-not-allowed opacity-80': quantity == 0,
-            }"
-            @click="addToCart"
-          >
-            {{ $t("add_to_cart") }}
-          </button>
-        </div>
-
+        <CartAddButton :product_id="route.params.id as string">
+          <template #content="{ add, loading }">
+            <!-- Selector de cantidad y botón para agregar al carrito -->
+            <div class="mt-6 flex items-center gap-4">
+              <!-- Stepper de cantidad -->
+              <div class="flex items-center border border-gray-300 rounded">
+                <button
+                  @click="quantity = quantity - 1"
+                  class="px-2 py-1 focus:outline-none"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  class="w-16 text-center outline-none bg-gray-50"
+                  v-model.number="quantity"
+                  min="0"
+                  :max="product?.stock"
+                  @update:modelValue="quantity = $event"
+                />
+                <button
+                  @click="incrementQuantity"
+                  class="px-2 py-1 focus:outline-none"
+                >
+                  +
+                </button>
+              </div>
+              <!-- Botón agregar al carrito -->
+              <Button
+                unstyled
+                class="bg-[#449ca8] text-white px-4 py-2 rounded-lg focus:outline-none"
+                :class="{
+                  'cursor-not-allowed opacity-80': quantity == 0,
+                }"
+                @click="add(quantity)"
+                :loading="loading"
+              >
+                <span v-if="!loading">
+                  {{ $t("add_to_cart") }}
+                </span>
+                <i
+                  v-else
+                  class="pi pi-spin pi-spinner mx-10"
+                  style="font-size: 1rem"
+                ></i>
+              </Button>
+            </div>
+          </template>
+        </CartAddButton>
         <!-- Materiales, si existen -->
         <div v-if="product.materials && product.materials.length" class="mt-4">
           <h3 class="text-lg font-semibold" :style="{ color: primaryColor }">
             {{ $t("materials") }}
           </h3>
-          <ul class="list-disc pl-5">
-            <li v-for="material in productMateriasl" :key="material.id">
-              {{ material.name }}
+          <ul class="list-disc pl-5 text-darkblue opacity-90">
+            <li
+              v-for="material in productMateriasl"
+              :key="material.id"
+              class="cursor-pointer"
+            >
+              <router-link
+                :to="{ name: 'material.details', params: { id: material.id } }"
+              >
+                {{ material.name }}
+              </router-link>
             </li>
           </ul>
         </div>
@@ -155,6 +175,8 @@ import { useRoute } from "vue-router";
 import type { IProduct } from "@/services/Shops/Products/Products.service";
 import { useCurrencyStore } from "@/stores/currency";
 import { storeToRefs } from "pinia";
+import CartAddButton from "@/components/Cart/CartAddButton.vue";
+import Button from "primevue/button";
 
 const product = ref<IProduct | null>(null);
 const selectedImage = ref<string>("");

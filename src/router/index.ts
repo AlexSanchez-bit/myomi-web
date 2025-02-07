@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import { useSplashStore } from "@/stores/SplashScreen";
 import { productRoutes } from "./modules/shop/product";
 import DefaultLayout from "@/layouts/default.vue";
+import { materialRoutes } from "./modules/material";
+import { cartRoutes } from "./modules/shop/cart";
 
 const router = createRouter({
   history: createWebHistory("#"),
@@ -22,6 +24,8 @@ const router = createRouter({
           component: () => import("@/pages/category/[id].vue"),
         },
         ...productRoutes,
+        ...materialRoutes,
+        ...cartRoutes,
       ],
     },
     {

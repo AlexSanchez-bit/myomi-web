@@ -87,7 +87,6 @@ import { Pagination } from "@/utils/entities/Pagination";
 
 onMounted(async () => {
   const data = await service.getAll([], new Pagination(0, 100), []);
-  console.log(data);
   items.value = [
     {
       label: "categories",

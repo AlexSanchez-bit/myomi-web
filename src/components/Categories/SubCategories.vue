@@ -62,8 +62,6 @@ onMounted(async () => {
     observer.observe(container.value);
   }
 
-  console.log(props.parent_category);
-
   const resp = await service.getAll(
     [
       {
@@ -78,7 +76,6 @@ onMounted(async () => {
   loading.value = false;
 
   if (resp) {
-    console.log(resp);
     categories.value = resp;
   }
 });

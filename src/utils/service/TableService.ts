@@ -60,8 +60,6 @@ export abstract class ListerService<T> {
 
     let { data, count, error } = await query;
 
-    console.log(count);
-
     if (error) {
       // this.notify.notify("error", "Ocurrio un error", error.message, 4000);
       const keys: any = {} as any;

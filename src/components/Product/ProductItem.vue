@@ -41,7 +41,7 @@
         </div>
         <span>
           <!-- <Button icon="pi pi-heart" severity="secondary" outlined /> -->
-          <Button icon="pi pi-shopping-cart" class="ml-2" />
+          <CartAddButton :product_id="product?.id" />
         </span>
       </div>
     </div>
@@ -51,6 +51,7 @@
 <script setup lang="ts">
 import { computed, defineProps } from "vue";
 import type { IProduct } from "@/interfaces/IProduct";
+import CartAddButton from "../Cart/CartAddButton.vue";
 
 // Importa componentes de PrimeVue (si no están registrados globalmente)
 import Badge from "primevue/badge";
