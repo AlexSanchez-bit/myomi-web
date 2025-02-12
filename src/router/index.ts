@@ -3,6 +3,7 @@ import { useSplashStore } from "@/stores/SplashScreen";
 import { productRoutes } from "./modules/shop/product";
 import DefaultLayout from "@/layouts/default.vue";
 import { materialRoutes } from "./modules/material";
+import { brandRoutes } from "./modules/brand";
 import { cartRoutes } from "./modules/shop/cart";
 
 const router = createRouter({
@@ -22,10 +23,14 @@ const router = createRouter({
           path: "category/:id",
           name: "category.details",
           component: () => import("@/pages/category/[id].vue"),
+          props: (route) => {
+            return { category_id: route.params.id };
+          },
         },
         ...productRoutes,
         ...materialRoutes,
         ...cartRoutes,
+        ...brandRoutes,
       ],
     },
     {

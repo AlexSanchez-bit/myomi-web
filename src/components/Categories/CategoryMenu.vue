@@ -1,43 +1,9 @@
 <template>
   <div>
-    <Menu
-      :model="items"
-      class="!bg-transparent custom-menubar text-xl md:hidden !w-full !border-none !text-white"
-    >
-      <template #item="{ item, props }">
-        <router-link
-          class="hover:bg-gray-50/20"
-          v-if="item.route"
-          v-slot="{ href, navigate }"
-          :to="item.route"
-          custom
-        >
-          <a
-            v-ripple
-            :href="href"
-            v-bind="props.action"
-            @click="navigate"
-            class="text-white"
-          >
-            <span>{{ $t(item.label) }}</span>
-            <span class="pi pi-angle-right" v-if="item.items?.length > 0" />
-          </a>
-        </router-link>
-        <a
-          v-else
-          v-ripple
-          :href="item.url"
-          :target="item.target"
-          v-bind="props.action"
-          class="text-white"
-        >
-          <span>{{ $t(item.label) }}</span>
-        </a>
-      </template>
-    </Menu>
     <Menubar
+      breakpoint="2px"
       :model="items"
-      class="!bg-transparent custom-menubar text-xl !hidden sm:!block"
+      class="!bg-transparent custom-menubar text-sm sm:text-xl"
     >
       <template #item="{ item, props, hasSubmenu }">
         <router-link
