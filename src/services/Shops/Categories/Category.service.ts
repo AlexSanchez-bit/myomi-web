@@ -51,8 +51,10 @@ export class CategoryService extends ListerService<ICategory> {
   }
 
   public buildSelect() {
-    return this.builder.select(this.search_fields.join(" , "), {
-      count: "exact",
-    });
+    return this.builder
+      .select(this.search_fields.join(" , "), {
+        count: "exact",
+      })
+      .order("order", { ascending: true });
   }
 }

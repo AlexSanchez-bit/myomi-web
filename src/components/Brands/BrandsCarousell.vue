@@ -1,72 +1,85 @@
 <template>
   <div class="relative w-full overflow-hidden">
-    <swiper-container speed="500" loop="true" css-mode="true">
+    <!-- Se usan bindings para las propiedades que no sean strings -->
+    <swiper-container
+      v-if="items.length > 0"
+      ref="swiperEl"
+      :loop="true"
+      :speed="100000"
+      :autoplay="{
+        delay: 0,
+        disableOnInteraction: false,
+      }"
+      slides-per-view="auto"
+      spaceBetween="10"
+      class="mySwiper"
+    >
       <swiper-slide v-for="(item, index) in items" :key="index">
-        <Img
-          :src="item.icon"
-          class="w-[90px] h-[90px] mx-[10px]"
-          :style="{ transform: `translateX(${offset}px)` }"
-        />
+        <router-link :to="`/brand/${item.id}`">
+          <img
+            :src="item.icon"
+            class="w-[90px] h-[90px] mx-[10px]"
+            alt="Icono"
+          />
+        </router-link>
       </swiper-slide>
     </swiper-container>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref, onMounted, nextTick } from "vue";
+// Importa y registra los web components de Swiper Element
+import { register } from "swiper/element/bundle";
+register();
+
+// (Opcional) Importa los estilos de Swiper si no están globalmente
+// import "swiper/css";
+
 import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
 import { Pagination } from "@/utils/entities/Pagination";
 
-const service = useBrandService();
 const items = ref([]);
-const offset = ref(0);
-const elementWidth = 100; // Ancho de cada elemento
-const speed = 1000 / 60; // Velocidad de animación (más FPS = más fluido)
-const step = 2; // Cantidad de píxeles por frame
-
-const lastInterval = ref(null);
-const total_squares = ref(0);
+const swiperEl = ref(null);
+const service = useBrandService();
 
 onMounted(async () => {
   const data = await service.getAll([], new Pagination(0, 100), []);
-  initInterval(data);
-  window.onresize = () => {
-    initInterval(data);
-  };
-});
+  if (data) {
+    // Calcula cuántos iconos se necesitan para cubrir la pantalla (90px + 20px de margen)
+    const iconWidth = 110;
+    const requiredCount = Math.ceil(window.innerWidth / iconWidth) + 2;
+    let finalData = [];
 
-function initInterval(data) {
-  const screenWidth = window.innerWidth;
-  total_squares.value = Math.floor(screenWidth / elementWidth) + 10;
-  if (!data) {
-  } else {
-    if (data.length < total_squares.value) {
-      const aux = new Array(total_squares.value);
-      for (let i = 0; i < total_squares; i++) {
-        aux[i] = data[i % data.length];
+    if (data.length < requiredCount * 2) {
+      while (finalData.length < requiredCount) {
+        finalData.push(...data);
       }
-      items.value = aux;
+      finalData = finalData.slice(0, requiredCount);
     } else {
-      items.value = data;
+      finalData = data;
     }
-
-    if (lastInterval.value) {
-      clearInterval(lastInterval.value);
-    }
-
-    lastInterval.value = setInterval(() => {
-      offset.value -= step;
-      if (Math.abs(offset.value) >= elementWidth * 3) {
-        offset.value = 0;
-        items.value.push(items.value.shift()); // Mueve el primer elemento al final
-      }
-    }, speed);
+    items.value = finalData;
   }
-}
+  await nextTick();
+  console.log(swiperEl.value.swiper);
+  if (
+    swiperEl.value &&
+    swiperEl.value.swiper &&
+    swiperEl.value.swiper.autoplay
+  ) {
+    swiperEl.value.swiper.autoplay.start();
+  }
+});
 </script>
 
 <style scoped>
-.transition-transform {
-  transition: transform 0.2s linear;
+.mySwiper {
+  /* Agrega estilos adicionales si lo requieres */
+}
+
+/* Asegura que cada slide se dimensione de forma automática */
+swiper-slide {
+  width: auto !important;
 }
 </style>

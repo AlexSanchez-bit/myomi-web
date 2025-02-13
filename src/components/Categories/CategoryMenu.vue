@@ -61,7 +61,7 @@ onMounted(async () => {
   ];
 });
 
-const items = ref([]);
+const items = ref([{ label: "categories" }]);
 
 function buildMenuItems(categories) {
   // Mapa para almacenar cada categoría transformada por su id

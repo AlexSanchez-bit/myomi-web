@@ -17,80 +17,115 @@
         {{ $t("see_all") }}
       </router-link>
     </p>
-    <!-- Carrusel de carga con Skeleton -->
-    <Carousel
-      v-show="loading"
-      :value="[1, 2, 3, 4, 5, 6]"
-      :responsiveOptions="responsiveOptions"
-      circular
-      :autoplayInterval="3000"
-      :numVisible="3"
-      :numScroll="1"
+
+    <!-- Carrusel de carga con Skeleton (mientras loading es true) -->
+    <swiper-container
+      v-if="loading"
+      :loop="true"
+      :autoplay="{
+        delay: 3000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: false,
+      }"
+      slides-per-view="auto"
+      :breakpoints="skeletonBreakpoints"
+      space-between="10"
+      :pagination="{
+        clickable: true,
+        dynamicBullets: true,
+      }"
+      :navigation="true"
       class="min-h-80 w-full max-w-screen"
     >
-      <template #item>
-        <Skeleton class="!w-11/12 !h-80"></Skeleton>
-      </template>
-    </Carousel>
+      <swiper-slide v-for="(item, index) in skeletonItems" :key="index">
+        <div class="relative w-80 h-[26rem]">
+          <Skeleton class="!h-80" />
+        </div>
+      </swiper-slide>
+      <!-- Botones de navegación y paginación para el carrusel de carga -->
+      <swiper-button-prev slot="button-prev"></swiper-button-prev>
+      <swiper-button-next slot="button-next"></swiper-button-next>
+      <swiper-pagination slot="pagination"></swiper-pagination>
+    </swiper-container>
 
-    <!-- Carrusel de promociones -->
-    <Carousel
-      v-show="!loading"
-      :value="promotions"
-      :responsiveOptions="responsiveOptions"
-      circular
-      :autoplayInterval="promotions.length > 3 ? 3000 : 10000"
-      :numVisible="3"
-      :numScroll="1"
+    <!-- Carrusel de promociones (cuando loading es false) -->
+    <swiper-container
+      v-if="!loading"
+      :loop="true"
+      :autoplay="{
+        delay: promotions.length > 3 ? 2000 : 10000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: false,
+      }"
+      :breakpoints="promotionBreakpoints"
+      space-between="10"
+      :pagination="{
+        clickable: true,
+        dynamicBullets: true,
+      }"
+      :navigation="true"
       class="w-full max-w-screen"
     >
-      <template #item="slotProps">
-        <ProductItem :product="slotProps.data" class="max-h-[26rem]" />
-      </template>
-    </Carousel>
+      <swiper-slide v-for="(promotion, index) in promotions" :key="index">
+        <div class="relative w-80 h-[26rem]">
+          <ProductItem :product="promotion" class="w-32" />
+        </div>
+      </swiper-slide>
+      <!-- Botones de navegación y paginación para el carrusel de promociones -->
+      <swiper-button-prev slot="button-prev"></swiper-button-prev>
+      <swiper-button-next slot="button-next"></swiper-button-next>
+      <swiper-pagination slot="pagination"></swiper-pagination>
+    </swiper-container>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import { useProductService } from "@/composables/Shop/Product/useProductService";
 import type { IProduct } from "@/services/Shops/Products/Products.service";
 import { useCurrencyStore } from "@/stores/currency";
 import { Pagination } from "@/utils/entities/Pagination";
 import { storeToRefs } from "pinia";
-import Carousel from "primevue/carousel";
+
+// Importa y registra los web components de Swiper Element
+import { register } from "swiper/element/bundle";
+register();
+
+// (Opcional) Si no lo tienes importado globalmente, importa los estilos de Swiper
+// import "swiper/css";
+
+// Componentes usados en los slides
 import Skeleton from "primevue/skeleton";
-import { onMounted, ref } from "vue";
 import ProductItem from "./ProductItem.vue";
 
 const loading = ref(true);
 const onscreen = ref(false);
-const container = ref();
+const container = ref<HTMLElement | null>(null);
 const { selected_currency } = storeToRefs(useCurrencyStore());
 const service = useProductService();
 
-// Variable para las promociones
+// Variable para almacenar las promociones
 const promotions = ref<IProduct[]>([]);
 
 onMounted(async () => {
+  // Usa IntersectionObserver para detectar cuando el contenedor está en pantalla
   const observer = new IntersectionObserver(() => (onscreen.value = true), {
-    root: null, // Usa el viewport completo como área de visualización
-    threshold: 0.8, // Ejecuta el callback cuando el 10% del elemento esté en pantalla
+    root: null, // viewport completo
+    threshold: 0.8,
   });
-
-  // Comenzamos a observar el elemento
   if (container.value) {
     observer.observe(container.value);
   }
 
+  // Llamada al servicio para obtener las promociones
   loading.value = true;
-  // Llamada al servicio ajustada para obtener solo promociones
   const resp = await service.getAll(
-    [], // Ajusta el filtro según tu API
+    [], // Filtros si fueran necesarios
     new Pagination(0, 10),
     [
       {
         field: "sales",
-        order: 0, //orden descendiente
+        order: 0, // Orden descendente
       },
     ],
   );
@@ -100,45 +135,27 @@ onMounted(async () => {
   }
 });
 
-const responsiveOptions = ref([
-  {
-    breakpoint: "2000px", // pantallas grandes
-    numVisible: 5,
-    numScroll: 1,
-  },
-  {
-    breakpoint: "1600px", // pantallas grandes
-    numVisible: 4,
-    numScroll: 1,
-  },
-  {
-    breakpoint: "1400px", // pantallas grandes
-    numVisible: 3,
-    numScroll: 1,
-  },
-  {
-    breakpoint: "1000px", // pantallas grandes
-    numVisible: 2,
-    numScroll: 1,
-  },
-  {
-    breakpoint: "768px", // pantallas medianas
-    numVisible: 1,
-    numScroll: 1,
-  },
-  {
-    breakpoint: "576px", // pantallas pequeñas
-    numVisible: 1,
-    numScroll: 1,
-  },
-]);
+// Define los breakpoints para el carrusel de promociones (y el de Skeleton, usamos los mismos)
+const promotionBreakpoints = {
+  576: { slidesPerView: 1, spaceBetween: 10 },
+  768: { slidesPerView: 2, spaceBetween: 10 },
+  1000: { slidesPerView: 3, spaceBetween: 10 },
+  1400: { slidesPerView: 5, spaceBetween: 10 },
+  1600: { slidesPerView: 6, spaceBetween: 10 },
+  2000: { slidesPerView: 6, spaceBetween: 10 },
+};
+const skeletonBreakpoints = promotionBreakpoints;
+
+// Para el carrusel de Skeleton usamos un array estático de 6 elementos
+const skeletonItems = [1, 2, 3, 4, 5, 6];
 </script>
 
 <style scoped>
-.category img {
-  transition: all 0.3s ease-in-out;
+/* Estilos personalizados para Swiper Element */
+swiper-container {
+  width: 100%;
 }
-.category:hover img {
-  scale: 1.1;
+swiper-slide {
+  width: auto !important;
 }
 </style>

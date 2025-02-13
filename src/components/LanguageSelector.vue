@@ -2,7 +2,7 @@
   <Button
     unstyled
     type="button"
-    class="bg-transparent text-darkblue border-none !p-0 mb-0"
+    class="bg-transparent text-darkblue border-none !p-0 !h-5 !mb-0"
     @click="toggle"
     aria-haspopup="true"
     aria-controls="overlay_menu"

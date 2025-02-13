@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-2 items-center py-3 md:px-20 px-6 mb-4">
     <h6
-      class="text-4xl my-6 underline decoration-darkblue text-darkblue underline-offset-8"
+      class="text-4xl my-6 uppercase decoration-black text-black"
       ref="container"
     >
       {{ $t("all_categories") }}

@@ -61,7 +61,7 @@ onMounted(async () => {
   ];
 });
 
-const items = ref([]);
+const items = ref([{ label: "brands" }]);
 
 function buildMenuItems(brands) {
   const map = {};

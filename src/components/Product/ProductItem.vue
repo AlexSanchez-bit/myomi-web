@@ -5,14 +5,14 @@
     <!-- Imagen y badge -->
     <router-link :to="{ name: 'product.details', params: { id: product?.id } }">
       <picture class="relative w-full cursor-pointer overflow-hidden">
-        <img
+        <Img
           :src="
             product?.images.length > 0 ? product?.images[0] : '/noimage.webp'
           "
           :alt="product?.name"
-          class="rounded object-cover mx-auto max-h-60 w-full"
-          @error="(e) => (e.target.src = '/noimage.webp')"
-        />
+          class="rounded object-cover mx-auto h-60 w-full"
+        >
+        </Img>
         <!-- Badge posicionado en la esquina superior izquierda si el producto es reciente -->
         <Badge
           v-if="isRecent"
@@ -79,8 +79,7 @@ const isRecent = computed(() => {
   const createdAt = new Date(props.product?.created_at);
   const now = new Date();
   const diff = now.getTime() - createdAt.getTime();
-  // 86,400,000 ms equivalen a 1 día
-  return diff <= 86400000;
+  return diff <= 172800000;
 });
 </script>
 

@@ -1,11 +1,9 @@
 <template>
   <nav
-    class="p-4 z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-col header w-full top-0 opacity-95 !text-black bg-white"
+    class="p-4 sticky z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-col header w-full top-0 opacity-95 !text-black bg-white"
     :class="{
       'text-white': scrolled <= 60 && route.path == '/',
       'text-black': scrolled > 43,
-      fixed: route.path == '/',
-      sticky: route.path != '/',
     }"
   >
     <div class="flex flex-row justify-between items-center">
@@ -24,9 +22,7 @@
       </span>
 
       <div class="flex-row items-center gap-3 sm:!text-xl flex">
-        <span class="!mb-0">
-          <LanguageSelector class="brightness-200 mb-0" />
-        </span>
+        <LanguageSelector class="brightness-200 mb-0" />
         <CurrencySelector />
         <router-link :to="{ name: 'cart' }">
           <OverlayBadge
@@ -42,7 +38,6 @@
           </OverlayBadge>
         </router-link>
         <i class="pi pi-user sm:scale-150 ml-1"></i>
-        <i class="pi pi-bars sm:scale-150 ml-1"></i>
       </div>
     </div>
 
@@ -53,8 +48,8 @@
     <div
       class="flex-row gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden sm:flex"
       :class="{
-        'h-10 opacity-100': scrolled > 43 && scrolled_ammount >= 0,
-        'h-0 opacity-0': scrolled_ammount < 0,
+        'h-10 opacity-100': scrolled_ammount >= 0,
+        'h-0 opacity-0': scrolled_ammount < 0 && scrolled > 50,
       }"
     >
       <BrandMenu />
