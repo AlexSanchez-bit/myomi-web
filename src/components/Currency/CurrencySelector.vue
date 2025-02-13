@@ -22,9 +22,9 @@
   >
     <template #item="{ item }">
       <span
-        class="flex flex-row items-center gap-0.5 bg-darkblue text-white p-4 rounded border-none cursor-pointer min-w-24 hover:bg-gray-50/20"
+        class="flex flex-row items-center gap-0.5 bg-darkblue p-4 rounded border-none cursor-pointer min-w-24 hover:bg-gray-50/20"
       >
-        <img :src="item.icon" alt="" class="w-3 h-3 object-fill invert" />
+        <img :src="item.icon" alt="" class="w-3 h-3 object-fill" />
         {{ item.name }}
       </span>
     </template>

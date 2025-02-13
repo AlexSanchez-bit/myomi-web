@@ -3,7 +3,7 @@
     <Menubar
       breakpoint="2px"
       :model="items"
-      class="!bg-transparent custom-menubar text-sm sm:text-xl"
+      class="!bg-transparent custom-menubar text-sm sm:text-xl uppercase"
     >
       <template #item="{ item, props, hasSubmenu }">
         <router-link
@@ -118,7 +118,7 @@ function buildMenuItems(categories) {
 }
 
 ::v-deep(.p-menubar-submenu) {
-  background-color: #4da0ab;
+  background-color: #ffffff;
   color: black !important;
   border: none;
 }

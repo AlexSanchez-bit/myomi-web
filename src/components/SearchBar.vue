@@ -1,11 +1,11 @@
 <template>
   <div>
-    <IconField class="w-full flex-1">
+    <IconField class="w-full flex-1 scale-80">
       <InputIcon class="pi pi-search" />
       <InputText
         v-model="value1"
-        class="w-full"
-        placeholder="Search"
+        class="w-full !rounded-full"
+        :placeholder="$t('found_your_favorite_product')"
         size="search"
       />
     </IconField>

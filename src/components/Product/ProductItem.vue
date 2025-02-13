@@ -4,13 +4,13 @@
   >
     <!-- Imagen y badge -->
     <router-link :to="{ name: 'product.details', params: { id: product?.id } }">
-      <picture class="relative w-full cursor-pointer">
+      <picture class="relative w-full cursor-pointer overflow-hidden">
         <img
           :src="
             product?.images.length > 0 ? product?.images[0] : '/noimage.webp'
           "
           :alt="product?.name"
-          class="rounded object-contain mx-auto max-h-80"
+          class="rounded object-cover mx-auto max-h-60 w-full"
           @error="(e) => (e.target.src = '/noimage.webp')"
         />
         <!-- Badge posicionado en la esquina superior izquierda si el producto es reciente -->
@@ -24,12 +24,14 @@
     </router-link>
 
     <!-- Información del producto -->
-    <div>
-      <div class="mb-4 font-bold text-lg text-zinc-700">
-        {{ product?.name }}
-      </div>
-      <div class="mb-4 font-medium text-sm line-clamp-2 text-gray-600">
-        {{ product?.short_description }}
+    <div class="flex flex-col justify-between pt-3 h-full">
+      <div>
+        <div class="mb-2 font-bold text-lg text-zinc-700 line-clamp-2">
+          {{ product?.name }}
+        </div>
+        <div class="font-medium text-sm line-clamp-2 text-gray-600">
+          {{ product?.short_description }}
+        </div>
       </div>
       <div class="flex justify-between items-center">
         <div
@@ -78,7 +80,7 @@ const isRecent = computed(() => {
   const now = new Date();
   const diff = now.getTime() - createdAt.getTime();
   // 86,400,000 ms equivalen a 1 día
-  return diff < 86400000;
+  return diff <= 86400000;
 });
 </script>
 

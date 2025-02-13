@@ -14,11 +14,9 @@
 
 @font-face {
   font-family: "Jost";
-  src:
-    url("@/assets/fonts/Jost-Italic-VariableFont_wght.ttf") format("ttf"),
-    url("@/assets/fonts/Jost-VariableFont_wght.ttf") format("ttf");
-  font-weight: normal;
-  font-style: normal;
+  src: url("@/assets/fonts/Jost-VariableFont_wght.ttf") format("ttf");
+  font-weight: 900;
+  font-style: black;
 }
 
 @font-face {

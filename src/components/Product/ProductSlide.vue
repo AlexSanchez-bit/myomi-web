@@ -7,11 +7,16 @@
       'translate-y-0 opacity-100': onscreen,
     }"
   >
-    <h6
-      class="text-4xl text-center my-6 underline decoration-darkblue text-darkblue underline-offset-8"
-    >
+    <h6 class="text-4xl text-center mt-6 decoration-black text-black uppercase">
       {{ $t("best_sellers") }}
     </h6>
+    <p
+      class="underline text-center mb-6 text-zinc-800 decoration-black mt-4 cursor-pointer uppercase"
+    >
+      <router-link to="/category">
+        {{ $t("see_all") }}
+      </router-link>
+    </p>
     <!-- Carrusel de carga con Skeleton -->
     <Carousel
       v-show="loading"
@@ -34,13 +39,13 @@
       :value="promotions"
       :responsiveOptions="responsiveOptions"
       circular
-      :autoplayInterval="promotions.length > 3 ? 3000 : null"
+      :autoplayInterval="promotions.length > 3 ? 3000 : 10000"
       :numVisible="3"
       :numScroll="1"
       class="w-full max-w-screen"
     >
       <template #item="slotProps">
-        <ProductItem :product="slotProps.data" />
+        <ProductItem :product="slotProps.data" class="max-h-[26rem]" />
       </template>
     </Carousel>
   </div>

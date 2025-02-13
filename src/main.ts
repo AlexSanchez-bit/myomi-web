@@ -1,4 +1,8 @@
 import "./assets/main.css";
+// import function to register Swiper custom elements
+import { register } from "swiper/element/bundle";
+// register Swiper custom elements
+register();
 
 import { createApp } from "vue";
 import { createPinia } from "pinia";
@@ -13,6 +17,7 @@ import App from "./App.vue";
 import router from "./router";
 
 import { i18n } from "./setup";
+import Img from "./components/Img.vue";
 
 const app = createApp(App);
 app.use(createPinia());
@@ -31,5 +36,6 @@ app.use(PrimeVue, {
 });
 app.use(ConfirmationService);
 app.directive("tooltip", Tooltip);
+app.component("Img", Img);
 
 app.mount("#app");
