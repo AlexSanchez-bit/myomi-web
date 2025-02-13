@@ -90,22 +90,22 @@ function buildMenuItems(brands) {
 .custom-menubar {
   background-color: transparent;
   border: none;
-  color: white !important;
+  color: black !important;
 }
 
 ::v-deep(.p-menubar-submenu) {
   background-color: #4da0ab;
-  color: white !important;
+  color: black !important;
   border: none;
 }
 ::v-deep(.p-menubar-item-content:hover) {
   background-color: transparent;
-  color: white !important;
+  color: black !important;
 }
 
 ::v-deep(.p-menubar-item-content) {
   background-color: transparent !important;
-  color: white !important;
+  color: black !important;
 }
 
 ::v-deep(.p-menubar-item-link:hover) {
@@ -115,16 +115,16 @@ function buildMenuItems(brands) {
 }
 ::v-deep(.p-menuitem-link) {
   background-color: transparent !important;
-  color: white !important;
+  color: black !important;
 }
 
 ::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
   background: transparent; /* Fondo transparente */
-  color: white !important;
+  color: black !important;
 }
 
 ::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
   background: transparent !important;
-  color: white !important;
+  color: black !important;
 }
 </style>

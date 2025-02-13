@@ -34,6 +34,9 @@
           }"
         />
       </router-link>
+      <span class="w-full flex-1 px-10 hidden sm:block">
+        <SearchBar />
+      </span>
 
       <div class="flex-row items-center gap-3 flex">
         <span class="!mb-0">
@@ -56,12 +59,22 @@
       </div>
     </div>
 
-    <div class="flex flex-row gap-3 items-center w-full">
+    <span class="w-full flex-1 px-1 pt-3 sm:hidden block">
+      <SearchBar />
+    </span>
+
+    <div
+      class="flex-row gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden sm:flex"
+      :class="{
+        'h-10 opacity-100': scrolled > 43 && scrolled_ammount >= 0,
+        'h-0 opacity-0': scrolled <= 43 || scrolled_ammount < 0,
+      }"
+    >
       <BrandMenu />
       <CategoryMenu />
 
       <router-link
-        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-white p-2 rounded-sm cursor-pointer text-xl hidden lg:block"
+        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black p-2 rounded-sm cursor-pointer text-xl hidden lg:block"
         to="/about_us"
         custom
       >
@@ -74,7 +87,7 @@
 <script setup lang="ts">
 import LanguageSelector from "./LanguageSelector.vue";
 import CurrencySelector from "@/components/Currency/CurrencySelector.vue";
-import Sidebar from "primevue/sidebar";
+import SearchBar from "./SearchBar.vue";
 import Button from "primevue/button";
 import CategoryMenu from "@/components/Categories/CategoryMenu.vue";
 import BrandMenu from "@/components/Brands/BrandSubmenu.vue";
@@ -92,8 +105,13 @@ const route = useRoute();
 const visible = ref(false);
 const scrolled = ref<number>(0);
 
+const scrolled_ammount = ref(-1);
+
 onMounted(() => {
   window.addEventListener("scroll", (ev) => {
+    if (Math.abs(scrolled.value - window.scrollY) >= 10) {
+      scrolled_ammount.value = Math.round(scrolled.value - window.scrollY);
+    }
     scrolled.value = window.scrollY;
   });
 });

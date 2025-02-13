@@ -13,6 +13,15 @@
 }
 
 @font-face {
+  font-family: "Jost";
+  src:
+    url("@/assets/fonts/Jost-Italic-VariableFont_wght.ttf") format("ttf"),
+    url("@/assets/fonts/Jost-VariableFont_wght.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: "PierSansBold";
   src: url("@/assets/fonts/PierSans/PierSans-Bold.otf") format("opentype");
 }

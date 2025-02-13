@@ -19,5 +19,6 @@
   "show_more": "Ver más",
   "show_less": "Ver menos",
   "product_added": "Producto agregado",
-  "product_successfully_added": "El producto ha sido agregado al carrito"
+  "product_successfully_added": "El producto ha sido agregado al carrito",
+  "brands": "Marcas"
 }

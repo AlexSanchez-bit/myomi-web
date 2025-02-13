@@ -20,7 +20,7 @@ export default {
         sea: "var(--primary-color-sea)",
         grass: "var(--primary-color-grass)",
         wood: "#ffffff",
-        darkblue: "#449ca8",
+        darkblue: "#ffffff",
         pink: "var(--secondary-color-pink)",
         salmon: "var(--secondary-color-salmon)",
         cyan: "var(--secondary-color-cyan)",
