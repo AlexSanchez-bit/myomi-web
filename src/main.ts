@@ -1,6 +1,7 @@
 import "./assets/main.css";
 // import function to register Swiper custom elements
 import { register } from "swiper/element/bundle";
+import "swiper/css";
 // register Swiper custom elements
 register();
 

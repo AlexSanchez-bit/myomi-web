@@ -3,11 +3,20 @@
     <img
       :src="src ?? '/noimage.webp'"
       :alt="alt"
-      @load="(e) => (loading = false)"
-      @error="(e) => (e.target.src = '/noimage.webp')"
-      class="w-full h-full object-contain"
+      @load="() => (loading = false)"
+      @error="
+        (e) => {
+          e.target.src = '/noimage.webp';
+          loading = false;
+        }
+      "
+      :class="imageClass ?? 'w-full h-full object-contain'"
+      v-show="!loading && src != ''"
     />
-    <Skeleton v-if="!src" class="absolute top-0 left-0 w-full h-full" />
+    <Skeleton
+      v-if="loading || src == ''"
+      class="absolute top-0 left-0 w-full !h-full"
+    />
   </div>
 </template>
 
@@ -16,5 +25,9 @@ import { Skeleton } from "primevue";
 import { ref } from "vue";
 
 const loading = ref(true);
-const props = defineProps<{ alt?: string; src: string | null }>();
+const props = defineProps<{
+  alt?: string;
+  src: string | null;
+  imageClass: string;
+}>();
 </script>

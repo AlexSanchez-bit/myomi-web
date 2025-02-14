@@ -74,12 +74,19 @@ const props = defineProps<{
   product: IProduct;
 }>();
 
-// Computed para determinar si el producto fue creado hace menos de 1 día
+const ONE_DAY_IN_MS = 48 * 60 * 60 * 1000;
+
+// Computed para determinar si el producto fue creado hace menos de un día
 const isRecent = computed(() => {
   const createdAt = new Date(props.product?.created_at);
+
+  // Si no hay una fecha creada válida, devuelve false por defecto
+  if (!createdAt || isNaN(createdAt.getTime())) return false;
+
   const now = new Date();
-  const diff = now.getTime() - createdAt.getTime();
-  return diff <= 172800000;
+  const diffInMs = now.getTime() - createdAt.getTime();
+
+  return diffInMs <= ONE_DAY_IN_MS;
 });
 </script>
 

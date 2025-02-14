@@ -1,11 +1,15 @@
 <script setup lang="ts">
+import { Skeleton } from "primevue";
 import Carousel from "primevue/carousel";
-import { onMounted, ref } from "vue";
-const image_list: string[] = [
-  "/extas/main1.png",
-  "/extas/main2.png",
-  "/extas/main3.png",
-];
+import { onMounted, ref, toRefs } from "vue";
+
+const props = defineProps({
+  images: {
+    type: Array,
+  },
+});
+
+const { images: image_list } = toRefs(props);
 
 const scroll_second = () => {
   document.getElementById("second")?.scrollIntoView({
@@ -20,6 +24,7 @@ onMounted(() => {});
   <div class="relative w-full h-[75dvh]" id="main">
     <div class="absolute z-10 overflow-hidden w-full h-[70dvh]">
       <Carousel
+        v-if="image_list.length > 0"
         :value="image_list"
         :numScroll="1"
         :showNavigators="false"
@@ -29,17 +34,14 @@ onMounted(() => {});
       >
         <template #item="{ data }">
           <div class="w-full">
-            <img
+            <Img
               :src="data"
-              class="object-cover hidden lg:block z-10 w-full h-[70dvh]"
-            />
-            <img
-              :src="data"
-              class="object-cover block lg:hidden z-10 w-full h-[70dvh]"
+              imageClass="object-cover   z-10 w-full h-[70dvh]"
             />
           </div>
         </template>
       </Carousel>
+      <Skeleton class="flex-1 w-full !h-full" v-else />
     </div>
   </div>
 </template>

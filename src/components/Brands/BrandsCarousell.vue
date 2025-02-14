@@ -5,13 +5,14 @@
       v-if="items.length > 0"
       ref="swiperEl"
       :loop="true"
-      :speed="100000"
+      :speed="2000"
       :autoplay="{
         delay: 0,
         disableOnInteraction: false,
       }"
       slides-per-view="auto"
       spaceBetween="10"
+      :allow-touch-move="false"
       class="mySwiper"
     >
       <swiper-slide v-for="(item, index) in items" :key="index">
@@ -29,12 +30,6 @@
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue";
-// Importa y registra los web components de Swiper Element
-import { register } from "swiper/element/bundle";
-register();
-
-// (Opcional) Importa los estilos de Swiper si no están globalmente
-// import "swiper/css";
 
 import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
 import { Pagination } from "@/utils/entities/Pagination";
@@ -63,13 +58,6 @@ onMounted(async () => {
   }
   await nextTick();
   console.log(swiperEl.value.swiper);
-  if (
-    swiperEl.value &&
-    swiperEl.value.swiper &&
-    swiperEl.value.swiper.autoplay
-  ) {
-    swiperEl.value.swiper.autoplay.start();
-  }
 });
 </script>
 
