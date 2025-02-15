@@ -1,52 +1,45 @@
 <template>
-  <div class="relative w-full overflow-hidden">
-    <!-- Se usan bindings para las propiedades que no sean strings -->
-    <swiper-container
-      v-if="items.length > 0"
-      ref="swiperEl"
-      :loop="true"
-      :speed="2000"
-      :autoplay="{
-        delay: 0,
-        disableOnInteraction: false,
-      }"
-      slides-per-view="auto"
-      spaceBetween="10"
-      :allow-touch-move="false"
-      class="mySwiper"
-    >
-      <swiper-slide v-for="(item, index) in items" :key="index">
-        <router-link :to="`/brand/${item.id}`">
-          <img
-            :src="item.icon"
-            class="w-[90px] h-[90px] mx-[10px]"
-            alt="Icono"
-          />
-        </router-link>
-      </swiper-slide>
-    </swiper-container>
+  <div class="marquee">
+    <div class="marquee__inner">
+      <!-- Primera copia de la lista -->
+      <router-link
+        v-for="(item, index) in items"
+        :key="'original-' + index"
+        :to="`/brand/${item.id}`"
+        class="marquee-item"
+      >
+        <img :src="item.icon" alt="Icono" />
+      </router-link>
+      <!-- Segunda copia para lograr el efecto continuo -->
+      <router-link
+        v-for="(item, index) in items"
+        :key="'duplicate-' + index"
+        :to="`/brand/${item.id}`"
+        class="marquee-item"
+      >
+        <img :src="item.icon" alt="Icono" />
+      </router-link>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue";
-
+import { ref, onMounted } from "vue";
 import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
 import { Pagination } from "@/utils/entities/Pagination";
 
 const items = ref([]);
-const swiperEl = ref(null);
 const service = useBrandService();
 
 onMounted(async () => {
   const data = await service.getAll([], new Pagination(0, 100), []);
   if (data) {
-    // Calcula cuántos iconos se necesitan para cubrir la pantalla (90px + 20px de margen)
+    // Se asume que cada icono ocupa 90px de ancho + 20px de margen = 110px
     const iconWidth = 110;
     const requiredCount = Math.ceil(window.innerWidth / iconWidth) + 2;
     let finalData = [];
-
-    if (data.length < requiredCount * 2) {
+    // Si la cantidad de datos es insuficiente para cubrir el ancho, se replica la lista.
+    if (data.length < requiredCount) {
       while (finalData.length < requiredCount) {
         finalData.push(...data);
       }
@@ -56,18 +49,52 @@ onMounted(async () => {
     }
     items.value = finalData;
   }
-  await nextTick();
-  console.log(swiperEl.value.swiper);
 });
 </script>
 
 <style scoped>
-.mySwiper {
-  /* Agrega estilos adicionales si lo requieres */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
 }
 
-/* Asegura que cada slide se dimensione de forma automática */
-swiper-slide {
-  width: auto !important;
+/* Usamos inline-block y white-space: nowrap para evitar espacios adicionales */
+.marquee__inner {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 30s linear infinite;
+  font-size: 0; /* Elimina espacios en blanco entre inline-blocks */
+}
+
+.marquee-item {
+  display: inline-block;
+  margin: 0 10px;
+  font-size: initial; /* Restaura el tamaño de fuente para el contenido */
+}
+
+.marquee-item img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+}
+
+/* Vista móvil: iconos a la mitad de su tamaño */
+@media (max-width: 575px) {
+  .marquee-item img {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+/* La animación mueve el contenedor desde 0 hasta -50% de su ancho total, 
+   es decir, el ancho de una copia completa, lo que permite un loop sin espacios */
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 </style>

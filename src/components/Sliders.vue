@@ -1,13 +1,14 @@
 <template>
+  <div ref="container" class="h-20" v-if="!onscreen" />
+
   <div
     class="transition-all duration-1000 ease-in-out"
-    ref="container"
     :class="{
       'translate-y-full opacity-0': !onscreen,
       'translate-y-0 opacity-100': onscreen,
     }"
   >
-    <slot name="header"> </slot>
+    <slot name="header"></slot>
 
     <!-- Carrusel de carga con Skeleton (mientras loading es true) -->
     <swiper-container
@@ -18,53 +19,54 @@
         disableOnInteraction: false,
         pauseOnMouseEnter: false,
       }"
-      slides-per-view="auto"
-      :breakpoints="skeletonBreakpoints"
-      space-between="10"
+      :breakpoints="breakpoints"
       :pagination="{
         clickable: true,
         dynamicBullets: true,
       }"
       :navigation="true"
-      class="min-h-80 w-full max-w-screen"
+      class="min-h-80 w-full"
     >
       <swiper-slide v-for="(item, index) in skeletonItems" :key="index">
-        <div class="relative w-80 h-[26rem]">
+        <div class="relative w-full h-[26rem]">
           <Skeleton class="!h-80" />
         </div>
       </swiper-slide>
-      <!-- Botones de navegación y paginación para el carrusel de carga -->
-      <swiper-button-prev slot="button-prev"></swiper-button-prev>
-      <swiper-button-next slot="button-next"></swiper-button-next>
-      <swiper-pagination slot="pagination"></swiper-pagination>
     </swiper-container>
 
     <!-- Carrusel de promociones (cuando loading es false) -->
     <swiper-container
-      v-if="!loading"
+      v-else
       :loop="true"
       :autoplay="{
-        delay: promotions.length > 3 ? 2000 : 10000,
+        delay: promotions.length > 3 ? 3000 : 10000,
         disableOnInteraction: false,
         pauseOnMouseEnter: false,
       }"
-      :breakpoints="promotionBreakpoints"
-      space-between="10"
+      :breakpoints="breakpoints"
       :pagination="{
         clickable: true,
         dynamicBullets: true,
       }"
       :navigation="true"
-      class="w-full max-w-screen"
+      class="w-full"
     >
       <swiper-slide v-for="(promotion, index) in promotions" :key="index">
-        <div class="relative w-80 h-[26rem]">
-          <slot name="item" :item="promotion"> </slot>
+        <div class="w-full">
+          <slot name="item" :item="promotion"></slot>
         </div>
       </swiper-slide>
-      <!-- Botones de navegación y paginación para el carrusel de promociones -->
-      <swiper-button-prev slot="button-prev"></swiper-button-prev>
-      <swiper-button-next slot="button-next"></swiper-button-next>
+
+      <!-- Botones de navegación y paginación -->
+      <swiper-button-prev class="custom-prev">
+        <template #button-prev>
+          <i class="fas fa-chevron-left"></i>
+          a
+        </template>
+      </swiper-button-prev>
+      <swiper-button-next slot="button-next" class="custom-next">
+        <i class="fas fa-chevron-right"></i>
+      </swiper-button-next>
       <swiper-pagination slot="pagination"></swiper-pagination>
     </swiper-container>
   </div>
@@ -72,11 +74,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { Pagination } from "@/utils/entities/Pagination";
 import Skeleton from "primevue/skeleton";
 import { ListerService } from "@/utils/service/TableService";
+import { Pagination } from "@/utils/entities/Pagination";
 import type { Sorter } from "@/utils/entities/Sorters";
 import { Filter } from "@/utils/entities/Filter";
+
 const loading = ref(true);
 const onscreen = ref(false);
 const container = ref<HTMLElement | null>(null);
@@ -87,25 +90,31 @@ const props = defineProps<{
   orders: Sorter[];
 }>();
 
-const service = props.service;
-
-// Variable para almacenar las promociones
+// Array donde se almacenan las promociones
 const promotions = ref<any[]>([]);
 
+// Array estático para los Skeleton items
+const skeletonItems = [1, 2, 3, 4, 5, 6];
+
 onMounted(async () => {
-  // Usa IntersectionObserver para detectar cuando el contenedor está en pantalla
-  const observer = new IntersectionObserver(() => (onscreen.value = true), {
-    root: null, // viewport completo
-    threshold: 0.8,
-  });
+  // IntersectionObserver para activar la animación cuando el contenedor entra en pantalla
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        onscreen.value = true;
+        observer.disconnect();
+      }
+    },
+    { threshold: 0.9 },
+  );
   if (container.value) {
     observer.observe(container.value);
   }
 
   // Llamada al servicio para obtener las promociones
   loading.value = true;
-  const resp = await service.getAll(
-    [...props.filters], // Filtros si fueran necesarios
+  const resp = await props.service.getAll(
+    [...props.filters],
     new Pagination(0, 10),
     [...props.orders],
   );
@@ -115,27 +124,32 @@ onMounted(async () => {
   }
 });
 
-// Define los breakpoints para el carrusel de promociones (y el de Skeleton, usamos los mismos)
-const promotionBreakpoints = {
-  576: { slidesPerView: 1, spaceBetween: 10 },
-  768: { slidesPerView: 2, spaceBetween: 10 },
-  1000: { slidesPerView: 3, spaceBetween: 10 },
-  1400: { slidesPerView: 5, spaceBetween: 10 },
-  1600: { slidesPerView: 6, spaceBetween: 10 },
-  2000: { slidesPerView: 6, spaceBetween: 10 },
+// Breakpoints para el slider:
+const breakpoints = {
+  0: { slidesPerView: 1, spaceBetween: 0 }, // Móvil: 1 slide (100% del contenedor)
+  859: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1050: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1200: { slidesPerView: 3, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1500: { slidesPerView: 4, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  2000: { slidesPerView: 5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
 };
-const skeletonBreakpoints = promotionBreakpoints;
-
-// Para el carrusel de Skeleton usamos un array estático de 6 elementos
-const skeletonItems = [1, 2, 3, 4, 5, 6];
 </script>
 
 <style scoped>
-/* Estilos personalizados para Swiper Element */
+/* Aseguramos que el contenedor de Swiper ocupe el 100% del ancho */
 swiper-container {
   width: 100%;
 }
+
+/* Eliminamos el width forzado en cada slide para que Swiper lo calcule */
 swiper-slide {
-  width: auto !important;
+  /* Sin reglas forzadas de ancho */
+}
+
+/* Para móviles, forzamos que cada slide tenga el 100% del ancho */
+@media (max-width: 575px) {
+  swiper-slide {
+    width: 100% !important;
+  }
 }
 </style>

@@ -29,7 +29,7 @@
       </template>
 
       <template #item="{ item }">
-        <ProductItem class="w-32" :product="item" />
+        <ProductItem class="!w-80 !mx-auto !h-[26rem]" :product="item" />
       </template>
     </Sliders>
     <div class="overflow-hidden w-full h-[50dvh] my-12">
@@ -68,7 +68,7 @@
       </template>
 
       <template #item="{ item }">
-        <ProductItem class="w-32" :product="item" />
+        <ProductItem class="!w-80 !mx-auto !h-[26rem]" :product="item" />
       </template>
     </Sliders>
     <MainCategories />
