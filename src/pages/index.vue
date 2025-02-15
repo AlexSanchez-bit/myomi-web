@@ -33,7 +33,7 @@
       </template>
     </Sliders>
     <div class="overflow-hidden w-full h-[50dvh] my-12">
-      <Img :src="promotionalImage" imageClass="w-full h-full object-cover" />
+      <Img :src="promotionalImage" imageClass="w-full h-[50dvh] object-cover" />
     </div>
     <Sliders
       class="my-3"
