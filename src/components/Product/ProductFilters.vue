@@ -10,6 +10,7 @@ import InputText from "primevue/inputtext";
 import { useCategoryService } from "@/composables/Shop/Category/useCategoryService";
 import { useMaterialService } from "@/composables/Shop/Material/useMaterialService";
 import { Pagination } from "@/utils/entities/Pagination";
+import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
 
 type SortOption = {
   label: string;
@@ -18,8 +19,15 @@ type SortOption = {
 
 const materialService = useMaterialService();
 const classService = useCategoryService();
+const brandService = useBrandService();
 onMounted(async () => {
   availableMaterials.value = await materialService.getAll(
+    [],
+    new Pagination(0, 100),
+    [],
+  );
+
+  availableBrands.value = await brandService.getAll(
     [],
     new Pagination(0, 100),
     [],
@@ -36,6 +44,7 @@ const props = defineProps<{
 }>();
 const availableMaterials = ref<string[]>([]);
 const availableClasses = ref<string[]>([]);
+const availableBrands = ref<string[]>([]);
 
 const emit = defineEmits<{
   (e: "update:filters", value: Filters): void;
@@ -129,6 +138,21 @@ const handleFilterUpdate = (field: keyof Filters, value: any) => {
                 v-model="filters.materials"
                 @update:modelValue="(v) => handleFilterUpdate('materials', v)"
                 :options="availableMaterials"
+                display="chip"
+                class="w-full"
+                optionLabel="name"
+                optionValue="id"
+              />
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">{{
+                $t("brands")
+              }}</label>
+              <MultiSelect
+                v-model="filters.brands"
+                @update:modelValue="(v) => handleFilterUpdate('brands', v)"
+                :options="availableBrands"
                 display="chip"
                 class="w-full"
                 optionLabel="name"
@@ -242,6 +266,21 @@ const handleFilterUpdate = (field: keyof Filters, value: any) => {
             v-model="filters.materials"
             @update:modelValue="(v) => handleFilterUpdate('materials', v)"
             :options="availableMaterials"
+            display="chip"
+            class="w-full"
+            optionLabel="name"
+            optionValue="id"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">{{
+            $t("brands")
+          }}</label>
+          <MultiSelect
+            v-model="filters.brands"
+            @update:modelValue="(v) => handleFilterUpdate('brands', v)"
+            :options="availableBrands"
             display="chip"
             class="w-full"
             optionLabel="name"

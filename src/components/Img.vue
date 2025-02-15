@@ -14,7 +14,7 @@
       v-show="!loading && src != ''"
     />
     <Skeleton
-      v-if="loading || src == ''"
+      v-if="loading || src === ''"
       class="absolute top-0 left-0 w-full !h-full"
     />
   </div>

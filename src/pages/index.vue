@@ -22,7 +22,7 @@
         <p
           class="underline text-center mb-6 text-zinc-800 decoration-black mt-4 cursor-pointer uppercase"
         >
-          <router-link to="/category">
+          <router-link to="/product">
             {{ $t("see_all") }}
           </router-link>
         </p>
@@ -41,7 +41,7 @@
       :filters="[
         {
           field: 'created_at',
-          matchMode: 'DATE_AFTER',
+          matchMode: date_after,
           value: threeDaysAgo(),
         },
       ]"
@@ -89,6 +89,9 @@ import Sliders from "@/components/Sliders.vue";
 const service = useProductService();
 
 const gcService = useGeneralConfigService();
+import { FilterMatchMode } from "@primevue/core/api";
+
+const date_after = FilterMatchMode.DATE_AFTER;
 
 const carousellImages = ref([]);
 const promotionalImage = ref("");
@@ -105,7 +108,7 @@ function threeDaysAgo() {
   const threeDaysAgo = new Date(today);
 
   // Resta tres días a la fecha actual
-  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  threeDaysAgo.setMonth((today.getMonth() - 1) % 12);
 
   return threeDaysAgo;
 }

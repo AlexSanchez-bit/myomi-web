@@ -4,4 +4,9 @@ export const productRoutes = [
     name: "product.details",
     component: () => import("@/pages/product/[id].vue"),
   },
+  {
+    path: "product",
+    name: "products",
+    component: () => import("@/pages/product.vue"),
+  },
 ];

@@ -145,6 +145,12 @@ function updateFilters(filters: Filters) {
       matchMode: FilterMatchMode.IN,
       condition: !!filters.materials?.length,
     },
+    {
+      field: "brand",
+      value: filters.brands,
+      matchMode: FilterMatchMode.IN,
+      condition: !!filters.brands?.length,
+    },
   ];
 
   filterConfig.forEach((config) => {

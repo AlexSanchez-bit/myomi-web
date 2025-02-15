@@ -1,13 +1,13 @@
 <template>
   <div class="flex flex-col gap-2 items-center py-3 md:px-20 px-6 mb-4">
     <h6
-      class="text-4xl my-6 uppercase decoration-black text-black"
+      class="text-4xl my-6 uppercase text-center decoration-black text-black"
       ref="container"
     >
       {{ $t("all_categories") }}
     </h6>
     <div
-      class="transition-all duration-1000 ease-in-outflex flex flex-wrap gap-3 items-center"
+      class="transition-all duration-1000 ease-in-outflex flex flex-wrap gap-3 justify-center items-center"
       :class="{
         '-translate-y-full opacity-0': !onscreen,
         'translate-y-0 opacity-100': onscreen,

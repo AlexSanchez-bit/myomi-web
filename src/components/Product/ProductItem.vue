@@ -10,7 +10,8 @@
             product?.images.length > 0 ? product?.images[0] : '/noimage.webp'
           "
           :alt="product?.name"
-          class="rounded object-cover mx-auto h-60 w-full"
+          class="w-full"
+          imageClass="w-full h-60 object-cover"
         >
         </Img>
         <!-- Badge posicionado en la esquina superior izquierda si el producto es reciente -->
