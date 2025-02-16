@@ -150,7 +150,7 @@
                 <router-link
                   :to="{
                     name: 'material.details',
-                    params: { is: material.id },
+                    params: { id: material.id },
                   }"
                 >
                   {{ material.name }}
