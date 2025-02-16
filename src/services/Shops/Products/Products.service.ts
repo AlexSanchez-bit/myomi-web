@@ -25,7 +25,8 @@ export class ProductsService extends ListerService<IProduct> {
       "stock",
       "images",
       "short_description",
-      "product_category!left(*)",
+      "product_category!inner(category_id)",
+      "product_materials!inner(material_id)",
     ]);
   }
 
@@ -41,7 +42,7 @@ export class ProductsService extends ListerService<IProduct> {
     const { data, error } = await supabase
       .from(this.tablename)
       .select(
-        "*, categories:product_category (category_id),materials:product_materials (material_id)",
+        "*, categories:product_category(category_id),materials:product_materials (material_id)",
       )
       .eq("id", id)
       .single();

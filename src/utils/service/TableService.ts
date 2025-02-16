@@ -4,6 +4,7 @@ import { supabase } from "@/setup";
 import { Sorter } from "../entities/Sorters";
 import { FilterMatchMode } from "@primevue/core/api";
 import moment from "moment-timezone";
+import { useToastStorage } from "@/stores/ToasterStorage";
 
 export abstract class ListerService<T> {
   public data!: T[];
@@ -98,16 +99,17 @@ export abstract class ListerService<T> {
     let { data, count, error } = await query;
 
     if (error) {
-      // this.notify.notify("error", "Ocurrio un error", error.message, 4000);
-      const keys: any = {} as any;
-      for (let field in this.search_fields) {
-        keys[field] = null as any;
-      }
+      useToastStorage().notify(
+        "error",
+        "Ocurrio un error",
+        error.message,
+        4000,
+      );
 
-      data = [keys];
+      data = [];
     }
 
-    return { totalCount: count ?? data.length, data };
+    return { totalCount: count ?? (data ?? []).length, data };
   }
 
   public async getCount(
@@ -117,23 +119,55 @@ export abstract class ListerService<T> {
 
     query = this.applyFilters(query, filters);
 
-    let { data, error } = await query;
+    let { data, count, error } = await query;
 
     if (error) {
       // this.notify.notify("error", "Ocurrio un error", error.message, 5000);
       return { totalCount: 0 };
     }
 
-    return { totalCount: data![0].count };
+    return { totalCount: count };
   }
 
   private applyFilters(query: any, filters: Filter<any>[]) {
     for (let filter of filters) {
+      if (filter.matchMode === "CUSTOM_SUBQUERY") {
+        // Aquí usamos el método "filter" para ejecutar la subconsulta
+        query = query.filter(filter.field, "in", filter.value);
+        continue; // saltamos al siguiente filtro
+      }
+
       if (filter.matchMode == "IS") {
         query = query.is(filter.field, filter.value);
+        continue;
       }
       if (filter.matchMode == "ISNOT") {
         query = query.not.is(filter.field, filter.value);
+        continue;
+      }
+      if (filter.matchMode === "OR") {
+        const [filter1, filter2] = filter.value as [
+          Filter | null,
+          Filter | null,
+        ];
+        const conditions: string[] = [];
+
+        if (filter1 && filter1.value != null) {
+          conditions.push(
+            `${filter1.field}.${filter1.matchMode.toLowerCase()}.${JSON.stringify(filter1.value)}`,
+          );
+        }
+        if (filter2 && filter2.value != null) {
+          conditions.push(
+            `${filter2.field}.${filter2.matchMode.toLowerCase()}.${JSON.stringify(filter2.value)}`,
+          );
+        }
+
+        if (conditions.length > 0) {
+          // .or() espera una única cadena con las condiciones separadas por comas
+          query = query.or(conditions.join(" OR "));
+        }
+        continue;
       }
       if (filter.value != null) {
         let field = filter.field;

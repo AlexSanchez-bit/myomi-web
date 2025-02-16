@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import Button from "primevue/button";
 import Drawer from "primevue/drawer";
-import { Filters } from "./Filters";
+import { type Filters } from "./Filters";
 import Select from "primevue/select";
 import MultiSelect from "primevue/multiselect";
 import InputNumber from "primevue/inputnumber";
@@ -41,6 +41,7 @@ onMounted(async () => {
 
 const props = defineProps<{
   filters: Filters;
+  default_filter: Filter;
 }>();
 const availableMaterials = ref<string[]>([]);
 const availableClasses = ref<string[]>([]);
@@ -62,7 +63,139 @@ const sortOptions = ref<SortOption[]>([
 
 const handleFilterUpdate = (field: keyof Filters, value: any) => {
   const newFilters = { ...props.filters, [field]: value };
+  updateFilters(newFilters);
   emit("update:filters", newFilters);
+};
+
+//filtering
+import { FilterMatchMode } from "@primevue/core/api";
+import { useProductService } from "@/composables/Shop/Product/useProductService";
+import type { IGenericLister } from "@/utils/entities/IGenericLister";
+import type { IProduct } from "@/services/Shops/Products/Products.service";
+import LazyLoadScroll from "@/components/LazyLoadScroll.vue";
+import type { IResponseModel } from "@/utils/entities/ResponseModel";
+import type { IListResponse } from "@/utils/entities/IListResponse";
+import { Skeleton } from "primevue";
+import ProductItem from "@/components/Product/ProductItem.vue";
+import { Filter } from "@/utils/entities/Filter";
+import type { Sorter } from "@/utils/entities/Sorters";
+
+const filter_array = ref<Filter[]>([]);
+const lazyScroll = ref<any>();
+const sort = ref<Sorter[]>([]);
+
+const lastTimeout = ref<any>(-1);
+
+const reloadProducts = () => {
+  if (lastTimeout) {
+    clearTimeout(lastTimeout.value);
+  }
+  lastTimeout.value = setTimeout(() => {
+    lazyScroll.value.apply_filters();
+  }, 500);
+};
+
+function updateSort(_sort: string | null) {
+  if (!_sort) {
+    sort.value = [];
+  } else {
+    if (_sort == "recent") {
+      sort.value = [{ field: "created_at", order: 1 }];
+    }
+    if (_sort == "price_asc") {
+      sort.value = [{ field: "price", order: 1 }];
+    }
+    if (_sort == "price_desc") {
+      sort.value = [{ field: "price", order: -1 }];
+    }
+  }
+  reloadProducts();
+}
+
+function updateFilters(filters: Filters) {
+  const filterConfig = [
+    {
+      field: "name",
+      value: filters.name,
+      matchMode: FilterMatchMode.CONTAINS,
+      condition: !!filters.name?.trim(),
+    },
+    {
+      field: "price",
+      value: filters.minPrice,
+      matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO,
+      condition: filters.minPrice !== null && filters.minPrice !== undefined,
+    },
+    {
+      field: "price",
+      value: filters.maxPrice,
+      matchMode: FilterMatchMode.LESS_THAN_OR_EQUAL_TO,
+      condition: filters.maxPrice !== null && filters.maxPrice !== undefined,
+    },
+    {
+      field: "product_category.category_id",
+      value: filters.classes,
+      matchMode: FilterMatchMode.IN,
+      condition: !!filters.classes?.length,
+    },
+    {
+      field: "product_materials.material_id",
+      value: filters.materials,
+      matchMode: FilterMatchMode.IN,
+      condition: !!filters.materials?.length,
+    },
+    {
+      field: "brand",
+      value: filters.brands,
+      matchMode: FilterMatchMode.IN,
+      condition: !!filters.brands?.length,
+    },
+  ];
+
+  filterConfig.forEach((config) => {
+    const existingIndex = filter_array.value.findIndex(
+      (e) => e.field === config.field && e.matchMode === config.matchMode,
+    );
+
+    if (config.condition) {
+      const newEntry = {
+        field: config.field,
+        value: config.value,
+        matchMode: config.matchMode,
+      };
+
+      if (existingIndex >= 0) {
+        filter_array.value[existingIndex] = newEntry;
+      } else {
+        filter_array.value.push(newEntry);
+      }
+    } else if (existingIndex >= 0) {
+      filter_array.value.splice(existingIndex, 1);
+    }
+  });
+  reloadProducts();
+}
+
+const product_service = useProductService();
+
+const lazyLister: IGenericLister<IProduct> = {
+  GetAll: async (page: number, limit: number, filter: any) => {
+    const resp = await product_service.getAllTotalCount(
+      [props.default_filter, ...filter_array.value].filter(
+        (e) => e != null && e.value != null,
+      ),
+      new Pagination(page, limit),
+      [...sort.value],
+    );
+
+    return {
+      data: {
+        items: resp.data,
+        totalPages: Math.floor(resp.totalCount / limit),
+      },
+      error: resp == null ? {} : null,
+    } as IResponseModel<IListResponse<IProduct>>;
+  },
 };
 </script>
 
@@ -72,7 +205,7 @@ const handleFilterUpdate = (field: keyof Filters, value: any) => {
 
     <!-- Desktop Filters -->
     <div class="flex flex-row gap-1 justify-start">
-      <div class="hidden lg:block w-1/4 h-full sticky top-16">
+      <div class="hidden lg:block w-1/4 h-full sticky top-32">
         <div class="p-3">
           <div class="p-4 shadow-sm">
             <h3 class="text-lg font-semibold mb-4">{{ $t("filters") }}</h3>
@@ -169,8 +302,8 @@ const handleFilterUpdate = (field: keyof Filters, value: any) => {
           <div class="lg:hidden">
             <Button
               icon="pi pi-filter"
-              label="Filtros"
-              class="w-full"
+              :label="$t('filters')"
+              class="w-full !bg-lime-50 !text-black !border-none"
               @click="isFilterPanelOpen = true"
             />
           </div>
@@ -184,11 +317,26 @@ const handleFilterUpdate = (field: keyof Filters, value: any) => {
             selectionMode="checkbox"
             placeholder="Orden"
             class="md:w-80"
-            @update:modelValue="(v) => emit('update:sort', v)"
+            @update:modelValue="(v) => updateSort(v)"
           />
         </div>
         <div class="p-2">
-          <slot></slot>
+          <div>
+            <slot></slot>
+            <LazyLoadScroll
+              ref="lazyScroll"
+              :service="lazyLister"
+              :filter="{}"
+              display-class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-2"
+            >
+              <template #item="{ item }">
+                <ProductItem :product="item" />
+              </template>
+              <template #skeletons>
+                <Skeleton class="w-full md:w-1/3 lg:w-1/4 xl:w-1/5 !h-80" />
+              </template>
+            </LazyLoadScroll>
+          </div>
         </div>
       </div>
     </div>
@@ -291,3 +439,9 @@ const handleFilterUpdate = (field: keyof Filters, value: any) => {
     </div>
   </Drawer>
 </template>
+
+<style scoped>
+:deep(.p-select-option.p-select-option-selected.p-focus) {
+  @apply !bg-lime-50 !text-black !border-none;
+}
+</style>

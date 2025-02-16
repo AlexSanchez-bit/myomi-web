@@ -80,9 +80,9 @@ import BrandsCarousell from "@/components/Brands/BrandsCarousell.vue";
 import MainCategories from "@/components/Categories/MainCategories.vue";
 import FirstSlide from "@/components/FirstSlide.vue";
 import { useGeneralConfigService } from "@/composables/GeneralConfigs/useGeneralConfigService";
-import { Pagination } from "@/utils/entities/Pagination";
 import { onMounted, ref } from "vue";
 
+import { Pagination } from "@/utils/entities/Pagination";
 import { useProductService } from "@/composables/Shop/Product/useProductService";
 import ProductItem from "@/components/Product/ProductItem.vue";
 import Sliders from "@/components/Sliders.vue";

@@ -14,7 +14,7 @@
   "price_desc": "Precio más bajo",
   "who_we_are": "¿Quiénes Somos?",
   "slogan": "Myomi cuida tu piel",
-  "recently_added": "Recientemente agregado",
+  "recently_added": "Lo más nuevo",
   "add_to_cart": "Añadir al carrito",
   "show_more": "Ver más",
   "show_less": "Ver menos",
@@ -22,5 +22,8 @@
   "product_successfully_added": "El producto ha sido agregado al carrito",
   "brands": "Marcas",
   "found_your_favorite_product": "Tu producto favorito aquí...",
-  "see_all": "Ver todos"
+  "see_all": "Ver todos",
+  "see_more": "Ver más",
+  "nothing_to_show": "No hay nada que mostrar",
+  "related_products": "Productos Relacionados"
 }

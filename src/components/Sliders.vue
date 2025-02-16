@@ -130,7 +130,8 @@ const breakpoints = {
   859: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
   1050: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
   1200: { slidesPerView: 3, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-  1500: { slidesPerView: 4, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1400: { slidesPerView: 3.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1700: { slidesPerView: 4.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
   2000: { slidesPerView: 5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
 };
 </script>

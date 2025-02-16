@@ -2,6 +2,12 @@ import { supabase } from "@/setup";
 import { useToastStorage } from "@/stores/ToasterStorage";
 import { ListerService } from "@/utils/service/TableService";
 
+export interface IMaterial {
+  id?: number;
+  description?: string;
+  name: string;
+}
+
 export class MaterialService extends ListerService<any> {
   notify: any;
   constructor() {

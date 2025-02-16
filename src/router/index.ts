@@ -59,6 +59,11 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach((to, from) => {
   const { disable } = useSplashStore();
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "smooth",
+  });
   disable();
 });
 
