@@ -1,7 +1,7 @@
 <template>
   <div class="relative flex items-center justify-center">
     <img
-      :src="src ?? '/noimage.webp'"
+      :src="src"
       :alt="alt"
       @load="() => (loading = false)"
       @error="
@@ -13,10 +13,7 @@
       :class="imageClass ?? 'w-full h-full object-contain'"
       v-show="!loading && src != ''"
     />
-    <Skeleton
-      v-if="loading || src === ''"
-      class="absolute top-0 left-0 w-full !h-full"
-    />
+    <Skeleton v-if="loading" class="absolute top-0 left-0 w-full !h-full" />
   </div>
 </template>
 

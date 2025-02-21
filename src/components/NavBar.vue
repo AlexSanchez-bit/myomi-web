@@ -22,10 +22,9 @@
       </span>
 
       <div class="flex-row items-center gap-3 sm:!text-xl flex">
-        <i
-          class="pi-search sm:!hidden pi scale-[150%] cursor-pointer"
-          style="font-size: 0.8rem"
-        ></i>
+        <span class="w-full flex-1 px-3 md:hidden">
+          <SearchBar />
+        </span>
         <LanguageSelector class="brightness-200 mb-0" />
         <CurrencySelector />
         <router-link :to="{ name: 'cart' }">

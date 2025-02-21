@@ -3,25 +3,24 @@
     class="border rounded w-full p-2 h-full flex flex-col justify-between relative pb-3"
   >
     <!-- Imagen y badge -->
-    <router-link :to="{ name: 'product.details', params: { id: product?.id } }">
-      <picture class="relative w-full cursor-pointer overflow-hidden">
-        <Img
-          :src="
-            product?.images.length > 0 ? product?.images[0] : '/noimage.webp'
-          "
-          :alt="product?.name"
-          class="w-full"
-          imageClass="w-full h-60 object-cover"
-        >
-        </Img>
-        <!-- Badge posicionado en la esquina superior izquierda si el producto es reciente -->
-        <Badge
-          v-if="isRecent"
-          :value="$t('recently_added')"
-          severity="success"
-          class="absolute top-2 left-2"
-        />
-      </picture>
+    <router-link
+      :to="{ name: 'product.details', params: { id: product?.id } }"
+      class="h-60"
+    >
+      <Img
+        :src="product?.images.length > 0 ? product?.images[0] : '/noimage.webp'"
+        :alt="product?.name"
+        class="w-full"
+        imageClass="w-full h-60 object-cover"
+      >
+      </Img>
+      <!-- Badge posicionado en la esquina superior izquierda si el producto es reciente -->
+      <Badge
+        v-if="isRecent"
+        :value="$t('recently_added')"
+        severity="success"
+        class="absolute top-2 left-2"
+      />
     </router-link>
 
     <!-- Información del producto -->
