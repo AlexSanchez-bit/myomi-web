@@ -2,7 +2,7 @@ import { CartService } from "@/services/Cart/Cart.service";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useToastStorage } from "./ToasterStorage";
-import { useI18n } from "vue-i18n";
+import { i18n } from "@/setup";
 
 export const useCartStore = defineStore("cart-store", () => {
   const cartService = new CartService();
@@ -12,7 +12,7 @@ export const useCartStore = defineStore("cart-store", () => {
   const cart_id = ref("");
 
   const getMyCart = async () => {
-    const { t } = useI18n();
+    const t = i18n.global.t;
     loading.value = true;
 
     const { data, error } = await cartService.getMyCart();
@@ -30,7 +30,6 @@ export const useCartStore = defineStore("cart-store", () => {
       } else {
         cart_id.value = cart_data.id;
       }
-      console.log(data);
       return { data: cart_data, error: cart_error };
     }
 

@@ -1,74 +1,59 @@
-import { TableService } from "@/utils/service/TableService";
 import { supabase } from "@/setup";
+import { ListerService } from "@/utils/service/TableService";
+import { type ILocation } from "@/services/Location/LocationService";
 
-export class UserService extends TableService<any> {
+export interface IUser {
+  id: string;
+  email: string;
+  phone_number: string;
+  profile_picture: string;
+  name: string;
+  last_name: string;
+  created_at: string;
+}
+
+export interface IContact {
+  id?: number;
+  name: string;
+  phone_number: string;
+  address: string;
+  municipality: ILocation;
+}
+
+export class UserService extends ListerService<IUser> {
   constructor() {
     super("user", [
       "id,email,phone_number,profile_picture",
-      "name",
+      "name,last_name",
       "created_at",
     ]);
   }
 
-  async getUserData(id: string) {
-    const { data, error } = await supabase
-      .from(this.tablename)
-      .select()
-      .eq("id", id)
-      .single();
-    if (error) {
-      this.notify.notify("error", "", error.message, 3000);
-    }
-    return { data, error };
+  async updateUser(user_id, newData: IUser) {
+    return await supabase.from("user").update(newData).eq("id", user_id);
   }
 
-  async createUser(
-    name: string,
-    last_name: string,
-    email: string,
-    phone_number: string,
-    password: string,
-    profile_picture: string,
-  ) {
-    const { data, error } = await supabase.functions.invoke("create_user", {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-        name,
-        last_name,
-        phone_number,
-        profile_picture,
-      }),
-    });
-
-    if (error) {
-      this.notify.notify("error", "", error.message, 3000);
-    }
-    return data;
+  async getContacts(user_id) {
+    console.log(user_id);
+    return await supabase
+      .from("contact")
+      .select("*,municipality:location!inner(*)")
+      .eq("owner_id", user_id);
   }
 
-  async updateUser(
-    id: string,
-    name: string,
-    email: string,
-    last_name?: string,
-    phone?: string,
-    profile_picture?: string,
-  ) {
-    const { error } = await supabase
-      .from(this.tablename)
-      .update({ name, email, phone_number: phone, profile_picture, last_name })
-      .eq("id", id);
-
-    if (error) {
-      this.notify.notify("error", "", error.message, 3000);
-    }
-
-    return error;
+  async createContact(newData: IContact) {
+    const save = newData as any;
+    save.municipality = newData.municipality.id;
+    return await supabase.from("contact").insert(save);
   }
 
-  async deleteUser(id: string) {
-    return await supabase.from("user").delete().eq("id", id);
+  async updateContact(contact_id, newData: IContact) {
+    const save = newData as any;
+    save.municipality = newData.municipality.id;
+    return await supabase.from("contact").update(save).eq("id", contact_id);
+  }
+
+  async removeContact(contact_id) {
+    return await supabase.from("contact").delete().eq("id", contact_id);
   }
 }

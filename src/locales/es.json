@@ -39,5 +39,20 @@
   "login_yourself": "Inicia sesión",
   "Error al registrar en Supabase Auth: A user with this email address has already been registered": "Un usuario con ese correo ya existe",
   "Invalid login credentials": "Usuario o contraseña incorrectos",
-  "login": "Iniciar sesión"
+  "login": "Iniciar sesión",
+  "anonymous_profile_letter": "Por favor, crea una cuenta o inicia sesión para contar con un perfil.",
+  "phone": "Número de teléfono",
+  "edit_profile": "Editar perfil",
+  "logout": "Cerrar sesión",
+  "add_contact": "Añadir contacto",
+  "contacts": "Gestión de contactos",
+  "no_contacts": "No hay contactos.",
+  "address": "Dirección",
+  "municipality": "Municipio",
+  "save": "Guardar",
+  "cancel": "Cancelar",
+  "contact": "Contacto",
+  "field_required": "Campo requerido",
+  "confirm_delete_contact": "Confirmar eliminación",
+  "confirm": "Confirmar"
 }

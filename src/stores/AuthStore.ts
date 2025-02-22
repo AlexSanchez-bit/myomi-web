@@ -55,6 +55,8 @@ export const useAuthStore = defineStore("authStore", {
       this._authenticated = true;
       this._userData = data;
       this._anonymous = data.is_anonymous;
+      const { getMyCart } = useCartStore();
+      getMyCart();
     },
     async logout() {
       const { notify } = useToastStorage();
@@ -65,7 +67,12 @@ export const useAuthStore = defineStore("authStore", {
         localStorage.clear();
         this._authenticated = false;
         this._userData = null;
-        router.push("login");
+        this._anonymous = true;
+        const { data, error } = await supabase.auth.signInAnonymously();
+        if (!error) {
+          this.autenticate(data.user);
+        }
+        router.push("/");
       }
     },
     async login(email: string, password: string) {
@@ -84,8 +91,6 @@ export const useAuthStore = defineStore("authStore", {
         this.autenticate(data);
       }
 
-      const { getMyCart } = useCartStore();
-      getMyCart();
       return { data, error };
     },
     async register(

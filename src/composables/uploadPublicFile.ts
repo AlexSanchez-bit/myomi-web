@@ -25,13 +25,10 @@ export default async function uploadPublicFile(file: File) {
     return null;
   }
 
-  console.log("Archivo subido correctamente:", data);
-
   // Generar la URL pública del archivo (si es necesario)
   const { data: fdata } = supabase.storage
     .from(bucketName)
     .getPublicUrl(filePath);
-  console.log("URL pública:", fdata.publicUrl);
 
   return fdata.publicUrl;
 }
