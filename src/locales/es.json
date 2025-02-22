@@ -26,5 +26,18 @@
   "see_more": "Ver más",
   "nothing_to_show": "No hay nada que mostrar",
   "related_products": "Productos Relacionados",
-  "products": "Productos"
+  "products": "Productos",
+  "email": "Correo",
+  "password": "Contraseña",
+  "confirm_password": "Confirmar contraseña",
+  "phone_number": "Número de teléfono",
+  "Register": "Registrarse",
+  "Registered successfully": "Registrado exitosamente",
+  "already_have_an_account": "¿Ya tienes una cuenta?",
+  "not_have_an_account": "¿Aún no tienes una cuenta?",
+  "register_yourself": "Regístrate",
+  "login_yourself": "Inicia sesión",
+  "Error al registrar en Supabase Auth: A user with this email address has already been registered": "Un usuario con ese correo ya existe",
+  "Invalid login credentials": "Usuario o contraseña incorrectos",
+  "login": "Iniciar sesión"
 }

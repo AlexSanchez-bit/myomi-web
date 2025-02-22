@@ -5,6 +5,7 @@ import DefaultLayout from "@/layouts/default.vue";
 import { materialRoutes } from "./modules/material";
 import { brandRoutes } from "./modules/brand";
 import { cartRoutes } from "./modules/shop/cart";
+import { userRoutes } from "./modules/user";
 
 const router = createRouter({
   history: createWebHistory("#"),
@@ -31,6 +32,7 @@ const router = createRouter({
         ...materialRoutes,
         ...cartRoutes,
         ...brandRoutes,
+        ...userRoutes,
       ],
     },
     {

@@ -3,7 +3,7 @@
     <div class="max-w-4xl mx-auto p-4 mb-12">
       <h2
         v-if="product"
-        class="text-2xl text-center w-full underline my-12 font-bold"
+        class="text-2xl text-center w-full uppercase my-12 font-bold"
         :style="{ color: primaryColor }"
       >
         {{ product.name }}

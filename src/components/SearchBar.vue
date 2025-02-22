@@ -82,6 +82,7 @@
                 class="ml-3 my-2 hover:bg-gray-200/50 p-2 rounded-lg bg-gray-200/20 text-sm text-zinc-700"
                 v-for="item in segment.items"
                 :key="item.id"
+                @click="closeCallback"
               >
                 <router-link
                   :to="{

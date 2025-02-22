@@ -40,7 +40,9 @@
             ></i>
           </OverlayBadge>
         </router-link>
-        <i class="pi pi-user sm:scale-150 ml-1"></i>
+        <router-link :to="{ name: 'user.profile' }">
+          <i class="pi pi-user sm:scale-150 ml-1"></i>
+        </router-link>
       </div>
     </div>
 

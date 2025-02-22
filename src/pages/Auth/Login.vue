@@ -1,82 +1,109 @@
 <template>
-  <div class="w-full  bg-cover relative h-screen flex justify-center items-center">
-    <div class="w-full h-full absolute top-0 left-0 z-0 bg-[#449ca8]"></div>
+  <div
+    class="relative w-full h-screen flex justify-center items-center bg-cover"
+  >
+    <!-- Fondo -->
+    <div class="absolute inset-0 z-0 bg-[#449ca8]"></div>
 
-<ProgressBar mode="indeterminate" v-if="loading" class="z-10 w-full top-0 absolute" style="height: 6px"></ProgressBar>
+    <!-- Tarjeta de login -->
+    <form
+      @submit.prevent="login"
+      class="relative z-10 bg-white rounded-lg shadow-lg px-10 py-8 flex flex-col gap-6 items-center w-full max-w-md"
+    >
+      <img src="/logo/logo-fondo.jpg" alt="Logo" class="w-24 mb-4" />
 
-    <form onsubmit:prevent=""
-    class="bg-white font-albra-serif-regular z-10 px-10 py-6 pb-10 rounded-lg flex flex-col gap-6 items-center"
-      >
-      <img src="/logo/logo-fondo.jpg" class="w-32 " alt="">
-      
-    <div class="card flex justify-content-center w-full">
+      <FloatLabel class="w-full">
+        <InputText
+          id="username"
+          v-model="email"
+          @input="email_touched = true"
+          :invalid="email_touched && !email_valid"
+          class="w-full"
+        />
+        <label for="username" class="font-albra-serif-bold">{{
+          $t("email")
+        }}</label>
+      </FloatLabel>
 
-              <FloatLabel class="w-full">
-            <InputText @input="email_touched=true" :invalid="email_touched&&!email_valid" id="username" v-model="email" class="w-full" />
-            <label for="username" class="font-albra-serif-bold">{{$t('email')}}</label>
-        </FloatLabel>
+      <FloatLabel class="w-full">
+        <Password
+          id="password"
+          v-model="password"
+          @input="password_touched = true"
+          :invalid="password_touched && !password_valid"
+          :feedback="false"
+          toggleMask
+          class="w-full"
+        />
+        <label for="password" class="font-albra-serif-bold">{{
+          $t("password")
+        }}</label>
+      </FloatLabel>
 
-    </div>
-        <div class="card flex justify-content-center flex-1 p-0">
-                        <FloatLabel class="w-full">
-<Password id="password" @input="password_touched=true" :invalid="password_touched&&!password_valid" v-model="password" :feedback="false" class="flex-1" toggleMask/>
-            <label for="password" class="font-albra-serif-bold">{{$t('password')}}</label>
-        </FloatLabel>
+      <Button
+        type="submit"
+        :disabled="!email_valid || !password_valid"
+        :label="$t('login')"
+        :loading="loading"
+        class="w-full bg-grass"
+      />
 
-        </div>
-        <Button :disabled="!email_valid || !password_valid" @click="login" :label="$t('Submit')" class="w-full bg-grass"/>
-
-      </form>
-
-  </div class="w-full  bg-cover relative h-screen flex justify-center items-center">
+      <p class="text-sm text-gray-600">
+        {{ $t("not_have_an_account") }}
+        <router-link to="/register" class="text-blue-500 hover:underline">
+          {{ $t("register_yourself") }}
+        </router-link>
+      </p>
+    </form>
+  </div>
 </template>
+
 <script setup lang="ts">
-import FloatLabel from 'primevue/floatlabel';
-import Button from 'primevue/button';
-import InputText from 'primevue/inputtext';
-import Password from 'primevue/password';
-import ProgressBar from 'primevue/progressbar';
+import FloatLabel from "primevue/floatlabel";
+import Button from "primevue/button";
+import InputText from "primevue/inputtext";
+import Password from "primevue/password";
+import { useAuthStore } from "@/stores/AuthStore";
+import { useRouter } from "vue-router";
+import { ref, computed } from "vue";
+import { useToastStorage } from "@/stores/ToasterStorage";
+import { useI18n } from "vue-i18n";
 
+const authStore = useAuthStore();
+const router = useRouter();
 
-import {useAuthStore} from "@/stores/AuthStore"
-import {useRouter} from 'vue-router'
+const email = ref<string | null>(null);
+const password = ref<string | null>(null);
 
-const authStore = useAuthStore()
+const email_touched = ref(false);
+const password_touched = ref(false);
 
+const email_valid = computed(() =>
+  email.value?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/),
+);
+const password_valid = computed(
+  () => password.value != null && password.value !== "",
+);
 
-import { ref,computed } from 'vue';
+const loading = ref(false);
 
-const email = ref<string|null>(null);
-const password = ref<string|null>(null)
+const { notify } = useToastStorage();
+const { t } = useI18n();
 
-const email_touched = ref<boolean>(false)
-const password_touched = ref(false)
-
-
-
-const email_valid = computed(()=>{
- return email.value?.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
-})
-
-const password_valid = computed(()=>{
-return password.value!=null && password.value !='';
-})
-
-
-const loading = ref(false)
-
-const router = useRouter()
-  
-
-const login = async ()=>{
-loading.value = true
-  const resp = await authStore.login(email.value!,password.value!);
-  if(resp.error == null){
-  authStore.autenticate(resp.data)
-    router.push({name:'default'});
+const login = async () => {
+  loading.value = true;
+  const { error } = await authStore.login(email.value!, password.value!);
+  loading.value = false;
+  if (!error) {
+    router.push("/");
+  } else {
+    notify("error", "error", t(error.message), 4000);
   }
-  loading.value = false
-}
-
-
+};
 </script>
+
+<style scoped>
+::v-deep .p-password:has(.p-password-toggle-mask-icon) .p-password-input {
+  width: 100%;
+}
+</style>

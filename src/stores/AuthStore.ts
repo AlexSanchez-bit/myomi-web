@@ -2,8 +2,8 @@ import { defineStore } from "pinia";
 import { supabase } from "@/setup";
 import { useToastStorage } from "@/stores/ToasterStorage";
 import router from "@/router";
-
 import { v4 as uuidv4 } from "uuid";
+import { useCartStore } from "./cartStore";
 
 let sessionId: string = "";
 
@@ -27,7 +27,7 @@ export const useAuthStore = defineStore("authStore", {
       return state._sessionId;
     },
     anonymous(state) {
-      return state._anonymous;
+      return state._userData.is_anonymous;
     },
     authenticated(state): any {
       if (!state._authenticated) {
@@ -71,11 +71,45 @@ export const useAuthStore = defineStore("authStore", {
     async login(email: string, password: string) {
       const resp = await supabase.auth.signInWithPassword({ email, password });
       if (resp.error) {
-        const { notify } = useToastStorage();
-        notify("error", "error", resp.error.message, 4000);
+        return resp;
       }
-      const { data, error } = await supabase.from("user").select("*");
-      return resp;
+
+      const { data, error } = await supabase
+        .from("user")
+        .select("*")
+        .eq("id", resp.data.user.id)
+        .single();
+
+      if (!error) {
+        this.autenticate(data);
+      }
+
+      const { getMyCart } = useCartStore();
+      getMyCart();
+      return { data, error };
+    },
+    async register(
+      email: string,
+      phone: string,
+      password: string,
+      password_confirm: string,
+    ) {
+      const resp = await supabase.functions.invoke("create_user", {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+          phone_number: phone,
+        }),
+      });
+
+      if (resp.error || resp.data.error) {
+        return {
+          data: null,
+          error: resp.error || { message: resp.data.error },
+        };
+      }
+      return this.login(email, password);
     },
   },
 });
