@@ -18,16 +18,14 @@ const { active } = useSplashStore();
 const { authenticated, autenticate, userData } = useAuthStore();
 const { getMyCart } = useCartStore();
 onMounted(async () => {
-  onMounted(async () => {
-    const { data, error } = await supabase.auth.getSession();
-    const session = data.session; // Si hay sesión, se almacena aquí
+  const { data, error } = await supabase.auth.getSession();
+  const session = data.session; // Si hay sesión, se almacena aquí
 
-    if (session) {
-      console.log("✅ Sesión activa:", session);
-    } else {
-      console.log("❌ No hay sesión activa");
-    }
-  });
+  if (session) {
+    console.log("✅ Sesión activa:", session);
+  } else {
+    console.log("❌ No hay sesión activa");
+  }
 
   if (!authenticated) {
     const { data, error } = await supabase.auth.signInAnonymously();
