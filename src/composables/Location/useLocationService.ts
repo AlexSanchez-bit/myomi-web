@@ -1,4 +1,7 @@
-import { LocationService } from "@/services/Location/LocationService";
+import {
+  type ILocation,
+  LocationService,
+} from "@/services/Location/LocationService";
 
 const locationService = new LocationService();
 

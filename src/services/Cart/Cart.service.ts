@@ -156,4 +156,8 @@ export class CartService extends ListerService<ICart> {
       }
     }
   }
+
+  removeCartItems(cart_id: string) {
+    return supabase.from("cart_items").delete().eq("cart_id", cart_id);
+  }
 }

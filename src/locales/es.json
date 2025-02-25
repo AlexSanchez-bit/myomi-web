@@ -55,5 +55,18 @@
   "field_required": "Campo requerido",
   "confirm_delete_contact": "Confirmar eliminación",
   "confirm": "Confirmar",
-  "more_of": "Mas de"
+  "more_of": "Mas de",
+  "shopping_cart": "Carrito de Compras",
+  "pay": "Proceder al pago",
+  "keey_buying": "Seguir comprando",
+  "empty_cart": "Tu carrito está vacío. ¡Agrega algo lindo! ✨",
+  "clean_cart": "Vaciar Carrito",
+  "select_localization": "Seleccione una ubicación",
+  "delivery_place": "Lugar de entrega",
+  "cost": "Costo",
+  "total": "Total",
+  "buy": "Comprar",
+  "keep_shopping": "Seguir comprando",
+  "price": "Precio",
+  "subtotal": "Subtotal"
 }

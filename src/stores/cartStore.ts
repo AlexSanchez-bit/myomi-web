@@ -53,10 +53,18 @@ export const useCartStore = defineStore("cart-store", () => {
     return resp;
   };
 
+  const clearCart = async () => {
+    const { error } = await cartService.removeCartItems(cart_id.value);
+    if (!error) {
+      quantity.value = 0;
+    }
+  };
+
   return {
     quantity,
     loading,
     getMyCart,
+    clearCart,
     updateProductQuantity,
   };
 });
