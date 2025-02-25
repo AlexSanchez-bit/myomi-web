@@ -3,7 +3,7 @@ export type Filters = {
   name?: string;
   minPrice?: number | null;
   maxPrice?: number | null;
-  classes?: string[];
+  classes?: (string | number)[];
   materials?: string[];
   brands?: number[];
 };

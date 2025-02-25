@@ -42,6 +42,8 @@ export abstract class ListerService<T> {
     pagination: Pagination,
     orders: Sorter[] | null,
   ): Promise<any[]> {
+    console.log(filters, "   asassa");
+
     let query = this.buildSelect();
     query = this.applyFilters(query, filters);
     if (orders != null) {

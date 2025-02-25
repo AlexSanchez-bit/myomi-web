@@ -113,6 +113,7 @@ onMounted(async () => {
 
   // Llamada al servicio para obtener las promociones
   loading.value = true;
+  console.log(props.filters);
   const resp = await props.service.getAll(
     [...props.filters],
     new Pagination(0, 10),
@@ -120,6 +121,7 @@ onMounted(async () => {
   );
   loading.value = false;
   if (resp) {
+    console.log(resp);
     promotions.value = resp;
   }
 });

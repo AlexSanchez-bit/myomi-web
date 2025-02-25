@@ -8,7 +8,10 @@
       </div>
 
       <ProductFilters
-        :filters="{ sort: 'recent' }"
+        :filters="{
+          sort: 'recent',
+          classes: [parseInt(route.params.id as string)],
+        }"
         :default_filter="categoryFilter"
       >
         <div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, toRefs } from "vue";
 import Button from "primevue/button";
 import Drawer from "primevue/drawer";
 import { type Filters } from "./Filters";
@@ -43,6 +43,8 @@ const props = defineProps<{
   filters: Filters;
   default_filter: Filter;
 }>();
+
+const { filters: filter } = toRefs(props);
 const availableMaterials = ref<string[]>([]);
 const availableClasses = ref<string[]>([]);
 const availableBrands = ref<string[]>([]);
@@ -62,7 +64,8 @@ const sortOptions = ref<SortOption[]>([
 ]);
 
 const handleFilterUpdate = (field: keyof Filters, value: any) => {
-  const newFilters = { ...props.filters, [field]: value };
+  const newFilters = { ...filter.value, [field]: value };
+  filter.value = newFilters;
   updateFilters(newFilters);
   emit("update:filters", newFilters);
 };
@@ -80,7 +83,7 @@ import ProductItem from "@/components/Product/ProductItem.vue";
 import { Filter } from "@/utils/entities/Filter";
 import type { Sorter } from "@/utils/entities/Sorters";
 
-const filter_array = ref<Filter[]>([]);
+const filter_array = ref<Filter[]>([props.default_filter]);
 const lazyScroll = ref<any>();
 const sort = ref<Sorter[]>([]);
 
@@ -181,9 +184,7 @@ const product_service = useProductService();
 const lazyLister: IGenericLister<IProduct> = {
   GetAll: async (page: number, limit: number, filter: any) => {
     const resp = await product_service.getAllTotalCount(
-      [props.default_filter, ...filter_array.value].filter(
-        (e) => e != null && e.value != null,
-      ),
+      [...filter_array.value].filter((e) => e != null && e.value != null),
       new Pagination(page, limit),
       [...sort.value],
     );
@@ -216,7 +217,7 @@ const lazyLister: IGenericLister<IProduct> = {
                 $t("name")
               }}</label>
               <InputText
-                v-model="filters.name"
+                v-model="filter.name"
                 @update:modelValue="(v) => handleFilterUpdate('name', v)"
                 class="w-full"
               />
@@ -229,7 +230,7 @@ const lazyLister: IGenericLister<IProduct> = {
               }}</label>
               <div class="flex flex-row gap-2">
                 <InputNumber
-                  v-model="filters.minPrice"
+                  v-model="filter.minPrice"
                   @update:modelValue="(v) => handleFilterUpdate('minPrice', v)"
                   :placeholder="$t('minimun')"
                   mode="currency"
@@ -237,7 +238,7 @@ const lazyLister: IGenericLister<IProduct> = {
                   class="w-1/2 overflow-hidden"
                 />
                 <InputNumber
-                  v-model="filters.maxPrice"
+                  v-model="filter.maxPrice"
                   @update:modelValue="(v) => handleFilterUpdate('maxPrice', v)"
                   :placeholder="$t('maximun')"
                   mode="currency"
@@ -253,7 +254,7 @@ const lazyLister: IGenericLister<IProduct> = {
                 $t("categories")
               }}</label>
               <MultiSelect
-                v-model="filters.classes"
+                v-model="filter.classes"
                 @update:modelValue="(v) => handleFilterUpdate('classes', v)"
                 :options="availableClasses"
                 display="chip"
@@ -268,7 +269,7 @@ const lazyLister: IGenericLister<IProduct> = {
                 $t("materials")
               }}</label>
               <MultiSelect
-                v-model="filters.materials"
+                v-model="filter.materials"
                 @update:modelValue="(v) => handleFilterUpdate('materials', v)"
                 :options="availableMaterials"
                 display="chip"
@@ -283,7 +284,7 @@ const lazyLister: IGenericLister<IProduct> = {
                 $t("brands")
               }}</label>
               <MultiSelect
-                v-model="filters.brands"
+                v-model="filter.brands"
                 @update:modelValue="(v) => handleFilterUpdate('brands', v)"
                 :options="availableBrands"
                 display="chip"
@@ -359,7 +360,7 @@ const lazyLister: IGenericLister<IProduct> = {
         <div class="mb-4">
           <label class="block text-sm font-medium mb-2">{{ $t("name") }}</label>
           <InputText
-            v-model="filters.name"
+            v-model="filter.name"
             @update:modelValue="(v) => handleFilterUpdate('name', v)"
             class="w-full"
           />
@@ -372,7 +373,7 @@ const lazyLister: IGenericLister<IProduct> = {
           }}</label>
           <div class="flex flex-row gap-2">
             <InputNumber
-              v-model="filters.minPrice"
+              v-model="filter.minPrice"
               @update:modelValue="(v) => handleFilterUpdate('minPrice', v)"
               :placeholder="$t('minimun')"
               mode="currency"
@@ -380,7 +381,7 @@ const lazyLister: IGenericLister<IProduct> = {
               class="w-1/2 overflow-hidden"
             />
             <InputNumber
-              v-model="filters.maxPrice"
+              v-model="filter.maxPrice"
               @update:modelValue="(v) => handleFilterUpdate('maxPrice', v)"
               :placeholder="$t('maximun')"
               mode="currency"
@@ -396,7 +397,7 @@ const lazyLister: IGenericLister<IProduct> = {
             $t("categories")
           }}</label>
           <MultiSelect
-            v-model="filters.classes"
+            v-model="filter.classes"
             @update:modelValue="(v) => handleFilterUpdate('classes', v)"
             :options="availableClasses"
             display="chip"
@@ -411,7 +412,7 @@ const lazyLister: IGenericLister<IProduct> = {
             $t("materials")
           }}</label>
           <MultiSelect
-            v-model="filters.materials"
+            v-model="filter.materials"
             @update:modelValue="(v) => handleFilterUpdate('materials', v)"
             :options="availableMaterials"
             display="chip"
@@ -426,7 +427,7 @@ const lazyLister: IGenericLister<IProduct> = {
             $t("brands")
           }}</label>
           <MultiSelect
-            v-model="filters.brands"
+            v-model="filter.brands"
             @update:modelValue="(v) => handleFilterUpdate('brands', v)"
             :options="availableBrands"
             display="chip"

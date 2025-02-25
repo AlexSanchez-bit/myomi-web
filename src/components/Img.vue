@@ -1,30 +1,48 @@
 <template>
-  <div class="relative flex items-center justify-center">
+  <div class="relative w-full h-full">
     <img
-      :src="src"
+      v-show="!loading"
+      :src="computedSrc"
       :alt="alt"
-      @load="() => (loading = false)"
-      @error="
-        (e) => {
-          e.target.src = '/noimage.webp';
-          loading = false;
-        }
-      "
+      @load="loading = false"
+      @error="handleError"
       :class="imageClass ?? 'w-full h-full object-contain'"
-      v-show="!loading && src != ''"
     />
-    <Skeleton v-if="loading" class="absolute top-0 left-0 w-full !h-full" />
+    <Skeleton v-if="loading" class="absolute top-0 left-0 !w-full !h-full" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { Skeleton } from "primevue";
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 
 const loading = ref(true);
+const imageSrc = ref<string | null>(null);
+
 const props = defineProps<{
   alt?: string;
   src: string | null;
-  imageClass: string;
+  imageClass?: string;
 }>();
+
+// Computa la fuente de la imagen dependiendo de errores o si no se proporcionó src
+const computedSrc = computed(() => imageSrc.value);
+
+// Observa cambios en la prop `src` y reinicia la carga de la imagen
+watch(
+  () => props.src,
+  (newSrc) => {
+    if (newSrc) {
+      imageSrc.value = newSrc;
+      loading.value = true;
+    }
+  },
+  { immediate: true },
+);
+
+// Manejo de error para asignar "/noimage.webp" en caso de falla
+const handleError = () => {
+  imageSrc.value = "/noimage.webp";
+  loading.value = false;
+};
 </script>

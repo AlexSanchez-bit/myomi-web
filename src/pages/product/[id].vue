@@ -56,10 +56,23 @@
               {{ selected_currency?.name }}
             </span>
 
+            <router-link :to="`/brand/${product.brand}`" v-if="product.brand">
+              <div
+                class="w-full flex flex-row items-center justify-start gap-2 mt-3"
+              >
+                <Img
+                  :src="product.product_brand.icon"
+                  imageClass="w-10 h-10"
+                  class="!w-10 !h-10"
+                ></Img>
+                <span>{{ product.product_brand.name }}</span>
+              </div>
+            </router-link>
+
             <!-- Descripción larga truncada -->
             <div class="mt-4" v-if="product.long_description">
               <div
-                class="prose"
+                class="prose transition-all duration-700"
                 :class="{ 'line-clamp-3': !descriptionExpanded }"
                 v-html="product.long_description"
               ></div>
@@ -188,7 +201,12 @@
         {
           field: 'product_category.category_id',
           matchMode: 'IN',
-          value: product.categories,
+          value: [...product.categories],
+        },
+        {
+          field: 'id',
+          matchMode: 'NOT_EQUALS',
+          value: product.id,
         },
       ]"
       :orders="[
@@ -203,6 +221,43 @@
           class="text-2xl text-center decoration-black text-black uppercase my-8"
         >
           {{ $t("related_products") }}
+        </h6>
+      </template>
+
+      <template #item="{ item }">
+        <ProductItem class="!w-80 !mx-auto !h-[26rem]" :product="item" />
+      </template>
+    </Sliders>
+
+    <Sliders
+      v-if="product && product.brand"
+      class="scale-50"
+      :service="service"
+      :filters="[
+        {
+          field: 'brand',
+          matchMode: 'EQUALS',
+          value: [product.brand],
+        },
+
+        {
+          field: 'id',
+          matchMode: 'NOT_EQUALS',
+          value: product.id,
+        },
+      ]"
+      :orders="[
+        {
+          field: 'sales',
+          order: 0,
+        },
+      ]"
+    >
+      <template #header>
+        <h6
+          class="text-2xl text-center decoration-black text-black uppercase my-8"
+        >
+          {{ $t("more_of") }} {{ product.product_brand.name }}
         </h6>
       </template>
 

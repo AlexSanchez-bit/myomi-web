@@ -1,18 +1,22 @@
 import { supabase } from "@/setup";
 import { ListerService } from "@/utils/service/TableService";
 import type { PostgrestSingleResponse } from "@supabase/supabase-js";
+import type { IBrand } from "../Brand/Brand.service";
 
 export interface IProduct {
+  id?: string;
   name: string;
   short_description?: string;
   long_description?: string;
   price: number;
   stock: number;
+  brand: number;
   created_at: string; //date ISO string
   images: string[];
   categories?: number[];
   materials?: number[];
   sales: number;
+  product_brand?: IBrand;
 }
 
 export class ProductsService extends ListerService<IProduct> {
@@ -21,6 +25,7 @@ export class ProductsService extends ListerService<IProduct> {
       "id",
       "name",
       "price",
+      "brand",
       "created_at",
       "stock",
       "images",
@@ -42,7 +47,7 @@ export class ProductsService extends ListerService<IProduct> {
     const { data, error } = await supabase
       .from(this.tablename)
       .select(
-        "*, categories:product_category(category_id),materials:product_materials (material_id)",
+        "*, categories:product_category(category_id),materials:product_materials (material_id),product_brand:brand!left(*)",
       )
       .eq("id", id)
       .single();

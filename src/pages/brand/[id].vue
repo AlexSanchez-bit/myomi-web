@@ -19,7 +19,10 @@
       </div>
 
       <ProductFilters
-        :filters="{ sort: 'recent' }"
+        :filters="{
+          sort: 'recent',
+          brands: [parseInt(route.params.id as string)],
+        }"
         :default_filter="brandFilter"
       >
       </ProductFilters>
