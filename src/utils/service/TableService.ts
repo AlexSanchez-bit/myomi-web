@@ -176,7 +176,7 @@ export abstract class ListerService<T> {
             query = query.in(field, filter.value);
             break;
           case "NOT_IN":
-            query = query.not(field, "in", filter.value);
+            query = query.not(field, "in", `(${filter.value.join(",")})`);
             break;
           case FilterMatchMode.EQUALS:
             query = query.eq(field, filter.value);

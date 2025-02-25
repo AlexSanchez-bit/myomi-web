@@ -105,6 +105,7 @@
             optionValue="id"
             :placeholder="$t('select_localization')"
             :disabled="processing"
+            :loading="processing"
             class="w-full md:w-auto"
           >
             <template #option="slotProps">
@@ -156,18 +157,21 @@
             class="p-button-danger pastel-btn w-full"
             @click="clearCart"
             :disabled="processing"
+            :loading="processing"
           />
           <Button
             :label="$t('pay')"
             class="p-button-success pastel-btn w-full"
             @click="handlePurchase"
-            :disabled="processing"
+            :disabled="processing || !delivery_location"
+            :loading="processing"
           />
           <Button
             :label="$t('keep_shopping')"
             class="p-button-info pastel-btn w-full"
             @click="continueShopping"
             :disabled="processing"
+            :loading="processing"
           />
         </div>
       </div>
@@ -177,10 +181,90 @@
         {{ $t("empty_cart") }}
       </p>
     </div>
+
+    <Sliders
+      class="!scale-50 !mb-8 !py-3"
+      v-if="cart?.cart_items.length > 0"
+      :service="productService"
+      :filters="[
+        {
+          field: 'id',
+          matchMode: 'NOT_IN',
+          value: cart?.cart_items.map((item) => item.product.id),
+        },
+      ]"
+      :orders="[
+        {
+          field: 'stock',
+          order: 0,
+        },
+      ]"
+    >
+      <template #header>
+        <div class="my-6">
+          <h6
+            class="text-2xl text-center decoration-black text-black uppercase my"
+          >
+            {{ $t("you_may_be_interested") }}
+          </h6>
+
+          <div class="text-center flex flex-row justify-center w-full mb-2">
+            <router-link to="/product">
+              {{ $t("see_all") }}
+            </router-link>
+          </div>
+        </div>
+      </template>
+
+      <template #item="{ item }">
+        <ProductItem class="!w-50 !mx-auto !h-[26rem]" :product="item" />
+      </template>
+    </Sliders>
+    <Sliders
+      v-else
+      class="!scale-50 !mb-8"
+      :service="productService"
+      :filters="[
+        {
+          field: 'id',
+          matchMode: FilterMatchMode.NOT_EQUALS,
+          value: cart?.cart_items.map((item) => item.product_id),
+        },
+      ]"
+      :orders="[
+        {
+          field: 'stock',
+          order: 0,
+        },
+      ]"
+    >
+      <template #header>
+        <div class="my-6">
+          <h6
+            class="text-2xl text-center decoration-black text-black uppercase my"
+          >
+            {{ $t("you_may_be_interested") }}
+          </h6>
+
+          <div class="text-center flex flex-row justify-center w-full mb-2">
+            <router-link to="/product">
+              {{ $t("see_all") }}
+            </router-link>
+          </div>
+        </div>
+      </template>
+
+      <template #item="{ item }">
+        <ProductItem class="!w-50 !mx-auto !h-[26rem]" :product="item" />
+      </template>
+    </Sliders>
   </div>
 </template>
 
 <script setup lang="ts">
+import Sliders from "@/components/Sliders.vue";
+import ProductItem from "@/components/Product/ProductItem.vue";
+import { FilterMatchMode } from "@primevue/core/api";
 import { ref, onMounted, computed } from "vue";
 import { useCartStore } from "@/stores/cartStore";
 import Button from "primevue/button";
@@ -193,6 +277,10 @@ import { Pagination } from "@/utils/entities/Pagination";
 
 import { useCurrencyStore } from "@/stores/currency";
 import { storeToRefs } from "pinia";
+import { useProductService } from "@/composables/Shop/Product/useProductService";
+
+const productService = useProductService();
+
 const { selected_currency } = storeToRefs(useCurrencyStore());
 
 const store = useCartStore();
