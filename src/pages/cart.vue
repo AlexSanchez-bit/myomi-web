@@ -27,11 +27,15 @@
         >
           <div class="flex items-center w-full md:w-auto">
             <!-- Imagen del producto -->
-            <img
-              :src="item.product.images[0]"
-              alt="Producto"
-              class="w-16 h-16 md:w-20 md:h-20 rounded-xl object-cover border-2 border-pink-300/50"
-            />
+            <router-link
+              :to="{ name: 'product.details', params: { id: item.product.id } }"
+            >
+              <Img
+                :src="item.product.images[0]"
+                alt="Producto"
+                imageClass="w-16 h-16 md:w-20 md:h-20 rounded-xl object-cover border-2 border-pink-300/50"
+              />
+            </router-link>
             <!-- Detalles del producto -->
             <div class="ml-4">
               <h2 class="text-lg font-semibold text-pink-700">
@@ -80,7 +84,11 @@
               icon="pi pi-plus"
               class="p-button-rounded pastel-btn"
               @click="updateQuantity(item, 1)"
-              :disabled="processing || updating == item.product.id"
+              :disabled="
+                processing ||
+                updating == item.product.id ||
+                item.quantity >= item.product.stock
+              "
             />
             <Button
               icon="pi pi-trash"
@@ -184,7 +192,7 @@
 
     <Sliders
       class="!scale-50 !mb-8 !py-3"
-      v-if="cart?.cart_items.length > 0"
+      v-if="cart && cart.cart_items && cart.cart_items.length"
       :service="productService"
       :filters="[
         {
@@ -217,7 +225,9 @@
       </template>
 
       <template #item="{ item }">
-        <ProductItem class="!w-50 !mx-auto !h-[26rem]" :product="item" />
+        <div class="w-80 h-full lg:scale-[60%]">
+          <ProductItem class="!mx-auto !w-full !h-[26rem]" :product="item" />
+        </div>
       </template>
     </Sliders>
     <Sliders
@@ -255,7 +265,9 @@
       </template>
 
       <template #item="{ item }">
-        <ProductItem class="!w-50 !mx-auto !h-[26rem]" :product="item" />
+        <div class="w-full h-full lg:scale-[60%]">
+          <ProductItem class="!mx-auto !w-full !h-[26rem]" :product="item" />
+        </div>
       </template>
     </Sliders>
   </div>
@@ -265,7 +277,7 @@
 import Sliders from "@/components/Sliders.vue";
 import ProductItem from "@/components/Product/ProductItem.vue";
 import { FilterMatchMode } from "@primevue/core/api";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useCartStore } from "@/stores/cartStore";
 import Button from "primevue/button";
 import Skeleton from "primevue/skeleton";
@@ -278,6 +290,11 @@ import { Pagination } from "@/utils/entities/Pagination";
 import { useCurrencyStore } from "@/stores/currency";
 import { storeToRefs } from "pinia";
 import { useProductService } from "@/composables/Shop/Product/useProductService";
+import { useI18n } from "vue-i18n";
+import { useToastStorage } from "../stores/ToasterStorage";
+
+const { notify } = useToastStorage();
+const { t } = useI18n();
 
 const productService = useProductService();
 
@@ -294,7 +311,13 @@ const delivery_location = ref<number | null>(null);
 
 const locationService = useLocationService();
 
-onMounted(async () => {
+const { quantity } = storeToRefs(store);
+
+watch(quantity, () => {
+  loadCart();
+});
+
+const loadCart = async () => {
   processing.value = true;
   const resp = await store.getMyCart();
   cart.value = resp?.data || null;
@@ -303,7 +326,9 @@ onMounted(async () => {
   locations.value = locResp || [];
   processing.value = false;
   loading.value = false;
-});
+};
+
+onMounted(loadCart);
 
 // Propiedad computada para sumar el costo de envío al total
 const computedTotal = computed(() => {
@@ -324,7 +349,7 @@ const updateQuantity = async (item: any, change: number) => {
   processing.value = true;
   updating.value = item.product.id;
   const resp = await store.updateProductQuantity(item.product.id, change);
-  if (resp) {
+  if (resp && !resp.error) {
     updating.value = null;
     // Actualiza el precio total base
     cart.value.total_price += change * item.product.price;
@@ -340,6 +365,8 @@ const updateQuantity = async (item: any, change: number) => {
         return i;
       });
     }
+  } else if (resp.error) {
+    notify("error", t("stock_not_enought"), resp.error.message, 4000);
   }
   processing.value = false;
 };

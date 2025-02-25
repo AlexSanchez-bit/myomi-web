@@ -39,7 +39,7 @@ export class CartService extends ListerService<ICart> {
 
     let query = supabase
       .from(this.tablename)
-      .select("*,cart_items(product(id,price,name,images),quantity)");
+      .select("*,cart_items(product(id,price,name,images,stock),quantity)");
 
     if (_anonymous) {
       query = query.eq("session_id", userData!.id);
@@ -112,7 +112,7 @@ export class CartService extends ListerService<ICart> {
 
       if (error) {
         console.error("Error insertando nuevo item en el carrito:", error);
-        return null;
+        return error;
       }
       // Actualizar el array local
       this.cart_items.push({ product_id, quantity: quantity_change });
@@ -131,7 +131,7 @@ export class CartService extends ListerService<ICart> {
 
         if (error) {
           console.error("Error eliminando item del carrito:", error);
-          return null;
+          return error;
         }
         // Actualizar el array local removiendo el item
         this.cart_items = this.cart_items.filter(
@@ -148,7 +148,7 @@ export class CartService extends ListerService<ICart> {
 
         if (error) {
           console.error("Error actualizando item del carrito:", error);
-          return null;
+          return error;
         }
         // Actualizar el array local con la nueva cantidad
         existingItem.quantity = newQuantity;

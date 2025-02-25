@@ -30,7 +30,7 @@ const addProductToCart = async (quantity: number = 1) => {
   loading.value = true;
   const resp = await updateProductQuantity(props.product_id, quantity);
   loading.value = false;
-  if (resp) {
+  if (resp && !resp.message) {
     notify(
       "success",
       t("product_added"),
@@ -38,7 +38,8 @@ const addProductToCart = async (quantity: number = 1) => {
       3000,
     );
   } else {
-    notify("error", t("product_not_added"), t("product_adding_error"), 3000);
+    console.log(resp);
+    notify("error", t("product_not_added"), t(resp.message), 3000);
   }
 };
 </script>

@@ -69,5 +69,7 @@
   "keep_shopping": "Seguir comprando",
   "price": "Precio",
   "subtotal": "Subtotal",
-  "you_may_be_interested": "Puede interesarte.."
+  "you_may_be_interested": "Puede interesarte..",
+  "stock_not_enought": "El stock no es suficiente",
+  "product_not_added": "Producto no añadido"
 }
