@@ -107,21 +107,21 @@ onMounted(async () => {
     },
     { threshold: 0.9 },
   );
+
   if (container.value) {
     observer.observe(container.value);
   }
 
   // Llamada al servicio para obtener las promociones
   loading.value = true;
-  console.log(props.filters);
+
   const resp = await props.service.getAll(
-    [...props.filters],
+    props.filters,
     new Pagination(0, 10),
-    [...props.orders],
+    props.orders,
   );
   loading.value = false;
   if (resp) {
-    console.log(resp);
     promotions.value = resp;
   }
 });

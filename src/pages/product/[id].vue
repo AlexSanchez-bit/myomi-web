@@ -200,12 +200,12 @@
       :filters="[
         {
           field: 'product_category.category_id',
-          matchMode: 'IN',
+          matchMode: FilterMatchMode.IN,
           value: [...product.categories],
         },
         {
           field: 'id',
-          matchMode: 'NOT_EQUALS',
+          matchMode: FilterMatchMode.NOT_EQUALS,
           value: product.id,
         },
       ]"
@@ -236,19 +236,18 @@
       :filters="[
         {
           field: 'brand',
-          matchMode: 'EQUALS',
+          matchMode: FilterMatchMode.IN,
           value: [product.brand],
         },
-
         {
           field: 'id',
-          matchMode: 'NOT_EQUALS',
+          matchMode: FilterMatchMode.NOT_EQUALS,
           value: product.id,
         },
       ]"
       :orders="[
         {
-          field: 'sales',
+          field: 'stock',
           order: 0,
         },
       ]"
@@ -277,6 +276,7 @@ import { useCurrencyStore } from "@/stores/currency";
 import { storeToRefs } from "pinia";
 import CartAddButton from "@/components/Cart/CartAddButton.vue";
 import Button from "primevue/button";
+import { FilterMatchMode } from "@primevue/core/api";
 
 const product = ref<IProduct | null>(null);
 const selectedImage = ref<string>("");

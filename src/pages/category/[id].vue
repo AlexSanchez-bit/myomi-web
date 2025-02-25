@@ -36,15 +36,8 @@ import { FilterMatchMode } from "@primevue/core/api";
 import { Pagination } from "@/utils/entities/Pagination";
 import type { ICategory } from "@/services/Shops/Categories/Category.service";
 import { useToastStorage } from "@/stores/ToasterStorage";
-import LazyLoadScroll from "@/components/LazyLoadScroll.vue";
-import { Skeleton } from "primevue";
-import ProductItem from "@/components/Product/ProductItem.vue";
 import SubCategories from "@/components/Categories/SubCategories.vue";
 import ProductFilters from "@/components/Product/ProductFilters.vue";
-const home = ref({
-  icon: "pi pi-home",
-});
-const items = ref([]);
 
 const service = useCategoryService();
 
