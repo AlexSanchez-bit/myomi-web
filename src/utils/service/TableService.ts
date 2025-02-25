@@ -177,6 +177,9 @@ export abstract class ListerService<T> {
           case FilterMatchMode.IN:
             query = query.in(field, filter.value);
             break;
+          case "NOT_IN":
+            query = query.not(field, "in", filter.value);
+            break;
           case FilterMatchMode.EQUALS:
             query = query.eq(field, filter.value);
             break;

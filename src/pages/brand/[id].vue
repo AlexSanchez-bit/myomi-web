@@ -32,15 +32,11 @@
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
-import Breadcrumb from "primevue/breadcrumb";
 
 const route = useRoute();
 import { onMounted, ref } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
 import { useToastStorage } from "@/stores/ToasterStorage";
-import LazyLoadScroll from "@/components/LazyLoadScroll.vue";
-import { Skeleton } from "primevue";
-import ProductItem from "@/components/Product/ProductItem.vue";
 import ProductFilters from "@/components/Product/ProductFilters.vue";
 import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
 import type { IBrand } from "@/services/Shops/Brand/Brand.service";

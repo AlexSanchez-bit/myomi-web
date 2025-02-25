@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen">
+  <div class="min-h-screen py-4">
     <div class="max-w-4xl mx-auto p-4 mb-12">
       <h2
         v-if="product"

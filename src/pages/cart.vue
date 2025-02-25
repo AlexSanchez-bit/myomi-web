@@ -1,10 +1,16 @@
 <template>
-  <div class="p-6 max-w-4xl mx-auto">
-    <h1 class="text-2xl font-bold mb-4">Carrito de Compras</h1>
+  <div class="p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-2xl my-4">
+    <h1 class="text-3xl font-bold text-pink-600 mb-6 text-center">
+      Carrito de Compras 🛍️
+    </h1>
 
     <!-- Skeletons mientras carga -->
     <div v-if="loading" class="space-y-4">
-      <Skeleton class="!h-24 w-full" v-for="i in 3" :key="i" />
+      <Skeleton
+        class="!h-24 w-full rounded-lg bg-pink-100/30"
+        v-for="i in 3"
+        :key="i"
+      />
     </div>
 
     <!-- Contenido del carrito -->
@@ -13,40 +19,44 @@
         <div
           v-for="item in cart.cart_items"
           :key="item.product.id"
-          class="flex items-center justify-between p-4 border rounded-lg shadow-md"
+          class="flex items-center justify-between p-4 border rounded-lg shadow-md bg-pink-100/30 backdrop-blur-md"
         >
           <!-- Imagen del producto -->
           <img
             :src="item.product.images[0]"
             alt="Producto"
-            class="w-16 h-16 rounded-md object-cover"
+            class="w-16 h-16 rounded-xl object-cover border-2 border-pink-300/50"
           />
 
           <!-- Detalles del producto -->
           <div class="flex-1 ml-4">
-            <h2 class="text-lg font-semibold">{{ item.product.name }}</h2>
-            <p class="text-gray-500">Cantidad: {{ item.quantity }}</p>
+            <h2 class="text-lg font-semibold text-pink-700">
+              {{ item.product.name }}
+            </h2>
+            <p class="text-pink-500">Cantidad: {{ item.quantity }}</p>
           </div>
 
           <!-- Controles de cantidad -->
           <div class="flex items-center space-x-2">
             <Button
               icon="pi pi-minus"
-              class="p-button-rounded p-button-text"
+              class="p-button-rounded pastel-btn"
               @click="updateQuantity(item, -1)"
               :disabled="item.quantity <= 1 || updating == item.product.id"
             />
-            <span class="text-lg font-semibold">{{ item.quantity }}</span>
+            <span class="text-lg font-semibold text-pink-700">
+              {{ item.quantity }}
+            </span>
             <Button
               icon="pi pi-plus"
-              class="p-button-rounded p-button-text"
+              class="p-button-rounded pastel-btn"
               @click="updateQuantity(item, 1)"
               :disabled="updating == item.product.id"
             />
             <!-- Botón para eliminar -->
             <Button
               icon="pi pi-trash"
-              class="p-button-rounded p-button-danger p-button-text"
+              class="p-button-rounded p-button-danger p-button-text pastel-btn"
               @click="removeItem(item)"
               :disabled="updating == item.product.id"
             />
@@ -54,19 +64,21 @@
         </div>
 
         <!-- Precio total -->
-        <div class="text-right text-xl font-semibold mt-4">
+        <div class="text-right text-xl font-semibold mt-4 text-pink-700">
           Total: €{{ cart.total_price }}
         </div>
 
         <!-- Botón para vaciar carrito -->
         <Button
           label="Vaciar Carrito"
-          class="p-button-danger w-full mt-4"
+          class="p-button-danger pastel-btn w-full mt-4"
           @click="clearCart"
         />
       </div>
 
-      <p v-else class="text-center text-gray-500">El carrito está vacío.</p>
+      <p v-else class="text-center text-pink-500">
+        Tu carrito está vacío. ¡Agrega algo lindo! ✨
+      </p>
     </div>
   </div>
 </template>
@@ -124,5 +136,20 @@ const clearCart = async () => {
 </script>
 
 <style scoped>
-/* Estilos adicionales si los necesitas */
+/* Estilo pastel con opacidad baja */
+.pastel-btn {
+  background-color: rgba(255, 182, 193, 0.2) !important;
+  border: none !important;
+  color: #d63384 !important;
+  transition: all 0.3s ease-in-out;
+}
+
+.pastel-btn:hover {
+  background-color: rgba(255, 182, 193, 0.4) !important;
+}
+
+/* Personalización del Skeleton */
+:deep(.p-skeleton) {
+  background-color: rgba(255, 182, 193, 0.2) !important;
+}
 </style>

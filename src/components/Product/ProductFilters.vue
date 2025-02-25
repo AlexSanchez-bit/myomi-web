@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, toRefs } from "vue";
+import { ref, onMounted } from "vue";
 import Button from "primevue/button";
 import Drawer from "primevue/drawer";
 import { type Filters } from "./Filters";
@@ -44,7 +44,7 @@ const props = defineProps<{
   default_filter: Filter;
 }>();
 
-const { filters: filter } = toRefs(props);
+const filter = ref({ ...props.filters });
 const availableMaterials = ref<string[]>([]);
 const availableClasses = ref<string[]>([]);
 const availableBrands = ref<string[]>([]);
@@ -203,7 +203,6 @@ const lazyLister: IGenericLister<IProduct> = {
 <template>
   <div class="min-h-screen">
     <!-- Mobile Filters Button -->
-
     <!-- Desktop Filters -->
     <div class="flex flex-row gap-1 justify-start">
       <div class="hidden lg:block w-1/4 h-full sticky top-32">

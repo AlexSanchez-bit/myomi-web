@@ -2,16 +2,17 @@
   <NavBar />
   <router-view v-slot="{ Component, route }" class="min-h-screen">
     <transition name="page-opacity" mode="out-in">
-      <keep-alive>
+      <keep-alive :exclude="['cart']">
         <component :is="Component" :key="route.fullPath" />
       </keep-alive>
     </transition>
+    <Footer v-show="!filter_routes.includes(route.name.toString())" />
   </router-view>
-  <Footer />
 </template>
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
+const filter_routes = ["brand.details", "category.details", "products"];
 </script>
 
 <style scoped>
