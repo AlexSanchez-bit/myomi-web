@@ -22,9 +22,9 @@ export const useCartStore = defineStore("cart-store", () => {
         await cartService.createCart();
       if (cart_error) {
         useToastStorage().notify(
-          "danger",
+          "error",
           t("error"),
-          t("cart_creation_error"),
+          t(cart_error.message),
           3000,
         );
       } else {

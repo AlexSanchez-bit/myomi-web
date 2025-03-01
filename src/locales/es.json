@@ -71,5 +71,7 @@
   "subtotal": "Subtotal",
   "you_may_be_interested": "Puede interesarte..",
   "stock_not_enought": "El stock no es suficiente",
-  "product_not_added": "Producto no añadido"
+  "product_not_added": "Producto no añadido",
+  "currency_to_pay": "Moneda para pagar",
+  "payment_method": "Método de pago"
 }

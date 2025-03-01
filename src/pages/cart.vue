@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 md:p-6 max-w-4xl mx-auto bg-white shadow-lg rounded-2xl my-4">
+  <div class="p-4 md:p-6 max-w-4xl mx-auto bg-white rounded-2xl my-4">
     <h1 class="text-3xl font-bold text-pink-600 mb-6 text-center">
       {{ $t("shopping_cart") }} 🛍️
     </h1>
@@ -53,7 +53,6 @@
               </p>
               <p class="text-sm text-pink-500 flex flex-row items-center">
                 {{ $t("subtotal") }}:
-
                 <img class="w-3 h-3" :src="selected_currency?.icon" alt="" />
                 {{
                   (
@@ -99,7 +98,64 @@
           </div>
         </div>
 
-        <!-- Selector de lugar de envío usando Dropdown de PrimeVue -->
+        <!-- Selector de método de pago con RadioButton (vertical y con estilo en el propio botón) -->
+        <div class="flex flex-col items-center justify-between p-4">
+          <label class="text-lg font-semibold text-pink-700 mb-4 w-full">
+            {{ $t("payment_method") }}:
+          </label>
+          <div class="flex flex-col items-center w-full">
+            <div
+              v-for="payment in payment_types"
+              :key="payment.id"
+              class="flex items-center mb-2 w-full p-2 rounded"
+            >
+              <RadioButton
+                v-model="selected_payment_type"
+                :value="payment"
+                :disabled="processing"
+                class="mr-2 pastel-btn"
+              />
+              <span class="text-md medium text-pink-700">
+                <img class="w-5 h-5 inline-block" :src="payment?.icon" alt="" />
+                {{ payment.name }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!---Selector de moneda de pago------>
+
+        <div
+          class="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg shadow-md bg-pink-100/30 backdrop-blur-md"
+        >
+          <label class="text-lg font-semibold text-pink-700 mb-2 md:mb-0">
+            {{ $t("currency_to_pay") }}:
+          </label>
+          <Dropdown
+            v-model="selected_currency"
+            :options="currency_types"
+            optionLabel="name"
+            :placeholder="$t('select_currency_type')"
+            :disabled="processing"
+            :loading="processing"
+            class="w-full md:w-auto"
+          >
+            <template #option="slotProps">
+              <div class="flex flex-row items-center">
+                <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" />
+                {{ slotProps.option.name }}
+              </div>
+            </template>
+            <template #selectedOption="slotProps">
+              <div class="flex flex-row items-center">
+                {{ slotProps.option.name }}
+                <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" />
+              </div>
+            </template>
+          </Dropdown>
+        </div>
+
+        <!-- Selector de lugar de envío -->
         <div
           class="flex flex-col md:flex-row items-center justify-between p-4 border rounded-lg shadow-md bg-pink-100/30 backdrop-blur-md"
         >
@@ -117,7 +173,10 @@
             class="w-full md:w-auto"
           >
             <template #option="slotProps">
-              <div class="flex flex-row items-center">
+              <div
+                class="flex flex-row items-center"
+                v-if="selected_payment_type.delivery_included"
+              >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
                 <img class="w-3 h-3" :src="selected_currency?.icon" alt="" />
@@ -129,9 +188,31 @@
                 }}
                 {{ selected_currency?.name }})
               </div>
+              <div
+                class="flex flex-row items-center"
+                v-if="!selected_payment_type.delivery_included"
+              >
+                {{ slotProps.option.name }}
+                ({{ $t("cost") }}:
+                <img
+                  class="w-3 h-3"
+                  :src="selected_payment_type.delivery_currency?.icon"
+                  alt=""
+                />
+                {{
+                  (
+                    slotProps.option.delivery_price *
+                    selected_payment_type.delivery_currency?.change_value
+                  ).toFixed(2)
+                }}
+                {{ selected_payment_type.delivery_currency?.name }})
+              </div>
             </template>
             <template #selectedOption="slotProps">
-              <div class="flex flex-row items-center">
+              <div
+                class="flex flex-row items-center"
+                v-if="selected_payment_type.delivery_included"
+              >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
                 <img class="w-3 h-3" :src="selected_currency?.icon" alt="" />
@@ -142,6 +223,26 @@
                   ).toFixed(2)
                 }}
                 {{ selected_currency?.name }})
+              </div>
+
+              <div
+                class="flex flex-row items-center"
+                v-if="!selected_payment_type.delivery_included"
+              >
+                {{ slotProps.option.name }}
+                ({{ $t("cost") }}:
+                <img
+                  class="w-3 h-3"
+                  :src="selected_payment_type.delivery_currency?.icon"
+                  alt=""
+                />
+                {{
+                  (
+                    slotProps.option.delivery_price *
+                    selected_payment_type.delivery_currency?.change_value
+                  ).toFixed(2)
+                }}
+                {{ selected_payment_type.delivery_currency?.name }})
               </div>
             </template>
           </Dropdown>
@@ -150,12 +251,43 @@
         <!-- Total del carrito (incluyendo envío) -->
         <div
           class="text-right text-xl font-semibold text-pink-700 flex flex-row items-center justify-end"
+          v-if="selected_payment_type.delivery_included"
         >
           {{ $t("total") }}:
-
           <img class="w-5 h-5" :src="selected_currency?.icon" alt="" />
           {{ (computedTotal * selected_currency?.change_value).toFixed(2) }}
           {{ selected_currency?.name }}
+        </div>
+        <div
+          v-else
+          class="text-right text-xl font-semibold text-pink-700 flex flex-row items-center justify-end"
+        >
+          {{ $t("total") }}:
+          <span class="flex flex-row items-center gap-1">
+            <img class="w-5 h-5" :src="selected_currency?.icon" alt="" />
+            {{
+              (cart.total_price * selected_currency?.change_value).toFixed(2)
+            }}
+            {{ selected_currency?.name }}
+          </span>
+          <span
+            v-if="selected_location"
+            class="flex flex-row items-center gap-1"
+          >
+            +
+            <img
+              class="w-5 h-5"
+              :src="selected_payment_type.delivery_currency?.icon"
+              alt=""
+            />
+            {{
+              (
+                selected_location?.delivery_price *
+                selected_payment_type.delivery_currency?.change_value
+              ).toFixed(2)
+            }}
+            {{ selected_payment_type.delivery_currency?.name }}
+          </span>
         </div>
 
         <!-- Acciones del carrito -->
@@ -185,14 +317,16 @@
       </div>
 
       <!-- Mensaje si el carrito está vacío -->
-      <p v-else class="text-center text-pink-500">
+      <p v-else class="text-center text-pink-500 mb-auto">
         {{ $t("empty_cart") }}
       </p>
     </div>
 
+    <!-- Sliders -->
     <Sliders
       class="!scale-50 !mb-8 !py-3"
-      v-if="cart && cart.cart_items && cart.cart_items.length"
+      v-if="cart && cart.cart_items && cart.cart_items.length > 0"
+      :breakpoints="breakpoints"
       :service="productService"
       :filters="[
         {
@@ -215,7 +349,6 @@
           >
             {{ $t("you_may_be_interested") }}
           </h6>
-
           <div class="text-center flex flex-row justify-center w-full mb-2">
             <router-link to="/product">
               {{ $t("see_all") }}
@@ -223,17 +356,15 @@
           </div>
         </div>
       </template>
-
       <template #item="{ item }">
-        <div class="w-80 h-full lg:scale-[60%]">
-          <ProductItem class="!mx-auto !w-full !h-[26rem]" :product="item" />
-        </div>
+        <ProductItem class="!mx-auto !w-full !h-[26rem]" :product="item" />
       </template>
     </Sliders>
     <Sliders
       v-else
-      class="!scale-50 !mb-8"
+      class="!scale-50 !mb-8 my-auto"
       :service="productService"
+      :breakpoints="breakpoints"
       :filters="[
         {
           field: 'id',
@@ -255,7 +386,6 @@
           >
             {{ $t("you_may_be_interested") }}
           </h6>
-
           <div class="text-center flex flex-row justify-center w-full mb-2">
             <router-link to="/product">
               {{ $t("see_all") }}
@@ -263,11 +393,8 @@
           </div>
         </div>
       </template>
-
       <template #item="{ item }">
-        <div class="w-full h-full lg:scale-[60%]">
-          <ProductItem class="!mx-auto !w-full !h-[26rem]" :product="item" />
-        </div>
+        <ProductItem class="!mx-auto !w-full !h-[26rem]" :product="item" />
       </template>
     </Sliders>
   </div>
@@ -282,24 +409,24 @@ import { useCartStore } from "@/stores/cartStore";
 import Button from "primevue/button";
 import Skeleton from "primevue/skeleton";
 import Dropdown from "primevue/dropdown";
+import RadioButton from "primevue/radiobutton";
 import { useRouter } from "vue-router";
 import { useLocationService } from "@/composables/Location/useLocationService";
-import { type ILocation } from "@/services/Location/LocationService";
+import type { ILocation } from "@/services/Location/LocationService";
 import { Pagination } from "@/utils/entities/Pagination";
-
+import type { IPaymentType } from "@/services/PaymentMethods/PaymentMethods.service";
 import { useCurrencyStore } from "@/stores/currency";
 import { storeToRefs } from "pinia";
 import { useProductService } from "@/composables/Shop/Product/useProductService";
 import { useI18n } from "vue-i18n";
 import { useToastStorage } from "../stores/ToasterStorage";
+import { usePaymentTypeService } from "@/composables/PaymentTypes/usePaymentTypes";
 
 const { notify } = useToastStorage();
 const { t } = useI18n();
 
 const productService = useProductService();
-
-const { selected_currency } = storeToRefs(useCurrencyStore());
-
+const selected_currency = ref(useCurrencyStore().selected_currency);
 const store = useCartStore();
 const cart = ref<any>(null);
 const loading = ref(true);
@@ -307,14 +434,27 @@ const updating = ref(null);
 const processing = ref(false);
 const router = useRouter();
 const locations = ref<ILocation[]>([]);
+const payment_types = ref<IPaymentType[]>([]);
 const delivery_location = ref<number | null>(null);
+const selected_payment_type = ref<IPaymentType | null>(null);
 
 const locationService = useLocationService();
-
+const paymentTypeService = usePaymentTypeService();
 const { quantity } = storeToRefs(store);
 
 watch(quantity, () => {
   loadCart();
+});
+
+watch(selected_payment_type, () => {
+  selected_currency.value =
+    selected_payment_type.value.allowed_currencies[0].currency;
+});
+
+const currency_types = computed(() => {
+  return selected_payment_type.value?.allowed_currencies.map(
+    (currency) => currency.currency,
+  );
 });
 
 const loadCart = async () => {
@@ -322,15 +462,35 @@ const loadCart = async () => {
   const resp = await store.getMyCart();
   cart.value = resp?.data || null;
   const locResp = await locationService.getAll([], new Pagination(0, 100), []);
-  // Suponiendo que la respuesta tiene la propiedad "data"
   locations.value = locResp || [];
   processing.value = false;
   loading.value = false;
+
+  processing.value = true;
+  const paymentResp = await paymentTypeService.getAll(
+    [],
+    new Pagination(0, 100),
+    [],
+  );
+  processing.value = false;
+  payment_types.value = paymentResp || [];
+  if (payment_types.value.length > 0) {
+    selected_payment_type.value = payment_types.value[0];
+  }
 };
 
 onMounted(loadCart);
 
-// Propiedad computada para sumar el costo de envío al total
+const selected_location = computed(() => {
+  if (delivery_location.value) {
+    const selected = locations.value.find(
+      (loc) => loc.id === delivery_location.value,
+    );
+    return selected;
+  }
+  return null;
+});
+
 const computedTotal = computed(() => {
   let baseTotal = cart.value ? cart.value.total_price : 0;
   if (delivery_location.value) {
@@ -344,14 +504,12 @@ const computedTotal = computed(() => {
   return baseTotal;
 });
 
-// Actualiza la cantidad de un producto
 const updateQuantity = async (item: any, change: number) => {
   processing.value = true;
   updating.value = item.product.id;
   const resp = await store.updateProductQuantity(item.product.id, change);
   if (resp && !resp.error) {
     updating.value = null;
-    // Actualiza el precio total base
     cart.value.total_price += change * item.product.price;
     if (change + item.quantity <= 0) {
       cart.value.cart_items = cart.value.cart_items.filter(
@@ -371,12 +529,10 @@ const updateQuantity = async (item: any, change: number) => {
   processing.value = false;
 };
 
-// Elimina un producto del carrito
 const removeItem = async (item: any) => {
   await updateQuantity(item, -1 * item.quantity);
 };
 
-// Vacía el carrito
 const clearCart = async () => {
   processing.value = true;
   await store.clearCart();
@@ -384,19 +540,27 @@ const clearCart = async () => {
   processing.value = false;
 };
 
-// Función placeholder para la acción de comprar
 const handlePurchase = () => {
   alert("Función de compra aún no implementada.");
 };
 
-// Redirige a la página de productos para seguir comprando
 const continueShopping = () => {
   router.push("/product");
+};
+
+const breakpoints = {
+  0: { slidesPerView: 1, spaceBetween: 0 },
+  859: { slidesPerView: 2.5, spaceBetween: 1 },
+  1050: { slidesPerView: 3, spaceBetween: 1 },
+  1200: { slidesPerView: 2, spaceBetween: 1 },
+  1400: { slidesPerView: 2.5, spaceBetween: 1 },
+  1700: { slidesPerView: 3.5, spaceBetween: 1 },
+  2000: { slidesPerView: 3, spaceBetween: 1 },
 };
 </script>
 
 <style scoped>
-/* Botones con estilo pastel girly */
+/* Estilo para el RadioButton con colores pastel */
 .pastel-btn {
   background-color: rgba(255, 182, 193, 0.2) !important;
   border: none !important;
@@ -410,5 +574,9 @@ const continueShopping = () => {
 /* Personalización del Skeleton */
 :deep(.p-skeleton) {
   background-color: rgba(255, 182, 193, 0.2) !important;
+}
+::v-deep .p-radiobutton-checked .p-radiobutton-box {
+  background-color: #d63384 !important;
+  border-color: #d63384 !important;
 }
 </style>

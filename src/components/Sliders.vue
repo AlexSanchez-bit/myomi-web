@@ -19,7 +19,7 @@
         disableOnInteraction: false,
         pauseOnMouseEnter: false,
       }"
-      :breakpoints="breakpoints"
+      :breakpoints="breakpoints ?? default_bp"
       :pagination="{
         clickable: true,
         dynamicBullets: true,
@@ -43,7 +43,7 @@
         disableOnInteraction: false,
         pauseOnMouseEnter: false,
       }"
-      :breakpoints="breakpoints"
+      :breakpoints="breakpoints ?? default_bp"
       :pagination="{
         clickable: true,
         dynamicBullets: true,
@@ -73,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, toRefs } from "vue";
 import Skeleton from "primevue/skeleton";
 import { ListerService } from "@/utils/service/TableService";
 import { Pagination } from "@/utils/entities/Pagination";
@@ -88,7 +88,20 @@ const props = defineProps<{
   service: ListerService<any>;
   filters: Filter[];
   orders: Sorter[];
+  breakpoints?: any;
 }>();
+
+// Breakpoints para el slider:
+
+const default_bp = {
+  0: { slidesPerView: 1, spaceBetween: 0 }, // Móvil: 1 slide (100% del contenedor)
+  859: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1050: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1200: { slidesPerView: 3, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1400: { slidesPerView: 3.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1700: { slidesPerView: 4.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  2000: { slidesPerView: 5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+};
 
 // Array donde se almacenan las promociones
 const promotions = ref<any[]>([]);
@@ -125,17 +138,6 @@ onMounted(async () => {
     promotions.value = resp;
   }
 });
-
-// Breakpoints para el slider:
-const breakpoints = {
-  0: { slidesPerView: 1, spaceBetween: 0 }, // Móvil: 1 slide (100% del contenedor)
-  859: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-  1050: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-  1200: { slidesPerView: 3, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-  1400: { slidesPerView: 3.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-  1700: { slidesPerView: 4.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-  2000: { slidesPerView: 5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-};
 </script>
 
 <style scoped>

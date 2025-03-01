@@ -51,6 +51,8 @@ export const useAuthStore = defineStore("authStore", {
   },
   actions: {
     autenticate(data: any) {
+      console.log(data);
+      alert();
       localStorage.setItem("userData", JSON.stringify(data));
       this._authenticated = true;
       this._userData = data;
