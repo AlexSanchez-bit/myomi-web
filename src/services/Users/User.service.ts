@@ -33,12 +33,17 @@ export class UserService extends ListerService<IUser> {
     return await supabase.from("user").update(newData).eq("id", user_id);
   }
 
-  async getContacts(user_id) {
-    console.log(user_id);
-    return await supabase
+  async getContacts(user_id: string, default_location?: number) {
+    let query = supabase
       .from("contact")
       .select("*,municipality:location!inner(*)")
       .eq("owner_id", user_id);
+
+    if (default_location) {
+      query = query.eq("municipality.id", default_location);
+    }
+
+    return await query;
   }
 
   async createContact(newData: IContact) {

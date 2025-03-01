@@ -274,8 +274,9 @@
             v-if="selected_location"
             class="flex flex-row items-center gap-1"
           >
-            +
+            <i class="pi pi-plus px-1"></i>
             <img
+              v-if="selected_payment_type.delivery_currency?.icon"
               class="w-5 h-5"
               :src="selected_payment_type.delivery_currency?.icon"
               alt=""
@@ -541,7 +542,14 @@ const clearCart = async () => {
 };
 
 const handlePurchase = () => {
-  alert("Función de compra aún no implementada.");
+  router.push({
+    name: "pay-cart",
+    query: {
+      payment_type_id: selected_payment_type.value.id,
+      pay_currency: selected_currency.value.id,
+      location_id: selected_location.value.id,
+    } as any,
+  });
 };
 
 const continueShopping = () => {

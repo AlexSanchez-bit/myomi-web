@@ -3,7 +3,7 @@
     <Menubar
       breakpoint="2px"
       :model="items"
-      class="!bg-transparent custom-menubar text-sm sm:text-xl uppercase"
+      class="!bg-transparent custom-menubar text-sm lg:text-xl uppercase"
     >
       <template #item="{ item, props, hasSubmenu }">
         <router-link

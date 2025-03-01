@@ -73,5 +73,17 @@
   "stock_not_enought": "El stock no es suficiente",
   "product_not_added": "Producto no añadido",
   "currency_to_pay": "Moneda para pagar",
-  "payment_method": "Método de pago"
+  "payment_method": "Método de pago",
+  "confirmation": "Confirmación",
+  "receiver": "Receptor",
+  "payment": "Pago",
+  "cart_summary": "Resumen del carrito",
+  "payment_and_shipping_summary": "Resumen del pago y envío",
+  "total_to_pay": "Total a pagar",
+  "confirm_payment_information": "Confirmar información de pago",
+  "delivery_location": "Lugar de entrega",
+  "delivery_price": "Precio de entrega",
+  "receiver_data": "Datos del receptor",
+  "back": "Volver",
+  "select_a_contact": "Selecciona un contacto"
 }

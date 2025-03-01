@@ -410,7 +410,6 @@ const isMunicipalityError = ref(false);
 
 function openAddContactDialog() {
   editingContact.value = null;
-  contactForm.id = 0;
   contactForm.name = "";
   contactForm.phone_number = "";
   contactForm.address = "";
