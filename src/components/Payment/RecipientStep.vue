@@ -78,6 +78,7 @@
         icon="pi pi-arrow-right"
         iconPos="right"
         class="p-button-primary pastel-btn"
+        :loading="loading"
         @click="validateAndNext"
       />
     </div>
@@ -103,6 +104,8 @@ import type { IContact } from "@/services/Users/User.service";
 const props = defineProps({
   locationId: { type: String, required: true },
 });
+
+const loading = ref(false);
 
 const emit = defineEmits(["next", "back"]);
 
@@ -163,6 +166,7 @@ const validateAndNext = () => {
     !isAddressError.value &&
     !isMunicipalityError.value
   ) {
+    loading.value = true;
     emit("next");
   }
 };

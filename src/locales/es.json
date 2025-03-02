@@ -85,5 +85,8 @@
   "delivery_price": "Precio de entrega",
   "receiver_data": "Datos del receptor",
   "back": "Volver",
-  "select_a_contact": "Selecciona un contacto"
+  "select_a_contact": "Selecciona un contacto",
+  "change_needed": "Cambio ",
+  "in_case_is_needed": "En caso de que sea necesario",
+  "puchase_successfull": "Compra realizada"
 }

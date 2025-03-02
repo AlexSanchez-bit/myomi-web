@@ -17,6 +17,7 @@ export const useCartStore = defineStore("cart-store", () => {
 
     const { data, error } = await cartService.getMyCart();
 
+    loading.value = false;
     if (error) {
       const { data: cart_data, error: cart_error } =
         await cartService.createCart();
@@ -29,11 +30,11 @@ export const useCartStore = defineStore("cart-store", () => {
         );
       } else {
         cart_id.value = cart_data.id;
+        quantity.value = 0;
       }
       return { data: cart_data, error: cart_error };
     }
 
-    loading.value = false;
     if (data) {
       cart_id.value = data.id;
       quantity.value = data.cart_count;

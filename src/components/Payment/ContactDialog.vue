@@ -49,13 +49,19 @@
       <div
         v-for="contact in contacts"
         :key="contact.id"
-        class="p-3 border-b cursor-pointer hover:bg-pink-50"
+        class="p-1 border rounded-xl cursor-pointer hover:bg-pink-50"
         @click="selectContact(contact)"
       >
         <p class="font-semibold">{{ contact.name }}</p>
-        <p class="text-sm text-gray-600">{{ contact.phone }}</p>
+        <p class="text-sm text-gray-600">{{ contact.phone_number }}</p>
+        <p class="text-sm text-gray-600">
+          {{ contact.address }}- {{ contact.municipality.name }}
+        </p>
       </div>
-      <div v-empty="contacts" class="flex flex-col items-center justify-center">
+      <div
+        v-if="!contacts || contacts.length == 0"
+        class="flex flex-col items-center justify-center"
+      >
         <h5>{{ $t("no_contacts") }}</h5>
       </div>
     </div>

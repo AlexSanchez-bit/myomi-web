@@ -120,6 +120,24 @@
       </div>
     </div>
 
+    <div
+      v-if="selected_payment_type.may_have_change"
+      class="w-full flex flex-row justify-center md:justify-end"
+    >
+      <div class="flex flex-col">
+        <label for="mile" class="font-bold block mb-0.5 text-sm">
+          {{ $t("change_needed") }}
+        </label>
+        <InputNumber
+          v-model="change"
+          input-id="mile"
+          size="small"
+          :suffix="` ${selected_currency.name}`"
+        />
+        <small class="text-zinc-400">{{ $t("in_case_is_needed") }}</small>
+      </div>
+    </div>
+
     <!-- Botones de navegación -->
     <div class="flex justify-between mt-6">
       <Button
@@ -135,7 +153,7 @@
 </template>
 
 <script setup lang="ts">
-import { Skeleton } from "primevue";
+import { InputNumber, Skeleton } from "primevue";
 import Button from "primevue/button";
 import { computed } from "vue";
 
@@ -146,11 +164,13 @@ const props = defineProps({
   selected_location: { type: Object, required: true },
 });
 
+const change = defineModel<number>("change");
+
 const computedTotal = computed(() => {
   let baseTotal = props.cart.value ? props.cart.value.total_price : 0;
   baseTotal += props.selected_location.delivery_price;
   return baseTotal;
 });
 
-defineEmits(["next", "back"]);
+const emit = defineEmits(["next", "backt", "update:change"]);
 </script>

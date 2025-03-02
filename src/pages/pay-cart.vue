@@ -29,6 +29,7 @@
         :selected_location="selected_location"
         @next="currentStep++"
         @back="goBack"
+        v-model:change="needed_change"
       />
 
       <!-- Paso 2: Información del destinatario -->
@@ -36,7 +37,7 @@
         v-else-if="currentStep === 2"
         v-model="receiver"
         :location-id="locationId"
-        @next="currentStep++"
+        @next="handlePayment"
         @back="currentStep--"
       />
 
@@ -61,21 +62,27 @@ import PaymentStep from "@/components/Payment/PaymentStep.vue";
 import { useCartStore } from "@/stores/cartStore";
 import { useLocationService } from "@/composables/Location/useLocationService";
 import { usePaymentTypeService } from "@/composables/PaymentTypes/usePaymentTypes";
-import { useCurrencyStore } from "@/stores/currency";
+
 import { Pagination } from "@/utils/entities/Pagination";
 import type { IContact } from "@/services/Users/User.service";
+import { supabase } from "@/setup";
+import { useAuthStore } from "@/stores/AuthStore";
+import { useI18n } from "vue-i18n";
+import { useToastStorage } from "@/stores/ToasterStorage";
+import { useOrderService } from "@/composables/Order/useOrderService";
 
 const route = useRoute();
 const router = useRouter();
 const store = useCartStore();
 const locationService = useLocationService();
 const paymentTypeService = usePaymentTypeService();
-const currencyStore = useCurrencyStore();
-
-const receiver = ref<Partial<IContact>>({});
+const { t } = useI18n();
+const { notify } = useToastStorage();
+const orderService = useOrderService();
 
 // Datos del carrito y selecciones
 const cart = ref<any>(null);
+const receiver = ref<Partial<IContact>>({});
 const loading = ref(true);
 const processing = ref(false);
 const locations = ref<any[]>([]);
@@ -83,6 +90,8 @@ const payment_types = ref<any[]>([]);
 const selected_payment_type = ref<any>(null);
 const selected_currency = ref();
 const delivery_location = ref<number | null>(null);
+
+const needed_change = ref(0);
 
 // Obtener el ID de la localización desde los query params
 const locationId = computed(() => route.query.location_id as string);
@@ -125,7 +134,6 @@ const loadCart = async () => {
   payment_types.value = paymentResp || [];
   if (payment_types.value.length > 0) {
     selected_payment_type.value = payment_types.value[0];
-    console.log(selected_payment_type.value);
     selected_currency.value =
       selected_payment_type.value.allowed_currencies.find(
         (curr) =>
@@ -154,15 +162,42 @@ const goBack = () => {
 };
 
 // Manejar el pago
-const handlePayment = () => {
-  router.push({
-    name: "payment-success",
-    query: {
-      payment_type_id: selected_payment_type.value.id,
-      pay_currency: selected_currency.value.id,
-      location_id: selected_location.value.id,
-    },
+const handlePayment = async () => {
+  const { anonymous, userData: user } = useAuthStore();
+
+  const total = selected_payment_type.value.delivery_included
+    ? cart.value.total_price + cart.value.delivery_price
+    : cart.value.total_price;
+
+  const delivery_payment = selected_payment_type.value.delivery_included
+    ? null
+    : selected_location.value.delivery_price;
+
+  const { error } = await orderService.createOrder({
+    contact: receiver.value,
+    currency: selected_currency.value,
+    user_id: anonymous ? null : user.id,
+    session_id: !anonymous ? null : user.id,
+    payment_type_id: selected_payment_type.value.id,
+    total: total,
+    delivery_currency: selected_payment_type.value.delivery_currency,
+    delivery_payment,
+    products: cart.value.cart_items.map((elem) => {
+      return {
+        product_id: elem.product.id,
+        price: elem.product.price,
+        quantity: elem.quantity,
+      };
+    }),
+    change: needed_change.value,
   });
+  if (!error) {
+    router.push("/");
+    store.getMyCart();
+    notify("success", t("puchase_successfull"), "", 3000);
+  } else {
+    notify("error", error.message, "", 3000);
+  }
 };
 </script>
 

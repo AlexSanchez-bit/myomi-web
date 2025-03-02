@@ -251,7 +251,7 @@
         <!-- Total del carrito (incluyendo envío) -->
         <div
           class="text-right text-xl font-semibold text-pink-700 flex flex-row items-center justify-end"
-          v-if="selected_payment_type.delivery_included"
+          v-if="selected_payment_type?.delivery_included"
         >
           {{ $t("total") }}:
           <img class="w-5 h-5" :src="selected_currency?.icon" alt="" />
