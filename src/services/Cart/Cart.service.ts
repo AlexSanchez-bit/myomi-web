@@ -1,6 +1,7 @@
 import { supabase } from "@/setup";
 import { useAuthStore } from "@/stores/AuthStore";
 import { ListerService } from "@/utils/service/TableService";
+import type { IProduct } from "../Shops/Products/Products.service";
 
 export interface ICart {
   id: string;
@@ -12,7 +13,7 @@ export interface ICart {
 }
 
 export class CartService extends ListerService<ICart> {
-  private cart_items: { product_id: string; quantity: number }[] = [];
+  private cart_items: { product: IProduct; quantity: number }[] = [];
   constructor() {
     super("cart", ["*"]);
   }
@@ -47,10 +48,7 @@ export class CartService extends ListerService<ICart> {
       query = query.eq("user_id", userData!.id);
     }
     const resp = await query.single();
-    if (!resp.error) {
-      const { data: items_data } = await this.get_cart_items(resp.data.id);
-      this.cart_items = items_data ?? [];
-    }
+    this.cart_items = resp?.data.cart_items || [];
 
     return resp;
   }
@@ -73,15 +71,18 @@ export class CartService extends ListerService<ICart> {
   }
 
   async getCartItems(cart_id: string | number) {
-    const { authenticated, sessionId } = useAuthStore();
-    let query = supabase
+    const resp = await supabase
       .from("cart_items,product(name,images)")
       .select("*")
       .eq("cart_id", cart_id);
-    if (!authenticated) {
-      query = query.setHeader("session_id", sessionId);
+
+    if (!resp.error) {
+      resp.data.forEach((cartItem) => {
+        console.log(cartItem);
+      });
     }
-    return await query;
+
+    return resp;
   }
 
   /**Modificar Carrito**/
@@ -91,8 +92,9 @@ export class CartService extends ListerService<ICart> {
     quantity_change: number,
   ) {
     // Buscar el producto en el array local
+    console.error(this.cart_items, " elementos");
     const existingItem = this.cart_items.find(
-      (item) => item.product_id === product_id,
+      (item) => item.product.id === product_id,
     );
 
     if (!existingItem) {

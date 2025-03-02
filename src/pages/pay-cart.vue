@@ -65,7 +65,6 @@ import { usePaymentTypeService } from "@/composables/PaymentTypes/usePaymentType
 
 import { Pagination } from "@/utils/entities/Pagination";
 import type { IContact } from "@/services/Users/User.service";
-import { supabase } from "@/setup";
 import { useAuthStore } from "@/stores/AuthStore";
 import { useI18n } from "vue-i18n";
 import { useToastStorage } from "@/stores/ToasterStorage";
@@ -112,6 +111,11 @@ const loadCart = async () => {
   const resp = await store.getMyCart();
   processing.value = false;
   cart.value = resp?.data || null;
+
+  if (cart.value.cart_items.some((ci) => ci.product.stock < ci.quantity)) {
+    router.push("/cart");
+    notify("error", t("we_are_sorry"), `${t("a_product_is_off_stock")}`, 3000);
+  }
 
   // Cargar ubicaciones
   const locResp = await locationService.getAll([], new Pagination(0, 100), []);
@@ -173,7 +177,7 @@ const handlePayment = async () => {
     ? null
     : selected_location.value.delivery_price;
 
-  const { error } = await orderService.createOrder({
+  const resp = await orderService.createOrder({
     contact: receiver.value,
     currency: selected_currency.value,
     user_id: anonymous ? null : user.id,
@@ -191,12 +195,13 @@ const handlePayment = async () => {
     }),
     change: needed_change.value,
   });
-  if (!error) {
+  if (resp.data.success) {
     router.push("/");
     store.getMyCart();
     notify("success", t("puchase_successfull"), "", 3000);
   } else {
-    notify("error", error.message, "", 3000);
+    notify("error", resp.data.error, "", 3000);
+    router.push("/cart");
   }
 };
 </script>

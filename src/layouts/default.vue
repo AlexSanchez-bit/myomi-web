@@ -2,7 +2,7 @@
   <NavBar />
   <router-view v-slot="{ Component, route }" class="min-h-screen">
     <transition name="page-opacity" mode="out-in">
-      <keep-alive :exclude="['cart']">
+      <keep-alive :exclude="['cart', 'pay-cart']">
         <component :is="Component" :key="route.fullPath" />
       </keep-alive>
     </transition>

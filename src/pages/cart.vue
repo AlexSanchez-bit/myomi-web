@@ -67,7 +67,7 @@
           </div>
 
           <!-- Controles de cantidad -->
-          <div class="flex items-center space-x-2 mt-4 md:mt-0">
+          <div class="flex items-center space-x-2 mt-4 md:mt-0 relative">
             <Button
               icon="pi pi-minus"
               class="p-button-rounded pastel-btn"
@@ -76,7 +76,10 @@
                 processing || item.quantity <= 1 || updating == item.product.id
               "
             />
-            <span class="text-lg font-semibold text-pink-700">
+            <span
+              class="text-lg font-semibold text-pink-700"
+              :class="{ 'text-red-500': item.product.stock < item.quantity }"
+            >
               {{ item.quantity }}
             </span>
             <Button
@@ -95,7 +98,17 @@
               @click="removeItem(item)"
               :disabled="processing || updating == item.product.id"
             />
+            <small
+              v-if="item.product.stock < item.quantity"
+              class="text-gray-500/60 text-xs -bottom-8 absolute w-full text-center hidden md:block"
+              >{{ $t("reduce_to_buy") }}</small
+            >
           </div>
+          <small
+            v-if="item.product.stock < item.quantity"
+            class="text-gray-500/60 text-xs -bottom-8 w-full text-center md:hidden"
+            >{{ $t("reduce_to_buy") }}</small
+          >
         </div>
 
         <!-- Selector de método de pago con RadioButton (vertical y con estilo en el propio botón) -->
@@ -304,7 +317,7 @@
             :label="$t('pay')"
             class="p-button-success pastel-btn w-full"
             @click="handlePurchase"
-            :disabled="processing || !delivery_location"
+            :disabled="processing || !delivery_location || invalid_cart"
             :loading="processing"
           />
           <Button
@@ -370,7 +383,7 @@
         {
           field: 'id',
           matchMode: FilterMatchMode.NOT_EQUALS,
-          value: cart?.cart_items.map((item) => item.product_id),
+          value: cart?.cart_items?.map((item) => item.product_id),
         },
       ]"
       :orders="[
@@ -433,6 +446,7 @@ const cart = ref<any>(null);
 const loading = ref(true);
 const updating = ref(null);
 const processing = ref(false);
+const invalid_cart = ref(false);
 const router = useRouter();
 const locations = ref<ILocation[]>([]);
 const payment_types = ref<IPaymentType[]>([]);
@@ -453,7 +467,7 @@ watch(selected_payment_type, () => {
 });
 
 const currency_types = computed(() => {
-  return selected_payment_type.value?.allowed_currencies.map(
+  return selected_payment_type.value?.allowed_currencies?.map(
     (currency) => currency.currency,
   );
 });
@@ -462,6 +476,11 @@ const loadCart = async () => {
   processing.value = true;
   const resp = await store.getMyCart();
   cart.value = resp?.data || null;
+
+  if (cart.value.cart_items.some((ci) => ci.product.stock < ci.quantity)) {
+    invalid_cart.value = true;
+  }
+
   const locResp = await locationService.getAll([], new Pagination(0, 100), []);
   locations.value = locResp || [];
   processing.value = false;
@@ -508,6 +527,7 @@ const computedTotal = computed(() => {
 const updateQuantity = async (item: any, change: number) => {
   processing.value = true;
   updating.value = item.product.id;
+  console.error(change);
   const resp = await store.updateProductQuantity(item.product.id, change);
   if (resp && !resp.error) {
     updating.value = null;
