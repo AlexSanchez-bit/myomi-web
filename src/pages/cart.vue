@@ -477,7 +477,7 @@ const loadCart = async () => {
   const resp = await store.getMyCart();
   cart.value = resp?.data || null;
 
-  if (cart.value.cart_items.some((ci) => ci.product.stock < ci.quantity)) {
+  if (cart.value?.cart_items?.some((ci) => ci.product.stock < ci.quantity)) {
     invalid_cart.value = true;
   }
 

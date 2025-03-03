@@ -13,7 +13,7 @@ export interface ICart {
 }
 
 export class CartService extends ListerService<ICart> {
-  private cart_items: { product: IProduct; quantity: number }[] = [];
+  private cart_items: { product: Partial<IProduct>; quantity: number }[] = [];
   constructor() {
     super("cart", ["*"]);
   }
@@ -48,7 +48,7 @@ export class CartService extends ListerService<ICart> {
       query = query.eq("user_id", userData!.id);
     }
     const resp = await query.single();
-    this.cart_items = resp?.data.cart_items || [];
+    this.cart_items = resp?.data?.cart_items || [];
 
     return resp;
   }
@@ -92,7 +92,6 @@ export class CartService extends ListerService<ICart> {
     quantity_change: number,
   ) {
     // Buscar el producto en el array local
-    console.error(this.cart_items, " elementos");
     const existingItem = this.cart_items.find(
       (item) => item.product.id === product_id,
     );
@@ -117,7 +116,10 @@ export class CartService extends ListerService<ICart> {
         return error;
       }
       // Actualizar el array local
-      this.cart_items.push({ product_id, quantity: quantity_change });
+      this.cart_items.push({
+        product: { id: product_id },
+        quantity: quantity_change,
+      });
       return data;
     } else {
       // El producto ya existe, calcular la nueva cantidad
