@@ -21,6 +21,13 @@ export interface IOrder {
   change: number;
 }
 
+export enum OrderStatus {
+  CREATED = "CREATED",
+  PAYED = "PAYED",
+  CANCELLED = "CANCELLED",
+  DELIVERED = "DELIVERED",
+}
+
 export class OrderService extends ListerService<IOrder> {
   constructor() {
     super("order", ["*", "products:order_product!inner(*)"]);

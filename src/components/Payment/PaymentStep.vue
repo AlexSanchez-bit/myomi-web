@@ -1,56 +1,150 @@
-<template>
-  <div class="space-y-6">
-    <h2 class="text-2xl font-bold text-pink-600 mb-4">
-      {{ $t("payment_method") }}
-    </h2>
-
-    <!-- Opciones de pago -->
-    <div
-      class="p-4 border rounded-lg shadow-md bg-pink-100/30 backdrop-blur-md"
-    >
-      <div
-        v-for="payment in paymentTypes"
-        :key="payment.id"
-        class="flex items-center mb-2"
-      >
-        <RadioButton
-          v-model="selectedPayment"
-          :value="payment"
-          class="mr-2 pastel-btn"
-        />
-        <span class="text-pink-700">
-          <img class="w-5 h-5 inline-block" :src="payment.icon" alt="" />
-          {{ payment.name }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Botones de navegación -->
-    <div class="flex justify-between mt-6">
-      <Button
-        :label="$t('back')"
-        class="p-button-secondary pastel-btn"
-        @click="$emit('back')"
-      />
-      <Button
-        :label="$t('confirm_payment')"
-        class="p-button-success pastel-btn"
-        @click="$emit('confirm')"
-      />
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref } from "vue";
-import Button from "primevue/button";
-import RadioButton from "primevue/radiobutton";
+import { onMounted, ref } from "vue";
+import { loadStripe } from "@stripe/stripe-js";
+import { stripeKey, supabase } from "@/setup";
+import { Button } from "primevue";
 
-defineProps({
-  paymentTypes: { type: Array, required: true },
+const props = defineProps<{
+  total: number;
+  currency_name: string;
+  order_id: number;
+}>();
+
+const loading = ref(false);
+
+const stripe = ref(null);
+const elements = ref(null);
+const cardElement = ref(null);
+const clientSecret = ref("");
+
+onMounted(async () => {
+  loading.value = true;
+  stripe.value = await loadStripe(stripeKey);
+  loading.value = false;
+  elements.value = stripe.value.elements();
+  cardElement.value = elements.value.create("card");
+  cardElement.value.mount("#card-element");
 });
 
-defineEmits(["confirm", "back"]);
+const handlePayment = async () => {
+  loading.value = true;
+  const { data: payIntentData, error: payIntentError } =
+    await supabase.functions.invoke("create-payment-intent", {
+      method: "POST",
+      body: {
+        amount: props.total * 100, //stripe solo usa centavos
+        currency: props.currency_name.toLowerCase(),
+        order_id: props.order_id,
+      },
+    });
+  loading.value = false;
+  if (!payIntentError) {
+    clientSecret.value = payIntentData.clientSecret;
 
-const selectedPayment = ref(null);
+    loading.value = true;
+    const { paymentIntent, error } = await stripe.value.confirmCardPayment(
+      clientSecret.value,
+      {
+        payment_method: {
+          card: cardElement.value,
+        },
+      },
+    );
+
+    loading.value = false;
+    if (error) {
+      console.error("Error en el pago:", error);
+      emit("error_on_payment");
+    } else if (paymentIntent.status === "succeeded") {
+      console.log("Payment succeeded:", paymentIntent);
+      emit("created_payment", paymentIntent.id);
+    }
+  }
+};
+
+const emit = defineEmits(["created_payment", "error_on_payment"]);
 </script>
+
+<template>
+  <form @submit.prevent="handlePayment" class="payment-form">
+    <h2 class="form-title">{{ $t("secure_payment") }}</h2>
+    <div class="form-group">
+      <label for="card-element">{{ $t("credit_or_debit_card") }}</label>
+      <div id="card-element" class="card-input"></div>
+      <p class="form-hint">{{ $t("data_will_be_secure_and_encrypted") }}</p>
+    </div>
+    <Button
+      type="submit"
+      class="btn-pay"
+      :loading="loading"
+      :label="`💳 ${$t('make_pay')} ${props.total.toFixed(2)} ${props.currency_name.toUpperCase()}`"
+    >
+    </Button>
+  </form>
+</template>
+
+<style scoped>
+/* Contenedor del formulario */
+.payment-form {
+  max-width: 400px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+  margin: auto;
+}
+
+/* Título del formulario */
+.form-title {
+  text-align: center;
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Grupo de formulario */
+.form-group {
+  margin-bottom: 15px;
+}
+
+/* Etiquetas */
+label {
+  font-weight: bold;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Campo de tarjeta */
+.card-input {
+  background: #f8f8f8;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Texto de ayuda */
+.form-hint {
+  font-size: 12px;
+  color: #777;
+  margin-top: 5px;
+}
+
+/* Botón de pago */
+.btn-pay {
+  width: 100%;
+  padding: 12px;
+  @apply bg-red-400 text-white;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.btn-pay:hover {
+  background-color: #0056b3;
+}
+</style>

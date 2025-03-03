@@ -13,5 +13,6 @@ export const i18n = createI18n({
 
 const supabaseUrl = (import.meta as any).env.VITE_SUPABASE_URL!;
 const supabaseKey = (import.meta as any).env.VITE_ANON_KEY!;
+export const stripeKey = (import.meta as any).env.VITE_STRIPE_KEY!;
 
 export const supabase = createClient(supabaseUrl, supabaseKey);

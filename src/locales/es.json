@@ -91,5 +91,11 @@
   "puchase_successfull": "Compra realizada",
   "reduce_to_buy": "Reduce la cantidad para comprar",
   "we_are_sorry": "Lo sentimos",
-  "a_product_is_off_stock": "Uno de sus productos se agotó"
+  "a_product_is_off_stock": "Uno de sus productos se agotó",
+  "there_was_an_error_paying": "Ocurrió un error al realizar el pago",
+  "secure_payment": "Pago seguro",
+  "credit_or_debit_card": "Tarjeta de crédito o débito",
+  "data_will_be_secure_and_encrypted": "Los datos se almacenarán de forma segura y encriptada",
+  "make_pay": "Pagar",
+  "error_on_payment": "Error al realizar el pago"
 }

@@ -167,7 +167,7 @@ const props = defineProps({
 const change = defineModel<number>("change");
 
 const computedTotal = computed(() => {
-  let baseTotal = props.cart.value ? props.cart.value.total_price : 0;
+  let baseTotal = props.cart ? props.cart.total_price : 0;
   baseTotal += props.selected_location.delivery_price;
   return baseTotal;
 });

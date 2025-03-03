@@ -44,7 +44,11 @@
       <!-- Paso 3: Efectuar el pago -->
       <PaymentStep
         v-else-if="currentStep === 3"
-        :payment-types="payment_types"
+        :total="cart.total_price + selected_location.delivery_price"
+        :currency_name="selected_currency.name"
+        :order_id="order_id"
+        @created_payment="create_payment"
+        @error_on_payment="error_on_payment"
         @confirm="handlePayment"
         @back="currentStep--"
       />
@@ -165,8 +169,19 @@ const goBack = () => {
   else router.push("/cart");
 };
 
-// Manejar el pago
-const handlePayment = async () => {
+const order_id = ref(null);
+
+async function create_payment(payment_id: string) {
+  router.push("/");
+  store.getMyCart();
+  notify("success", t("puchase_successfull"), "", 3000);
+}
+
+function error_on_payment() {
+  notify("error", t("there_was_an_error_paying"), "", 3000);
+}
+
+async function create_order() {
   const { anonymous, userData: user } = useAuthStore();
 
   const total = selected_payment_type.value.delivery_included
@@ -195,6 +210,22 @@ const handlePayment = async () => {
     }),
     change: needed_change.value,
   });
+  return resp;
+}
+
+// Manejar el pago
+const handlePayment = async () => {
+  if (selected_payment_type.value.external) {
+    const { data } = await create_order();
+    if (data.success) {
+      order_id.value = data.order.id;
+      currentStep.value = 3;
+    } else {
+      notify("error", data.error, "", 3000);
+    }
+    return;
+  }
+  const resp = await create_order();
   if (resp.data.success) {
     router.push("/");
     store.getMyCart();
