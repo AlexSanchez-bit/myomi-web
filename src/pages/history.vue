@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="min-h-screen overflow-hidden">
     <Tabs v-model:value="currentTab" class="w-full justify-center">
       <TabList>
         <Tab :value="null">{{ $t("all") }}</Tab>

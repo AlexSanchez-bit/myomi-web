@@ -23,7 +23,7 @@
       </div>
       <router-link to="/history" class="mx-auto mt-8">
         <div
-          class="flex flex-row justify-between mx-auto items-center border-zinc-500 shadow-lg hover:shadow-xl rounded-lg p-3 w-96 transition-all duration-500"
+          class="flex flex-row justify-between mx-auto items-center border-zinc-500 shadow-lg hover:shadow-xl rounded-lg p-3 md:w-96 transition-all duration-500"
         >
           {{ $t("history") }}
           <i class="pi pi-caret-right"></i>
