@@ -50,7 +50,9 @@ const props = defineProps<{
 import { onMounted, ref, toRefs } from "vue";
 import { useToastStorage } from "@/stores/ToasterStorage";
 
-const { displayClass, filter } = toRefs(props);
+const { displayClass } = toRefs(props);
+
+const filter = ref(props.filter);
 
 const prevLoad = ref();
 const nextLoad = ref();

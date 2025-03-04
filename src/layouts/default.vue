@@ -12,7 +12,12 @@
 <script setup lang="ts">
 import NavBar from "@/components/NavBar.vue";
 import Footer from "@/components/Footer.vue";
-const filter_routes = ["brand.details", "category.details", "products"];
+const filter_routes = [
+  "brand.details",
+  "category.details",
+  "products",
+  "history",
+];
 </script>
 
 <style scoped>

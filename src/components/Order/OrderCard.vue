@@ -12,9 +12,8 @@
         {{ order.currency?.name }}
         <i v-if="order.delivery_payment">
           +
-          {{ order.currency.name }}
           {{ order.delivery_payment * order.delivery_currency?.change_value }}
-          {{ order.delivery_currency?.name }}
+          {{ order.delivery_currency?.name }} ({{ $t("delivery") }})
         </i>
       </p>
       <p class="flex items-center gap-1 flex-row">
@@ -96,6 +95,8 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
 
 const { t } = useI18n();
 
@@ -132,9 +133,110 @@ const toggleDetails = () => {
   showDetails.value = !showDetails.value;
 };
 
-// Generar Factura (Ejemplo)
-const generateInvoice = () => {
-  alert(`${t("order.generateInvoice")} ✅`);
+// Función para generar la factura
+const generateInvoice = async () => {
+  if (!props.order) return;
+
+  const doc = new jsPDF();
+
+  // Agregar logo
+  const logoPath = "/logo/logo.png";
+  const imgWidth = 20;
+  const imgHeight = 20;
+
+  try {
+    const img = new Image();
+    img.src = logoPath;
+    await new Promise((resolve, reject) => {
+      img.onload = () => {
+        doc.addImage(img, "PNG", 160, 10, imgWidth, imgHeight);
+        resolve();
+      };
+      img.onerror = reject;
+    });
+  } catch (error) {
+    console.error("Error cargando el logo:", error);
+  }
+
+  // Variables de conversión
+  const currencyName = props.order.currency?.name || "USD";
+  const currencyRate = props.order.currency?.change_value || 1;
+
+  // Información principal
+  doc.setFontSize(18);
+  doc.text(`Factura - Orden #${props.order.id}`, 14, 20);
+
+  doc.setFontSize(12);
+  doc.text(`Cliente: ${props.order.contact?.name || "No disponible"}`, 14, 30);
+  doc.text(
+    `Teléfono: ${props.order.contact?.phone_number || "No disponible"}`,
+    14,
+    38,
+  );
+  doc.text(
+    `Dirección: ${props.order.contact?.address || "No disponible"}, ${props.order.contact?.municipality || ""}`,
+    14,
+    46,
+  );
+  doc.text(
+    `Fecha: ${new Date(props.order.created_at).toLocaleDateString()}`,
+    14,
+    54,
+  );
+  doc.text(
+    `Método de Pago: ${props.order.payment_type?.name || "No disponible"}`,
+    14,
+    62,
+  );
+
+  // Tabla de productos
+  if (props.order.products?.length) {
+    const productsData = props.order.products.map((product, index) => [
+      index + 1,
+      product.product?.name || "Producto desconocido",
+      `$${(product.price * currencyRate).toFixed(2)} ${currencyName}`,
+      product.quantity || 1,
+      `$${(product.price * product.quantity * currencyRate).toFixed(2)} ${currencyName}`,
+    ]);
+
+    autoTable(doc, {
+      startY: 70,
+      head: [["#", "Producto", "Precio Unit.", "Cantidad", "Subtotal"]],
+      body: productsData,
+    });
+
+    let finalY = doc.lastAutoTable.finalY || 80;
+
+    // Total
+    doc.setFontSize(14);
+    doc.text(
+      `Total: $${(props.order.total * currencyRate).toFixed(2)} ${currencyName}`,
+      14,
+      finalY + 10,
+    );
+    finalY += 10;
+
+    // Pago de envío si existe
+    if (
+      props.order.delivery_payment !== null &&
+      props.order.delivery_currency
+    ) {
+      const deliveryTotal = (
+        props.order.delivery_payment *
+        props.order.delivery_currency.change_value
+      ).toFixed(2);
+      doc.text(
+        `Pago de Envío: $${deliveryTotal} ${props.order.delivery_currency.name}`,
+        14,
+        finalY + 10,
+      );
+    }
+  } else {
+    doc.text("No hay productos en esta orden.", 14, 80);
+  }
+
+  // Guardar el PDF
+  doc.save(`Factura_Orden_${props.order.id || "sin_id"}.pdf`);
 };
 </script>
 

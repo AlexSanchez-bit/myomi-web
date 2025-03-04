@@ -1,9 +1,17 @@
 <template>
   <div>
+    <Tabs v-model:value="currentTab" class="w-full justify-center">
+      <TabList>
+        <Tab :value="null">{{ $t("all") }}</Tab>
+        <Tab value="CREATED">{{ $t("created") }}</Tab>
+        <Tab value="PAID">{{ $t("paid") }}</Tab>
+        <Tab value="CANCELED">{{ $t("canceled") }}</Tab>
+      </TabList>
+    </Tabs>
     <LazyLoadScroll
       ref="lazyScroll"
       :service="lazyLister"
-      :filter="{}"
+      :filter="filter"
       display-class="flex flex-wrap gap-2 p-4 justify-center items-center"
     >
       <template #item="{ item }">
@@ -17,6 +25,11 @@
 </template>
 
 <script setup lang="ts">
+import Tabs from "primevue/tabs";
+import TabList from "primevue/tablist";
+import Tab from "primevue/tab";
+import TabPanels from "primevue/tabpanels";
+import TabPanel from "primevue/tabpanel";
 import LazyLoadScroll from "@/components/LazyLoadScroll.vue";
 import { useOrderService } from "@/composables/Order/useOrderService";
 import type { IOrder } from "@/services/Order/OrderService";
@@ -31,6 +44,24 @@ import { useAuthStore } from "@/stores/AuthStore";
 const { userData, anonymous } = useAuthStore();
 import { FilterMatchMode } from "@primevue/core/api";
 import { Skeleton } from "primevue";
+import { watch, ref } from "vue";
+
+const lazyScroll = ref();
+
+const currentTab = ref(null);
+const filter = ref({});
+
+watch(currentTab, async () => {
+  const nv = currentTab.value;
+  (filter.value = nv
+    ? {
+        field: "status",
+        matchMode: FilterMatchMode.EQUALS,
+        value: nv,
+      }
+    : {}),
+    await lazyScroll.value.apply_filters(filter.value);
+});
 
 const lazyLister: IGenericLister<IOrder> = {
   GetAll: async (page: number, limit: number, filter: any) => {
@@ -40,8 +71,9 @@ const lazyLister: IGenericLister<IOrder> = {
       value: userData.id,
     };
 
+    console.log(filter);
     const resp = await service.getAllTotalCount(
-      [default_filter],
+      [default_filter, filter],
       new Pagination(page, limit),
       [],
     );
@@ -56,3 +88,8 @@ const lazyLister: IGenericLister<IOrder> = {
   },
 };
 </script>
+<style scoped>
+:deep(.p-tab-active) {
+  @apply !text-black !decoration-black !border-none;
+}
+</style>
