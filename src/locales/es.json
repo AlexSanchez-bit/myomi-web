@@ -97,5 +97,31 @@
   "credit_or_debit_card": "Tarjeta de crédito o débito",
   "data_will_be_secure_and_encrypted": "Los datos se almacenarán de forma segura y encriptada",
   "make_pay": "Pagar",
-  "error_on_payment": "Error al realizar el pago"
+  "error_on_payment": "Error al realizar el pago",
+  "history": "Historial",
+  "order": {
+    "orderNumber": "Orden #",
+    "total": "Total",
+    "paymentMethod": "Método de Pago",
+    "date": "Fecha",
+    "productsCount": "Productos",
+    "status": {
+      "paid": "Pagado",
+      "created": "Creado",
+      "cancelled": "Cancelado",
+      "delivered": "Entregado"
+    },
+    "viewDetails": "Ver Más Detalles",
+    "hideDetails": "Ocultar Detalles",
+    "generateInvoice": "Generar Factura",
+    "productDetails": "Detalles del Producto",
+    "contactDetails": "Información del Contacto",
+    "contactName": "Nombre",
+    "contactPhone": "Teléfono",
+    "contactAddress": "Dirección",
+    "contactCity": "Ciudad",
+    "price": "Precio",
+    "quantity": "Cantidad",
+    "unknown": "Desconocido"
+  }
 }

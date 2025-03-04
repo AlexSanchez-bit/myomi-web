@@ -68,5 +68,22 @@
   "buy": "Buy",
   "keep_shopping": "Keep Shopping",
   "price": "Price",
-  "subtotal": "Subtotal"
+  "subtotal": "Subtotal",
+  "order": {
+    "orderNumber": "Order #",
+    "total": "Total",
+    "paymentMethod": "Payment Method",
+    "date": "Date",
+    "productsCount": "Products",
+    "status": {
+      "paid": "Paid",
+      "created": "Created",
+      "cancelled": "Cancelled",
+      "delivered": "Delivered"
+    },
+    "viewDetails": "View Details",
+    "hideDetails": "Hide Details",
+    "generateInvoice": "Generate Invoice",
+    "productDetails": "Product Details"
+  }
 }

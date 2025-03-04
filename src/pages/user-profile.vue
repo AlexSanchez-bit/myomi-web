@@ -21,6 +21,14 @@
           </button>
         </router-link>
       </div>
+      <router-link to="/history" class="mx-auto mt-8">
+        <div
+          class="flex flex-row justify-between mx-auto items-center border-zinc-500 shadow-lg hover:shadow-xl rounded-lg p-3 w-96 transition-all duration-500"
+        >
+          {{ $t("history") }}
+          <i class="pi pi-caret-right"></i>
+        </div>
+      </router-link>
     </div>
 
     <!-- Usuario autenticado -->
@@ -130,6 +138,15 @@
             </div>
           </div>
         </div>
+
+        <router-link to="/history" class="w-96">
+          <div
+            class="flex flex-row justify-between items-center border-zinc-200 shadow-lg hover:shadow-xl rounded-lg p-3 w-full transition-all duration-500"
+          >
+            {{ $t("history") }}
+            <i class="pi pi-caret-right"></i>
+          </div>
+        </router-link>
 
         <!-- Gestión de contactos -->
         <div
@@ -358,7 +375,6 @@ async function saveProfile() {
   console.log(resp);
   editMode.value = false;
   loading.value = false;
-  alert("Perfil actualizado correctamente");
 }
 
 let originalData: IUser | null = null;

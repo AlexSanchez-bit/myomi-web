@@ -14,7 +14,7 @@ export interface IOrder {
   delivery_currency: ICurrency;
   delivery_payment: number;
   products: {
-    product_id: string;
+    product: IProduct;
     price: number;
     quantity: number;
   }[];
@@ -30,7 +30,11 @@ export enum OrderStatus {
 
 export class OrderService extends ListerService<IOrder> {
   constructor() {
-    super("order", ["*", "products:order_product!inner(*)"]);
+    super("order", [
+      "*",
+      "products:order_product!inner(*,product(*))",
+      "payment_type(*)",
+    ]);
   }
 
   async createOrder(newData: IOrder) {

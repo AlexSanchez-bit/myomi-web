@@ -1,6 +1,6 @@
 <template>
   <nav
-    class="p-4 sticky z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-col header w-full top-0 opacity-95 !text-black bg-white"
+    class="p-2 sticky z-40 box-border transition-all duration-500 font-albra-serif-bold flex flex-col header w-full top-0 opacity-95 !text-black bg-white"
     :class="{
       'text-white': scrolled <= 60 && route.path == '/',
       'text-black': scrolled > 43,
@@ -45,10 +45,6 @@
         </router-link>
       </div>
     </div>
-
-    <!-- <span class="w-full flex-1 px-1 pt-3 block"> -->
-    <!--   <SearchBar /> -->
-    <!-- </span> -->
 
     <div
       class="flex-row gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden sm:flex"

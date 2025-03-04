@@ -6,6 +6,7 @@ import { materialRoutes } from "./modules/material";
 import { brandRoutes } from "./modules/brand";
 import { cartRoutes } from "./modules/shop/cart";
 import { userRoutes } from "./modules/user";
+import { historyRoutes } from "./modules/history";
 
 const router = createRouter({
   history: createWebHistory("#"),
@@ -33,6 +34,7 @@ const router = createRouter({
         ...cartRoutes,
         ...brandRoutes,
         ...userRoutes,
+        ...historyRoutes,
       ],
     },
     {
