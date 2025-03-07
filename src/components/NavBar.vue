@@ -57,7 +57,7 @@
       <CategoryMenu />
 
       <router-link
-        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black p-2 rounded-sm cursor-pointer text-xl hidden lg:block uppercase"
+        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black p-2 rounded-sm cursor-pointer lg:text-xl hidden sm:block uppercase"
         to="/about_us"
         custom
       >

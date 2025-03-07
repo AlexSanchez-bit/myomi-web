@@ -200,7 +200,7 @@
       :filters="[
         {
           field: 'product_category.category_id',
-          matchMode: FilterMatchMode.IN,
+          matchMode: 'NOT_IN',
           value: [...product.categories],
         },
         {

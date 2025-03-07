@@ -2,6 +2,7 @@ import { supabase } from "@/setup";
 import { ListerService } from "@/utils/service/TableService";
 import type { IContact } from "../Users/User.service";
 import type { ICurrency } from "../Currency/Currency.service";
+import type { IProduct } from "../Shops/Products/Products.service";
 
 export interface IOrder {
   id?: number;

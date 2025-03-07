@@ -31,7 +31,8 @@
               :to="{ name: 'product.details', params: { id: item.product.id } }"
             >
               <Img
-                :src="item.product.images[0]"
+                v-if="item.product?.images && item.product?.images.length > 0"
+                :src="item.product?.images[0]"
                 alt="Producto"
                 imageClass="w-16 h-16 md:w-20 md:h-20 rounded-xl object-cover border-2 border-pink-300/50"
               />

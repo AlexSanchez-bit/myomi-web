@@ -10,7 +10,7 @@
       <Img
         :src="product?.images.length > 0 ? product?.images[0] : '/noimage.webp'"
         :alt="product?.name"
-        class="w-full"
+        class="w-full !h-60"
         imageClass="w-full h-60 object-cover"
       >
       </Img>

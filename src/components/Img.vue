@@ -8,7 +8,11 @@
       @error="handleError"
       :class="imageClass ?? 'w-full h-full object-contain'"
     />
-    <Skeleton v-if="loading" class="absolute top-0 left-0 !w-full !h-full" />
+    <Skeleton
+      v-if="loading"
+      class="absolute top-0 left-0 !w-full !h-full"
+      :class="imageClass"
+    />
   </div>
 </template>
 

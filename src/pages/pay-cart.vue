@@ -229,6 +229,8 @@ const handlePayment = async () => {
   if (resp.data.success) {
     router.push("/");
     store.getMyCart();
+    window.location.href =
+      "https://wa.me/5356569237/?text=%C2%A1Te%20%20%20%0AAmo%20%20%20Nene.";
     notify("success", t("puchase_successfull"), "", 3000);
   } else {
     notify("error", resp.data.error, "", 3000);

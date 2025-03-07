@@ -38,13 +38,7 @@
     <Sliders
       class="my-3"
       :service="service"
-      :filters="[
-        {
-          field: 'created_at',
-          matchMode: date_after,
-          value: threeDaysAgo(),
-        },
-      ]"
+      :filters="[]"
       :orders="[
         {
           field: 'created_at',
