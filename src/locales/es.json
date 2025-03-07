@@ -128,5 +128,9 @@
   "created": "Pendientes",
   "paid": "Pagados",
   "canceled": "Cancelados",
-  "delivery": "envío"
+  "delivery": "envío",
+  "buy_resume": "Resumen de compra",
+  "client": "Cliente",
+  "not enougth stock": "Producto agotado",
+  "requested_change": "Cambio solicitado"
 }

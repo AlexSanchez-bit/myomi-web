@@ -229,7 +229,7 @@ const handlePayment = async () => {
   if (resp.data.success) {
     router.push("/");
     store.getMyCart();
-    window.location.href = `https://wa.me/5352058774/?text=${encodeURIComponent(whatsapp_message())}.`;
+    window.location.href = `https://wa.me/5352058774/?text=${encodeURIComponent(whatsapp_message())}`;
     notify("success", t("puchase_successfull"), "", 3000);
   } else {
     notify("error", resp.data.error, "", 3000);
@@ -247,18 +247,18 @@ function whatsapp_message() {
     : selected_location.value.delivery_price;
 
   return `
-      ${t("buy_resume")}
-       ${t("client")}:
-      ${t("name")} ${receiver.value.name}
-      ${t("address")} ${receiver.value.address}
-      ${t("phone")} ${receiver.value.phone_number}
+ ${t("buy_resume")}
+ ${t("client")}:
+ ${t("name")} ${receiver.value.name}
+ ${t("address")} ${receiver.value.address}
+ ${t("phone")} ${receiver.value.phone_number}
 -----------------------------------
-       ${t("products")}:
-      ${cart.value.cart_items.map((item) => `${item.product.name} - ${item.quantity}`).join("\n")}
-     -----------------------
-     ${t("total")}: ${total} ${selected_currency.value.name}
-${selected_payment_type.value.may_have_change ? "" : needed_change.value > 0 ? `${t("requested_change")}: ${needed_change.value} ${selected_currency.value.name}` : ""}
-${selected_payment_type.value.delivery_included ? "" : `${t("delivery_price")}: ${delivery_payment} ${selected_payment_type.value.delivery_currency?.name}`}
+${t("products")}:
+${cart.value.cart_items.map((item) => `\t${item.product.name} x ${item.quantity}`).join("\n")}
+-----------------------------------
+${t("total")}: ${total} ${selected_currency.value.name}
+  ${selected_payment_type.value.may_have_change ? (needed_change.value > 0 ? `${t("requested_change")}: ${needed_change.value} ${selected_currency.value.name}` : "") : ""}
+  ${selected_payment_type.value.delivery_included ? "" : `${t("delivery_price")}: ${delivery_payment} ${selected_payment_type.value.delivery_currency?.name}`}
 `;
 }
 </script>
