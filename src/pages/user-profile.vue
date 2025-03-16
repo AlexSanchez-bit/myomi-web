@@ -21,7 +21,7 @@
           </button>
         </router-link>
       </div>
-      <router-link to="/history" class="mx-auto mt-8">
+      <router-link to="/history" class="mx-auto mt-2">
         <div
           class="flex flex-row justify-between mx-auto items-center border-zinc-500 shadow-lg hover:shadow-xl rounded-lg p-3 md:w-96 transition-all duration-500"
         >
@@ -35,18 +35,19 @@
     <div v-else>
       <!-- Mientras se cargan los datos se muestran Skeletons -->
       <div v-if="loading" class="skeleton-container">
-        <Skeleton width="100px" height="100px" shape="circle" />
-        <Skeleton width="200px" height="20px" class="mt-3" />
-        <Skeleton width="250px" height="15px" class="mt-2" />
-        <Skeleton width="150px" height="15px" class="mt-2" />
+        <Skeleton width="250px" height="250px" shape="circle" />
+        <Skeleton width="400px" height="85px" class="mt-3" />
+        <Skeleton width="450px" height="85px" class="mt-2" />
+        <Skeleton width="450px" height="85px" class="mt-2" />
         <Skeleton width="180px" height="15px" class="mt-2" />
+        <Skeleton width="500" height="600" class="mt-8" />
       </div>
 
       <!-- Perfil y gestión de contactos -->
       <div v-else class="profile-details">
         <!-- Perfil del usuario -->
         <div
-          class="profile-card bg-pink-50 p-6 rounded-lg shadow-md w-full max-w-md"
+          class="profile-card bg-pink-50 p-2 md:p-6 rounded-lg shadow-md w-full max-w-md"
         >
           <!-- Modo edición -->
           <div v-if="editMode" class="profile-form">
@@ -60,7 +61,7 @@
                 @click="triggerFileSelect"
                 class="absolute inset-0 flex items-center justify-center bg-transparent hover:bg-gray-100/50 transition"
               >
-                <i class="pi pi-upload text-2xl text-pink-600"></i>
+                <i class="pi pi-upload text-2xl"></i>
               </button>
               <input
                 ref="fileInput"
@@ -95,51 +96,56 @@
                 :label="$t('save')"
                 icon="pi pi-check"
                 @click="saveProfile"
-                class="p-button-warning !bg-red-200/60 !border-none !text-black"
+                class="p-button-warning !bg-blue-200/60 !border-none !text-black"
               />
               <Button
                 :label="$t('cancel')"
                 icon="pi pi-times"
                 @click="cancelEdit"
-                class="p-button-warning !bg-blue-200/60 !border-none !text-black"
+                class="p-button-warning !bg-red-200/60 !border-none !text-black"
               />
             </div>
           </div>
 
           <!-- Modo visualización -->
-          <div v-else>
+          <div v-else class="flex flex-col justify-center items-center gap-3">
             <img
               :src="user.profile_picture ?? '/noimage.webp'"
               alt="Foto de perfil"
               class="profile-picture"
             />
-            <h2 class="text-2xl font-bold text-pink-600">
+            <h2 class="text-2xl font-bold">
               {{ user.name }} {{ user.last_name }}
             </h2>
             <p>
-              <strong>{{ $t("email") }}:</strong> {{ user.email }}
+              <strong>{{ $t("email") }}:</strong>
+              <span class="font-thin ml-2">{{ user.email }}</span>
             </p>
             <p>
-              <strong>{{ $t("phone") }}:</strong> {{ user.phone_number }}
+              <strong>{{ $t("phone") }}:</strong>
+
+              <span class="font-thin ml-2">
+                {{ user.phone_number }}
+              </span>
             </p>
-            <div class="button-group mt-4 flex flex-wrap gap-2">
+            <div class="button-group mt-4 flex flex-row gap-1">
               <Button
                 :label="$t('edit_profile')"
                 icon="pi pi-pencil"
                 @click="startEdit"
-                class="p-button-warning !bg-red-200/60 !border-none !text-black"
+                class="p-button-warning !bg-blue-200/60 !border-none !text-black !text-xs md:!text-lg"
               />
               <Button
                 :label="$t('logout')"
                 icon="pi pi-sign-out"
-                class="p-button-warning !bg-blue-200/60 !border-none !text-black"
+                class="p-button-warning !bg-red-200/60 !border-none !text-black !text-xs md:!text-lg"
                 @click="logout"
               />
             </div>
           </div>
         </div>
 
-        <router-link to="/history" class="w-96">
+        <router-link to="/history" class="w-full px-2">
           <div
             class="flex flex-row justify-between items-center border-zinc-200 shadow-lg hover:shadow-xl rounded-lg p-3 w-full transition-all duration-500"
           >
@@ -150,7 +156,7 @@
 
         <!-- Gestión de contactos -->
         <div
-          class="contacts-section mt-8 w-full max-w-lg bg-pink-50 p-6 rounded-lg shadow-md"
+          class="contacts-section mt-4 w-full max-w-lg bg-pink-50 p-6 rounded-lg border shadow-md"
         >
           <h3 class="text-xl font-bold text-pink-600 mb-4">
             {{ $t("contacts") }}
@@ -159,7 +165,7 @@
             <Button
               :label="$t('add_contact')"
               icon="pi pi-plus"
-              class="p-button-warning !bg-red-200/60 !border-none !text-black"
+              class="p-button-warning !bg-blue-200/60 !border-none !text-black"
               @click="openAddContactDialog"
             />
           </div>
@@ -170,27 +176,36 @@
             <div
               v-for="contact in contacts"
               :key="contact.id"
-              class="contact-item p-4 border rounded flex justify-between items-center bg-white"
+              class="contact-item p-4 border rounded flex justify-between items-center bg-white flex-wrap gap-2"
             >
-              <div>
+              <div class="flex flex-col gap-1 font-thin">
                 <p class="font-bold">{{ contact.name }}</p>
-                <p class="text-sm">{{ contact.address }}</p>
+
                 <p class="text-sm">
-                  {{ $t("municipality") }}: {{ contact.municipality.name }}
+                  <span class="font-bold">{{ $t("address") }}</span
+                  >: {{ contact.address }}
                 </p>
                 <p class="text-sm">
-                  {{ $t("phone") }}: {{ contact.phone_number }}
+                  <span class="font-bold">{{ $t("municipality") }}</span
+                  >: {{ contact.municipality.name }}
+                </p>
+                <p class="text-sm">
+                  <span class="font-bold">{{ $t("phone") }}</span
+                  >:
+                  {{ contact.phone_number }}
                 </p>
               </div>
-              <div class="flex gap-2">
+              <div class="flex gap-2 justify-end ml-auto">
                 <Button
                   icon="pi pi-pencil"
-                  class="p-button-warning"
+                  size="small"
+                  class="p-button-warning !bg-green-300/60 !border-none !text-black"
                   @click="editContact(contact)"
                 />
                 <Button
                   icon="pi pi-trash"
-                  class="p-button-danger"
+                  size="small"
+                  class="p-button-danger !bg-red-200/60 !border-none !text-black"
                   @click="promptDeleteContact(contact.id)"
                 />
               </div>
@@ -253,15 +268,15 @@
             </div>
             <div class="flex justify-end gap-2">
               <Button
-                :label="$t('cancel')"
-                class="p-button-warning !bg-blue-200/60 !border-none !text-black"
-                @click="closeContactDialog"
-              />
-              <Button
                 :label="$t('save')"
-                class="p-button-warning !bg-red-200/60 !border-none !text-black"
+                class="p-button-warning !bg-blue-200/60 !border-none !text-black"
                 :loading="contact_loading"
                 @click="saveContact"
+              />
+              <Button
+                :label="$t('cancel')"
+                class="p-button-warning !border-none !bg-red-200/60 !text-black"
+                @click="closeContactDialog"
               />
             </div>
           </div>
@@ -573,7 +588,8 @@ onMounted(async () => {
 
 <style scoped>
 .user-profile {
-  padding: 1rem;
+  max-width: 700px;
+  margin: auto;
 }
 
 .anonymous-message {
@@ -583,6 +599,7 @@ onMounted(async () => {
 }
 
 .profile-details {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -594,14 +611,15 @@ onMounted(async () => {
 
 .profile-picture {
   border-radius: 50%;
-  width: 100px;
-  height: 100px;
+  width: 200px;
+  height: 200px;
   margin-bottom: 1rem;
   object-fit: cover;
 }
 
 .profile-form {
   display: flex;
+  width: 100%;
   flex-direction: column;
   align-items: center;
   gap: 1rem;

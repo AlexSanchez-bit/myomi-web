@@ -2,7 +2,7 @@
   <!-- Dialog para desktop -->
   <Dialog
     v-model:visible="visible"
-    header="Seleccionar Contacto"
+    :header="$t('select_a_contact')"
     :modal="true"
     class="p-fluid"
     v-if="!isMobile && !loading"
@@ -15,10 +15,10 @@
       <div
         v-for="contact in contacts"
         :key="contact.id"
-        class="p-1 border rounded-xl cursor-pointer hover:bg-pink-50"
+        class="p-1 border rounded-xl cursor-pointer hover:!bg-blue-50 transition-all duration-500 font-thin flex flex-col gap-2"
         @click="selectContact(contact)"
       >
-        <p class="font-semibold">{{ contact.name }}</p>
+        <p class="">{{ contact.name }}</p>
         <p class="text-sm text-gray-600">{{ contact.phone_number }}</p>
         <p class="text-sm text-gray-600">
           {{ contact.address }}- {{ contact.municipality.name }}
@@ -38,7 +38,7 @@
     v-model:visible="visible"
     position="bottom"
     :style="{ height: '70dvh', borderRadius: '1rem 1rem 0 0' }"
-    header="Seleccionar Contacto"
+    :header="$t('select_a_contact')"
     v-if="isMobile && !loading"
   >
     <!-- Lista de contactos -->
@@ -49,15 +49,16 @@
       <div
         v-for="contact in contacts"
         :key="contact.id"
-        class="p-1 border rounded-xl cursor-pointer hover:bg-pink-50"
+        class="p-1 border rounded-xl cursor-pointer hover:!bg-blue-50 transition-all duration-500 font-thin flex flex-col gap-2"
         @click="selectContact(contact)"
       >
-        <p class="font-semibold">{{ contact.name }}</p>
+        <p class="">{{ contact.name }}</p>
         <p class="text-sm text-gray-600">{{ contact.phone_number }}</p>
         <p class="text-sm text-gray-600">
           {{ contact.address }}- {{ contact.municipality.name }}
         </p>
       </div>
+
       <div
         v-if="!contacts || contacts.length == 0"
         class="flex flex-col items-center justify-center"
