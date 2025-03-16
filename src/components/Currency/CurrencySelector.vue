@@ -8,7 +8,7 @@
     unstyled
   >
     <span class="flex flex-row items-center gap-0.5 font-sans">
-      <img :src="selected_currency.icon" alt="" class="w-3 h-3 object-fill" />
+      <!-- <img :src="selected_currency.icon" alt="" class="w-3 h-3 object-fill" /> -->
       {{ selected_currency.name }}
     </span>
   </Button>
@@ -24,7 +24,7 @@
       <span
         class="flex flex-row items-center gap-0.5 bg-darkblue p-4 rounded border-none cursor-pointer min-w-24 hover:bg-gray-50/20"
       >
-        <img :src="item.icon" alt="" class="w-3 h-3 object-fill" />
+        <!-- <img :src="item.icon" alt="" class="w-3 h-3 object-fill" /> -->
         {{ item.name }}
       </span>
     </template>

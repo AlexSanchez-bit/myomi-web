@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen py-4">
-    <div class="max-w-4xl mx-auto p-4 mb-12">
+  <div class="min-h-screen py-2">
+    <div class="max-w-4xl mx-auto p-2 mb-12">
       <h2
         v-if="product"
-        class="text-2xl text-center w-full uppercase my-12 font-bold"
+        class="text-md md:text-2xl text-center w-full uppercase my-3 font-bold"
         :style="{ color: primaryColor }"
       >
         {{ product.name }}

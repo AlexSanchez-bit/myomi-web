@@ -17,7 +17,7 @@
             class="w-full pl-10"
           />
           <i
-            class="pi pi-user absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 cursor-pointer rounded-full bg-red-100/60 p-2"
+            class="pi pi-user absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 cursor-pointer rounded-full bg-blue-100/60 p-2"
             @click="openContactDialog"
             v-tooltip.bottom="$t('select_a_contact')"
           ></i>
@@ -178,15 +178,21 @@ const validateAndNext = () => {
   font-size: 1.25rem;
 }
 
-/* Estilo para los botones */
+.p-steps-title {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+/* Estilo para el botón de retroceso */
 .pastel-btn {
-  background-color: rgba(255, 182, 193, 0.2) !important;
+  background-color: rgba(68, 156, 168, 0.2) !important;
   border: none !important;
-  color: #d63384 !important;
+  color: black !important;
   transition: all 0.3s ease-in-out;
 }
 .pastel-btn:hover {
-  background-color: rgba(255, 182, 193, 0.4) !important;
+  background-color: rgba(68, 156, 168, 0.4) !important;
 }
 .p-error {
   @apply text-red-500;

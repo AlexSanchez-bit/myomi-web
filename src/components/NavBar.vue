@@ -25,7 +25,7 @@
         <span class="w-full flex-1 px-3 md:hidden">
           <SearchBar />
         </span>
-        <LanguageSelector class="brightness-200 mb-0" />
+        <!-- <LanguageSelector class="brightness-200 mb-0" /> -->
         <CurrencySelector />
         <router-link :to="{ name: 'cart' }">
           <OverlayBadge
@@ -49,7 +49,7 @@
     <div
       class="flex-row gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden sm:flex"
       :class="{
-        'h-10 opacity-100': scrolled_ammount >= 0,
+        'h-8 opacity-100': scrolled_ammount >= 0,
         'h-0 opacity-0': scrolled_ammount < 0 && scrolled > 50,
       }"
     >
@@ -57,7 +57,7 @@
       <CategoryMenu />
 
       <router-link
-        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black p-2 rounded-sm cursor-pointer lg:text-xl hidden sm:block uppercase"
+        class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black p-2 rounded-sm cursor-pointer lg:text-md hidden sm:block uppercase"
         to="/about_us"
         custom
       >

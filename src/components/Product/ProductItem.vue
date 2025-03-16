@@ -37,7 +37,7 @@
         <div
           class="mt-0 font-semibold text-xl flex text-zinc-800 flex-row items-center gap-2"
         >
-          <img class="w-5 h-5" :src="selected_currency?.icon" alt="" />
+          <!-- <img class="w-5 h-5" :src="selected_currency?.icon" alt="" /> -->
           {{ (product?.price * selected_currency?.change_value).toFixed(2) }}
           {{ selected_currency?.name }}
         </div>

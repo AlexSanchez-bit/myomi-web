@@ -1,6 +1,8 @@
 <template>
   <div class="p-4 md:p-6 max-w-4xl mx-auto bg-white rounded-2xl my-4">
-    <h1 class="text-3xl font-bold text-pink-600 mb-6 text-center">
+    <h1
+      class="text-2xl md:text-3xl lg:text-3xl font-bold text-pink-600 mb-6 text-center"
+    >
       {{ $t("shopping_cart") }} 🛍️
     </h1>
 
@@ -34,17 +36,20 @@
                 v-if="item.product?.images && item.product?.images.length > 0"
                 :src="item.product?.images[0]"
                 alt="Producto"
-                imageClass="w-16 h-16 md:w-20 md:h-20 rounded-xl object-cover border-2 border-pink-300/50"
+                imageClass="w-12 md:w-20 md:h-20 rounded-xl object-cover border-2 border-pink-300/50"
+                class="w-12 md:w-20 md:h-20 rounded-xl object-cover border-2 border-pink-300/50 overflow-hidden"
               />
             </router-link>
             <!-- Detalles del producto -->
             <div class="ml-4">
-              <h2 class="text-lg font-semibold text-pink-700">
+              <h2
+                class="text-md md:text-lg font-semibold line-clamp-1 md:line-clamp-2"
+              >
                 {{ item.product.name }}
               </h2>
-              <p class="text-sm text-pink-500 flex flex-row items-center my-1">
+              <p class="text-xs md:text-sm flex flex-row items-center my-1">
                 {{ $t("price") }}:
-                <img class="w-3 h-3" :src="selected_currency?.icon" alt="" />
+                <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
                 {{
                   (
                     item.product.price * selected_currency?.change_value
@@ -54,7 +59,7 @@
               </p>
               <p class="text-sm text-pink-500 flex flex-row items-center">
                 {{ $t("subtotal") }}:
-                <img class="w-3 h-3" :src="selected_currency?.icon" alt="" />
+                <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
                 {{
                   (
                     item.product.price *
@@ -156,14 +161,14 @@
           >
             <template #option="slotProps">
               <div class="flex flex-row items-center">
-                <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" />
+                <!-- <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" /> -->
                 {{ slotProps.option.name }}
               </div>
             </template>
             <template #selectedOption="slotProps">
               <div class="flex flex-row items-center">
                 {{ slotProps.option.name }}
-                <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" />
+                <!-- <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" /> -->
               </div>
             </template>
           </Dropdown>
@@ -193,7 +198,7 @@
               >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
-                <img class="w-3 h-3" :src="selected_currency?.icon" alt="" />
+                <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
                 {{
                   (
                     slotProps.option.delivery_price *
@@ -208,11 +213,11 @@
               >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
-                <img
-                  class="w-3 h-3"
-                  :src="selected_payment_type.delivery_currency?.icon"
-                  alt=""
-                />
+                <!-- <img -->
+                <!--   class="w-3 h-3" -->
+                <!--   :src="selected_payment_type.delivery_currency?.icon" -->
+                <!--   alt="" -->
+                <!-- /> -->
                 {{
                   (
                     slotProps.option.delivery_price *
@@ -229,7 +234,7 @@
               >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
-                <img class="w-3 h-3" :src="selected_currency?.icon" alt="" />
+                <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
                 {{
                   (
                     slotProps.option.delivery_price *
@@ -245,11 +250,11 @@
               >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
-                <img
-                  class="w-3 h-3"
-                  :src="selected_payment_type.delivery_currency?.icon"
-                  alt=""
-                />
+                <!-- <img -->
+                <!--   class="w-3 h-3" -->
+                <!--   :src="selected_payment_type.delivery_currency?.icon" -->
+                <!--   alt="" -->
+                <!-- /> -->
                 {{
                   (
                     slotProps.option.delivery_price *
@@ -268,7 +273,7 @@
           v-if="selected_payment_type?.delivery_included"
         >
           {{ $t("total") }}:
-          <img class="w-5 h-5" :src="selected_currency?.icon" alt="" />
+          <!-- <img class="w-5 h-5" :src="selected_currency?.icon" alt="" /> -->
           {{ (computedTotal * selected_currency?.change_value).toFixed(2) }}
           {{ selected_currency?.name }}
         </div>
@@ -278,7 +283,7 @@
         >
           {{ $t("total") }}:
           <span class="flex flex-row items-center gap-1">
-            <img class="w-5 h-5" :src="selected_currency?.icon" alt="" />
+            <!-- <img class="w-5 h-5" :src="selected_currency?.icon" alt="" /> -->
             {{
               (cart.total_price * selected_currency?.change_value).toFixed(2)
             }}
@@ -289,12 +294,12 @@
             class="flex flex-row items-center gap-1"
           >
             <i class="pi pi-plus px-1"></i>
-            <img
-              v-if="selected_payment_type.delivery_currency?.icon"
-              class="w-5 h-5"
-              :src="selected_payment_type.delivery_currency?.icon"
-              alt=""
-            />
+            <!-- <img -->
+            <!--   v-if="selected_payment_type.delivery_currency?.icon" -->
+            <!--   class="w-5 h-5" -->
+            <!--   :src="selected_payment_type.delivery_currency?.icon" -->
+            <!--   alt="" -->
+            <!-- /> -->
             {{
               (
                 selected_location?.delivery_price *
@@ -591,21 +596,25 @@ const breakpoints = {
 <style scoped>
 /* Estilo para el RadioButton con colores pastel */
 .pastel-btn {
-  background-color: rgba(255, 182, 193, 0.2) !important;
+  background-color: rgba(68, 156, 168, 0.2) !important;
   border: none !important;
-  color: #d63384 !important;
+  color: black !important;
   transition: all 0.3s ease-in-out;
 }
 .pastel-btn:hover {
-  background-color: rgba(255, 182, 193, 0.4) !important;
+  background-color: rgba(68, 156, 168, 0.4) !important;
 }
 
 /* Personalización del Skeleton */
 :deep(.p-skeleton) {
-  background-color: rgba(255, 182, 193, 0.2) !important;
+  background-color: rgba(68, 156, 168, 0.2) !important;
 }
 ::v-deep .p-radiobutton-checked .p-radiobutton-box {
-  background-color: #d63384 !important;
-  border-color: #d63384 !important;
+  background-color: #449ca8 !important;
+  border-color: #449ca8 !important;
+}
+
+.button {
+  background-color: #449ca8 !important;
 }
 </style>

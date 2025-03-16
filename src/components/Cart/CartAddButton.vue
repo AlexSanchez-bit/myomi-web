@@ -5,7 +5,7 @@
         icon="pi pi-cart-arrow-down"
         @click="addProductToCart()"
         :loading="loading"
-        class="ml-2"
+        class="ml-2 !bg-[#449ca8]"
       />
     </slot>
   </div>

@@ -3,17 +3,19 @@
     <!-- Stepper de PrimeVue -->
     <Steps :model="steps" :activeIndex="currentStep - 1" :readonly="true">
       <template #item="{ item }">
-        <div class="flex flex-col items-center bg-white">
+        <div class="flex flex-col bg-white items-center">
           <span
-            class="p-steps-number bg-red-100 z-30"
+            class="p-steps-number bg-[#449ca8] z-30"
             :class="{
-              'bg-red-300 text-black': currentStep >= item.step,
-              'bg-red-100 text-red-400': currentStep < item.step,
+              'bg-[#30a3af] text-white': currentStep >= item.step,
+              'bg-[#449ca8] text-white': currentStep < item.step,
             }"
           >
             {{ item.step }}
           </span>
-          <span class="p-steps-title">{{ $t(item.label) }}</span>
+          <span class="p-steps-title !w-24 text-center">{{
+            $t(item.label)
+          }}</span>
         </div>
       </template>
     </Steps>
@@ -288,7 +290,7 @@ ${t("total")}: ${total} ${selected_currency.value.name}
 .pastel-btn {
   background-color: rgba(255, 182, 193, 0.2) !important;
   border: none !important;
-  color: #d63384 !important;
+  color: #449ca8 !important;
   transition: all 0.3s ease-in-out;
 }
 .pastel-btn:hover {
