@@ -2,7 +2,15 @@
   <div class="order-card">
     <div class="order-header">
       <h3>{{ $t("order.orderNumber") }}{{ order.id }}</h3>
-      <span class="status">{{ getStatusText(order.status) }}</span>
+      <span
+        class="status"
+        :class="{
+          'bg-green-400/60': order.status == 'PAID',
+          'bg-red-400/60': order.status == 'CANCELLED',
+          'bg-yellow-200/60': order.status == 'CREATED',
+        }"
+        >{{ getStatusText(order.status) }}</span
+      >
     </div>
 
     <div class="order-info">
@@ -140,16 +148,16 @@ const generateInvoice = async () => {
   const doc = new jsPDF();
 
   // Agregar logo
-  const logoPath = "/logo/logo.png";
-  const imgWidth = 20;
-  const imgHeight = 20;
+  const logoPath = "/logo/logo-pdf.PNG";
+  const imgWidth = 50;
+  const imgHeight = 50;
 
   try {
     const img = new Image();
     img.src = logoPath;
     await new Promise((resolve, reject) => {
       img.onload = () => {
-        doc.addImage(img, "PNG", 160, 10, imgWidth, imgHeight);
+        doc.addImage(img, "PNG", 140, 8, imgWidth, imgHeight);
         resolve();
       };
       img.onerror = reject;
@@ -192,8 +200,7 @@ const generateInvoice = async () => {
   // Tabla de productos
   if (props.order.products?.length) {
     const productsData = props.order.products.map((product, index) => [
-      index + 1,
-      product.product?.name || "Producto desconocido",
+      product.product?.name || "Producto eliminado",
       `$${(product.price * currencyRate).toFixed(2)} ${currencyName}`,
       product.quantity || 1,
       `$${(product.price * product.quantity * currencyRate).toFixed(2)} ${currencyName}`,
@@ -201,7 +208,11 @@ const generateInvoice = async () => {
 
     autoTable(doc, {
       startY: 70,
-      head: [["#", "Producto", "Precio Unit.", "Cantidad", "Subtotal"]],
+      head: [["Producto", "Precio Unit.", "Cantidad", "Subtotal"]],
+      headStyles: {
+        fillColor: [255, 238, 169],
+        textColor: [0, 0, 0],
+      },
       body: productsData,
     });
 
@@ -262,8 +273,7 @@ const generateInvoice = async () => {
 
 .status {
   font-size: 14px;
-  background: #4caf50;
-  color: white;
+  @apply text-black;
   padding: 4px 8px;
   border-radius: 4px;
 }
@@ -280,8 +290,8 @@ const generateInvoice = async () => {
 }
 
 button {
-  background: #007bff;
-  color: white;
+  background-color: rgba(68, 156, 168, 0.2) !important;
+  color: black;
   border: none;
   padding: 8px 12px;
   border-radius: 5px;
@@ -291,7 +301,7 @@ button {
 }
 
 button:hover {
-  background: #0056b3;
+  background-color: rgba(68, 156, 168, 0.4) !important;
 }
 
 /* Detalles de productos */

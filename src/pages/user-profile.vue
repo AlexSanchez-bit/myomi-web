@@ -1,5 +1,5 @@
 <template>
-  <div class="user-profile">
+  <div class="user-profile my-3">
     <!-- Usuario anónimo -->
     <div v-if="anonymous" class="anonymous-message">
       <p>
@@ -590,6 +590,7 @@ onMounted(async () => {
 .user-profile {
   max-width: 700px;
   margin: auto;
+  margin-bottom: 100px;
 }
 
 .anonymous-message {
