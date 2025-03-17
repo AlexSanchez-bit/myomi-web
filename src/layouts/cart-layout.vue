@@ -1,9 +1,7 @@
 <template>
   <NavBar />
   <router-view v-slot="{ Component, route }" class="min-h-screen">
-    <transition name="page-opacity" mode="out-in">
-      <component :is="Component" :key="route.fullPath" />
-    </transition>
+    <component :is="Component" :key="route.fullPath" />
   </router-view>
   <Footer />
 </template>

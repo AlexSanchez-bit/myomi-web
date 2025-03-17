@@ -38,7 +38,7 @@ export class OrderService extends ListerService<IOrder> {
     ]);
   }
 
-  async createOrder(newData: IOrder) {
+  async createOrder(newData: any) {
     return await supabase.functions.invoke("create_order", {
       method: "POST",
       body: newData,

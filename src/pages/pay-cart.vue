@@ -46,10 +46,15 @@
       <!-- Paso 3: Efectuar el pago -->
       <PaymentStep
         v-else-if="currentStep === 3"
-        :total="cart.total_price + selected_location.delivery_price"
+        :contact="receiver"
+        :currency_id="selected_currency.id"
+        :payment_type_id="selected_payment_type.id"
+        :change="needed_change"
         :currency_name="selected_currency.name"
-        :order_id="order_id"
+        :location_id="selected_location.id"
+        :total="cart.total_price + selected_location.delivery_price"
         @created_payment="create_payment"
+        @create_order="create_order"
         @error_on_payment="error_on_payment"
         @confirm="handlePayment"
         @back="currentStep--"
@@ -186,45 +191,30 @@ function error_on_payment() {
 async function create_order() {
   const { anonymous, userData: user } = useAuthStore();
 
-  const total = selected_payment_type.value.delivery_included
-    ? cart.value.total_price + cart.value.delivery_price
-    : cart.value.total_price;
-
-  const delivery_payment = selected_payment_type.value.delivery_included
-    ? null
-    : selected_location.value.delivery_price;
-
   const resp = await orderService.createOrder({
     contact: receiver.value,
-    currency: selected_currency.value,
+    currency_id: selected_currency.value.id,
     user_id: anonymous ? null : user.id,
     session_id: !anonymous ? null : user.id,
     payment_type_id: selected_payment_type.value.id,
-    total: total,
-    delivery_currency: selected_payment_type.value.delivery_currency,
-    delivery_payment,
-    products: cart.value.cart_items.map((elem) => {
-      return {
-        product_id: elem.product.id,
-        price: elem.product.price,
-        quantity: elem.quantity,
-      };
-    }),
     change: needed_change.value,
+    location_id: selected_location.value.id,
   });
+  if (resp.data.success) {
+    console.log(resp);
+    order_id.value = resp.data.order_id;
+  } else {
+    notify("error", resp.data.error, "", 3000);
+    router.push("/cart");
+    return;
+  }
   return resp;
 }
 
 // Manejar el pago
 const handlePayment = async () => {
   if (selected_payment_type.value.external) {
-    const { data } = await create_order();
-    if (data.success) {
-      order_id.value = data.order.id;
-      currentStep.value = 3;
-    } else {
-      notify("error", data.error, "", 3000);
-    }
+    currentStep.value = 3;
     return;
   }
   const resp = await create_order();

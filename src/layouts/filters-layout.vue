@@ -2,9 +2,7 @@
   <NavBar />
   <router-view v-slot="{ Component, route }" class="min-h-screen">
     <transition name="page-opacity" mode="out-in">
-      <keep-alive>
-        <component :is="Component" :key="route.fullPath" />
-      </keep-alive>
+      <component :is="Component" :key="route.fullPath" />
     </transition>
   </router-view>
 </template>

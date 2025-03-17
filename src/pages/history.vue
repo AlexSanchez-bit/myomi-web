@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen overflow-hidden">
-    <Tabs v-model:value="currentTab" class="w-full justify-center">
-      <TabList>
+    <Tabs v-model:value="currentTab" class="w-full justify-center !text-md">
+      <TabList class="!overflow-auto">
         <Tab :value="null">{{ $t("all") }}</Tab>
         <Tab value="CREATED">{{ $t("created") }}</Tab>
         <Tab value="PAID">{{ $t("paid") }}</Tab>

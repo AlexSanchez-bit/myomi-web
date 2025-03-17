@@ -5,9 +5,13 @@ import { stripeKey, supabase } from "@/setup";
 import { Button } from "primevue";
 
 const props = defineProps<{
-  total: number;
+  contact: any;
+  currency_id: string;
+  payment_type_id: string;
+  change: number;
+  location_id: string;
   currency_name: string;
-  order_id: number;
+  total: number;
 }>();
 
 const loading = ref(false);
@@ -16,14 +20,28 @@ const stripe = ref(null);
 const elements = ref(null);
 const cardElement = ref(null);
 const clientSecret = ref("");
+const messagingElement = ref(null);
 
 onMounted(async () => {
   loading.value = true;
   stripe.value = await loadStripe(stripeKey);
   loading.value = false;
-  elements.value = stripe.value.elements();
+  elements.value = stripe.value.elements({
+    appearance: { theme: "flat" },
+  });
   cardElement.value = elements.value.create("card");
   cardElement.value.mount("#card-element");
+
+  messagingElement.value = elements.value.create("paymentMethodMessaging", {
+    paymentMethodType: "card", // Puedes ajustar este valor según el método principal
+    layout: "horizontal", // Opciones: "auto", "horizontal" o "vertical"
+    iconStyle: "default", // Opciones: "default" o "minimal"
+    currency: props.currency_name.toUpperCase(),
+    countryCode: "US",
+    amount: 100,
+    // Otras opciones de configuración según la documentación
+  });
+  messagingElement.value.mount("#payment-messaging");
 });
 
 const handlePayment = async () => {
@@ -32,9 +50,7 @@ const handlePayment = async () => {
     await supabase.functions.invoke("create-payment-intent", {
       method: "POST",
       body: {
-        amount: props.total * 100, //stripe solo usa centavos
-        currency: props.currency_name.toLowerCase(),
-        order_id: props.order_id,
+        ...props,
       },
     });
   loading.value = false;
@@ -62,7 +78,11 @@ const handlePayment = async () => {
   }
 };
 
-const emit = defineEmits(["created_payment", "error_on_payment"]);
+const emit = defineEmits([
+  "created_payment",
+  "error_on_payment",
+  "create_order",
+]);
 </script>
 
 <template>
@@ -71,6 +91,7 @@ const emit = defineEmits(["created_payment", "error_on_payment"]);
     <div class="form-group">
       <label for="card-element">{{ $t("credit_or_debit_card") }}</label>
       <div id="card-element" class="card-input"></div>
+      <div id="payment-messaging" class="messaging-input"></div>
       <p class="form-hint">{{ $t("data_will_be_secure_and_encrypted") }}</p>
     </div>
     <Button
@@ -135,7 +156,7 @@ label {
 .btn-pay {
   width: 100%;
   padding: 12px;
-  @apply bg-red-400 text-white;
+  @apply !bg-blue-400/60 !text-black;
   color: white;
   border: none;
   border-radius: 5px;
@@ -145,6 +166,6 @@ label {
 }
 
 .btn-pay:hover {
-  background-color: #0056b3;
+  @apply !bg-blue-500/60 text-black;
 }
 </style>
