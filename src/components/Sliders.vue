@@ -2,6 +2,7 @@
   <div ref="container" class="h-20" v-if="!onscreen" />
 
   <div
+    v-if="loading || promotions.length > 0"
     class="transition-all duration-1000 ease-in-out"
     :class="{
       'translate-y-full opacity-0': !onscreen,

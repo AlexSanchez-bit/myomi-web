@@ -55,6 +55,7 @@
     >
       <BrandMenu />
       <CategoryMenu />
+      <ConcernMenu />
 
       <router-link
         class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black p-2 rounded-sm cursor-pointer lg:text-md hidden sm:block uppercase"
@@ -71,6 +72,7 @@
 import LanguageSelector from "./LanguageSelector.vue";
 import CurrencySelector from "@/components/Currency/CurrencySelector.vue";
 import SearchBar from "./SearchBar.vue";
+import ConcernMenu from "@/components/Concerns/ConcernsMenu.vue";
 import Button from "primevue/button";
 import CategoryMenu from "@/components/Categories/CategoryMenu.vue";
 import BrandMenu from "@/components/Brands/BrandSubmenu.vue";

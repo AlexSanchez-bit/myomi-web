@@ -5,5 +5,6 @@ export type Filters = {
   maxPrice?: number | null;
   classes?: (string | number)[];
   materials?: string[];
+  concerns?: number[];
   brands?: number[];
 };

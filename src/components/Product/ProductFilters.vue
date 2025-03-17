@@ -11,6 +11,7 @@ import { useCategoryService } from "@/composables/Shop/Category/useCategoryServi
 import { useMaterialService } from "@/composables/Shop/Material/useMaterialService";
 import { Pagination } from "@/utils/entities/Pagination";
 import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
+import { useConcernsService } from "@/composables/Shop/Concerns/useConcernsService";
 
 type SortOption = {
   label: string;
@@ -20,8 +21,15 @@ type SortOption = {
 const materialService = useMaterialService();
 const classService = useCategoryService();
 const brandService = useBrandService();
+const concernService = useConcernsService();
+
 onMounted(async () => {
   availableMaterials.value = await materialService.getAll(
+    [],
+    new Pagination(0, 100),
+    [],
+  );
+  availableConcerns.value = await concernService.getAll(
     [],
     new Pagination(0, 100),
     [],
@@ -46,6 +54,7 @@ const props = defineProps<{
 
 const filter = ref({ ...props.filters });
 const availableMaterials = ref<string[]>([]);
+const availableConcerns = ref<number[]>([]);
 const availableClasses = ref<string[]>([]);
 const availableBrands = ref<string[]>([]);
 
@@ -146,6 +155,12 @@ function updateFilters(filters: Filters) {
       value: filters.materials,
       matchMode: FilterMatchMode.IN,
       condition: !!filters.materials?.length,
+    },
+    {
+      field: "product_concern.concern_id",
+      value: filters.concerns,
+      matchMode: FilterMatchMode.IN,
+      condition: !!filters.concerns?.length,
     },
     {
       field: "brand",
@@ -271,6 +286,20 @@ const lazyLister: IGenericLister<IProduct> = {
                 v-model="filter.materials"
                 @update:modelValue="(v) => handleFilterUpdate('materials', v)"
                 :options="availableMaterials"
+                display="chip"
+                class="w-full"
+                optionLabel="name"
+                optionValue="id"
+              />
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-medium mb-2">{{
+                $t("concerns")
+              }}</label>
+              <MultiSelect
+                v-model="filter.concerns"
+                @update:modelValue="(v) => handleFilterUpdate('concerns', v)"
+                :options="availableConcerns"
                 display="chip"
                 class="w-full"
                 optionLabel="name"
@@ -414,6 +443,21 @@ const lazyLister: IGenericLister<IProduct> = {
             v-model="filter.materials"
             @update:modelValue="(v) => handleFilterUpdate('materials', v)"
             :options="availableMaterials"
+            display="chip"
+            class="w-full"
+            optionLabel="name"
+            optionValue="id"
+          />
+        </div>
+
+        <div class="mb-4">
+          <label class="block text-sm font-medium mb-2">{{
+            $t("concerns")
+          }}</label>
+          <MultiSelect
+            v-model="filter.concerns"
+            @update:modelValue="(v) => handleFilterUpdate('concerns', v)"
+            :options="availableConcerns"
             display="chip"
             class="w-full"
             optionLabel="name"

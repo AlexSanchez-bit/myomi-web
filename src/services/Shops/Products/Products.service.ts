@@ -32,6 +32,7 @@ export class ProductsService extends ListerService<IProduct> {
       "short_description",
       "product_category!inner(category_id)",
       "product_materials!inner(material_id)",
+      "product_concern!inner(concern_id)",
     ]);
   }
 

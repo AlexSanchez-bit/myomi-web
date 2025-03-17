@@ -133,5 +133,6 @@
   "client": "Cliente",
   "not enougth stock": "Producto agotado",
   "requested_change": "Cambio solicitado",
-  "all_rights_reserved": "Todos los derechos reservados"
+  "all_rights_reserved": "Todos los derechos reservados",
+  "concerns": "Preocupaciones"
 }
