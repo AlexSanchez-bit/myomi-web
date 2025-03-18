@@ -16,7 +16,7 @@
     >
       <Card
         v-if="menuVisible && !isMobile"
-        class="hidden md:block absolute mt-2 left-0 bottom-full min-w-64 overflow-hidden !p-0 bg-white shadow-lg rounded-lg transition-all duration-300"
+        class="hidden md:block absolute mt-2 left-0 bottom-full min-w-96 max-h-[60dvh] overflow-hidden overflow-y-auto !p-0 bg-white shadow-lg rounded-lg transition-all duration-300"
       >
         <template #title>
           <div class="flex flex-row justify-between items-center">
