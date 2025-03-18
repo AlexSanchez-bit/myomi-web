@@ -33,69 +33,27 @@
               @error="(e) => (e.target.src = '/noimage.webp')"
             />
           </div>
-        </div>
 
-        <!-- Detalles del producto -->
-        <div class="w-full md:w-1/2 flex flex-col justify-between">
-          <div>
-            <!-- Nombre y precio -->
-            <span
-              class="text-2xl font-semibold mt-2 flex flex-row items-center"
-              :style="{ color: primaryColor }"
+          <span
+            class="text-2xl font-semibold mt-2 flex flex-row items-center"
+            :style="{ color: primaryColor }"
+          >
+            {{ (product?.price * selected_currency?.change_value).toFixed(2) }}
+            {{ selected_currency?.name }}
+          </span>
+
+          <router-link :to="`/brand/${product.brand}`" v-if="product.brand">
+            <div
+              class="w-full flex flex-row items-center justify-start gap-2 mt-3"
             >
-              <picture class="w-6 h-6 hidden bg-darkblue">
-                <img
-                  :src="selected_currency?.icon"
-                  alt=""
-                  class="w-6 h-6 bg-white mix"
-                />
-              </picture>
-              {{
-                (product?.price * selected_currency?.change_value).toFixed(2)
-              }}
-              {{ selected_currency?.name }}
-            </span>
-
-            <router-link :to="`/brand/${product.brand}`" v-if="product.brand">
-              <div
-                class="w-full flex flex-row items-center justify-start gap-2 mt-3"
-              >
-                <Img
-                  :src="product.product_brand.icon"
-                  imageClass="w-10 h-10"
-                  class="!w-10 !h-10"
-                ></Img>
-                <span>{{ product.product_brand.name }}</span>
-              </div>
-            </router-link>
-
-            <!-- Descripción larga truncada -->
-            <div class="mt-4" v-if="product.long_description">
-              <div
-                class="prose transition-all duration-700"
-                :class="{ 'line-clamp-3': !descriptionExpanded }"
-                v-html="product.long_description"
-              ></div>
-              <button
-                v-if="
-                  !descriptionExpanded && product.long_description?.length > 100
-                "
-                @click="descriptionExpanded = true"
-                class="text-sm text-blue-600 mt-1 focus:outline-none"
-              >
-                {{ $t("show_more") }}
-              </button>
-              <button
-                v-if="
-                  descriptionExpanded && product.long_description?.length > 100
-                "
-                @click="descriptionExpanded = false"
-                class="text-sm text-blue-600 mt-1 focus:outline-none"
-              >
-                {{ $t("show_less") }}
-              </button>
+              <Img
+                :src="product.product_brand.icon"
+                imageClass="w-10 h-10"
+                class="!w-10 !h-10"
+              ></Img>
+              <span>{{ product.product_brand.name }}</span>
             </div>
-          </div>
+          </router-link>
 
           <CartAddButton :product_id="route.params.id as string">
             <template #content="{ add, loading }">
@@ -146,6 +104,41 @@
               </div>
             </template>
           </CartAddButton>
+        </div>
+
+        <!-- Detalles del producto -->
+        <div class="w-full md:w-1/2 flex flex-col justify-between">
+          <div>
+            <!-- Nombre y precio -->
+
+            <!-- Descripción larga truncada -->
+            <div class="mt-4" v-if="product.long_description">
+              <div
+                class="prose transition-all duration-700"
+                :class="{ 'line-clamp-3': !descriptionExpanded }"
+                v-html="product.long_description"
+              ></div>
+              <button
+                v-if="
+                  !descriptionExpanded && product.long_description?.length > 100
+                "
+                @click="descriptionExpanded = true"
+                class="text-sm text-blue-600 mt-1 focus:outline-none"
+              >
+                {{ $t("show_more") }}
+              </button>
+              <button
+                v-if="
+                  descriptionExpanded && product.long_description?.length > 100
+                "
+                @click="descriptionExpanded = false"
+                class="text-sm text-blue-600 mt-1 focus:outline-none"
+              >
+                {{ $t("show_less") }}
+              </button>
+            </div>
+          </div>
+
           <!-- Materiales, si existen -->
           <div
             v-if="product.materials && product.materials.length"

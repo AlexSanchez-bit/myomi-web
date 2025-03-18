@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen">
+    <PromotionsButton :promotions="promotions" />
     <FirstSlide :images="carousellImages" />
     <BrandsCarousell />
     <Sliders
@@ -32,6 +33,7 @@
         <ProductItem class="!w-80 !mx-auto !h-[26rem]" :product="item" />
       </template>
     </Sliders>
+
     <div class="overflow-hidden w-full h-[50dvh] my-12">
       <Img :src="promotionalImage" imageClass="w-full h-[50dvh] object-cover" />
     </div>
@@ -83,18 +85,18 @@ import Sliders from "@/components/Sliders.vue";
 const service = useProductService();
 
 const gcService = useGeneralConfigService();
-import { FilterMatchMode } from "@primevue/core/api";
-
-const date_after = FilterMatchMode.DATE_AFTER;
+import PromotionsButton from "@/components/PromotionsButton.vue";
 
 const carousellImages = ref([]);
 const promotionalImage = ref("");
+const promotions = ref("");
 
 onMounted(async () => {
   const resp = await gcService.getAll([], new Pagination(0, 1), []);
   if (resp.length > 0) {
     carousellImages.value = resp[0].carousell_images;
     promotionalImage.value = resp[0].promotional_image;
+    promotions.value = resp[0].month_promotion;
   }
 });
 function threeDaysAgo() {
