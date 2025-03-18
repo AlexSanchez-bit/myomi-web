@@ -1,7 +1,7 @@
 <template>
   <div class="user-profile my-3">
     <!-- Usuario anónimo -->
-    <div v-if="anonymous" class="anonymous-message">
+    <div v-if="anonymous" class="anonymous-message m-4 pb-3">
       <p>
         {{ $t("anonymous_profile_letter") }}
       </p>

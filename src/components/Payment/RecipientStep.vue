@@ -17,6 +17,7 @@
             class="w-full pl-10"
           />
           <i
+            v-if="!anonymous"
             class="pi pi-user absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 cursor-pointer rounded-full bg-blue-100/60 p-2"
             @click="openContactDialog"
             v-tooltip.bottom="$t('select_a_contact')"
@@ -100,12 +101,15 @@ import Button from "primevue/button";
 import { Pagination } from "@/utils/entities/Pagination";
 import ContactDialog from "@/components/Payment/ContactDialog.vue";
 import type { IContact } from "@/services/Users/User.service";
+import { useAuthStore } from "@/stores/AuthStore";
 
 const props = defineProps({
   locationId: { type: String, required: true },
 });
 
 const loading = ref(false);
+
+const { anonymous } = useAuthStore();
 
 const emit = defineEmits(["next", "back"]);
 

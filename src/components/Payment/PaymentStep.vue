@@ -68,7 +68,7 @@ const handlePayment = async () => {
     );
 
     loading.value = false;
-    if (error) {
+    if (error || paymentIntent.status !== "succeeded") {
       console.error("Error en el pago:", error);
       emit("error_on_payment");
     } else if (paymentIntent.status === "succeeded") {
