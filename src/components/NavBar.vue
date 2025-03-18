@@ -43,6 +43,11 @@
         <router-link :to="{ name: 'user.profile' }">
           <i class="pi pi-user sm:scale-150 ml-1"></i>
         </router-link>
+        <Button
+          icon="pi pi-ellipsis-v"
+          @click="sidebarVisible = true"
+          class="p-button-rounded p-button-text p-button-plain !block md:!hidden"
+        />
       </div>
     </div>
 
@@ -66,6 +71,25 @@
       </router-link>
     </div>
   </nav>
+
+  <SideBar
+    v-model:visible="sidebarVisible"
+    position="top"
+    class="md:hidden"
+    style="height: auto"
+  >
+    <BrandMenu />
+    <CategoryMenu />
+    <ConcernMenu />
+
+    <router-link
+      class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black rounded-sm cursor-pointer uppercase"
+      to="/about_us"
+      custom
+    >
+      <span>{{ $t("who_we_are") }}</span>
+    </router-link>
+  </SideBar>
 </template>
 
 <script setup lang="ts">
@@ -76,7 +100,10 @@ import ConcernMenu from "@/components/Concerns/ConcernsMenu.vue";
 import Button from "primevue/button";
 import CategoryMenu from "@/components/Categories/CategoryMenu.vue";
 import BrandMenu from "@/components/Brands/BrandSubmenu.vue";
-import { ref, onMounted } from "vue";
+import { watch, ref, onMounted } from "vue";
+import SideBar from "primevue/sidebar";
+
+const sidebarVisible = ref(false);
 
 import { useCartStore } from "@/stores/cartStore";
 const { quantity } = storeToRefs(useCartStore());
@@ -100,6 +127,13 @@ onMounted(() => {
     scrolled.value = window.scrollY;
   });
 });
+
+watch(
+  () => route.path,
+  () => {
+    sidebarVisible.value = false;
+  },
+);
 </script>
 
 <style scoped>

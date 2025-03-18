@@ -1,6 +1,8 @@
 <template>
   <div>
+    <!-- Menubar para vista de escritorio -->
     <Menubar
+      v-if="!isMobile"
       breakpoint="2px"
       :model="items"
       class="!bg-transparent custom-menubar text-sm lg:text-md uppercase"
@@ -37,21 +39,69 @@
         </a>
       </template>
     </Menubar>
+
+    <!-- PanelMenu para vista móvil -->
+    <PanelMenu
+      v-else
+      :model="items"
+      class="custom-panelmenu text-sm lg:text-md uppercase !border-none"
+    >
+      <template #item="{ item, props, hasSubmenu }">
+        <router-link
+          class="hover:bg-gray-50/20"
+          v-if="item.route"
+          v-slot="{ href, navigate }"
+          :to="item.route"
+          custom
+        >
+          <a
+            v-ripple
+            :href="href"
+            v-bind="props.action"
+            @click="navigate"
+            class="text-black"
+          >
+            <span>{{ $t(item.label) }}</span>
+            <span class="pi pi-angle-right" v-if="item.items?.length > 0" />
+          </a>
+        </router-link>
+        <a
+          v-else
+          v-ripple
+          :href="item.url"
+          :target="item.target"
+          v-bind="props.action"
+          class="text-black"
+        >
+          <span>{{ $t(item.label) }}</span>
+          <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
+        </a>
+      </template>
+    </PanelMenu>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
-import Menu from "primevue/menu";
+import PanelMenu from "primevue/panelmenu";
 import { useCategoryService } from "@/composables/Shop/Category/useCategoryService";
-const router = useRouter();
-
-const service = useCategoryService();
 import { Pagination } from "@/utils/entities/Pagination";
 
+const router = useRouter();
+const service = useCategoryService();
+
+// Propiedad reactiva para detectar el ancho de la ventana
+const windowWidth = ref(window.innerWidth);
+const isMobile = computed(() => windowWidth.value < 768); // Umbral: 768px para móvil
+
+const onResize = () => {
+  windowWidth.value = window.innerWidth;
+};
+
 onMounted(async () => {
+  window.addEventListener("resize", onResize);
   const data = await service.getAll([], new Pagination(0, 100), []);
   items.value = [
     {
@@ -61,43 +111,39 @@ onMounted(async () => {
   ];
 });
 
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", onResize);
+});
+
 const items = ref([{ label: "categories" }]);
 
+// Función para transformar el listado de categorías en items para el menú
 function buildMenuItems(categories) {
-  // Mapa para almacenar cada categoría transformada por su id
   const map = {};
-
-  // Arreglo donde se guardarán los elementos de primer nivel
   const menuItems = [];
 
-  // Primero, creamos un objeto para cada categoría en el formato deseado.
+  // Creamos un objeto para cada categoría
   categories.forEach((cat) => {
     map[cat.id] = {
       label: cat.name,
-      // Se usa el icon proporcionado; en tu caso es una URL, pero
-      // podrías asignar iconos de PrimeVue u otro formato si lo requieres.
       icon: cat.icon,
-      // Opcional: podrías agregar una propiedad de ruta o comando,
-      // por ejemplo: route: `/category/${cat.id}`
-      items: [], // Se llenará con los hijos, si existen.
+      items: [],
       route: `/category/${cat.id}`,
     };
   });
 
-  // Ahora recorremos nuevamente el arreglo para anidar los elementos.
+  // Anidamos categorías hijas en su padre
   categories.forEach((cat) => {
     if (cat.parent) {
-      // Si la categoría tiene un padre, se anida dentro de su objeto padre.
       if (map[cat.parent]) {
         map[cat.parent].items.push(map[cat.id]);
       }
     } else {
-      // Si no tiene padre, es un elemento de primer nivel.
       menuItems.push(map[cat.id]);
     }
   });
 
-  // (Opcional) Limpiar la propiedad "items" de aquellos objetos que no tienen hijos.
+  // (Opcional) Eliminamos la propiedad "items" si está vacía
   menuItems.forEach(function removeEmptyItems(item) {
     if (item.items && item.items.length === 0) {
       delete item.items;
@@ -117,6 +163,19 @@ function buildMenuItems(categories) {
   color: black !important;
 }
 
+.custom-panelmenu {
+  background-color: transparent;
+  border: none;
+  color: black !important;
+}
+
+::v-deep(.p-panelmenu-panel) {
+  background-color: #ffffff;
+  color: black !important;
+  border: none;
+}
+
+/* Estilos para Menubar (ejemplo) */
 ::v-deep(.p-menubar-submenu) {
   background-color: #ffffff;
   color: black !important;
@@ -126,29 +185,26 @@ function buildMenuItems(categories) {
   background-color: transparent;
   color: black !important;
 }
-
 ::v-deep(.p-menubar-item-content) {
   background-color: transparent !important;
   color: black !important;
 }
-
 ::v-deep(.p-menubar-item-link:hover) {
   background-color: rgba(255, 255, 255, 0.27) !important;
-
   color: rgba(0, 0, 0, 0.47) !important;
 }
 ::v-deep(.p-menuitem-link) {
   background-color: transparent !important;
   color: black !important;
 }
-
 ::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
-  background: transparent; /* Fondo transparente */
+  background: transparent;
   color: black !important;
 }
 
-::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
-  background: transparent !important;
+::v-deep(.p-panelmenu-panel) {
+  background-color: #ffffff;
   color: black !important;
+  border: none;
 }
 </style>

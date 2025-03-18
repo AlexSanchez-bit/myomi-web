@@ -1,6 +1,8 @@
 <template>
   <div>
+    <!-- Menubar para vista de escritorio -->
     <Menubar
+      v-if="!isMobile"
       breakpoint="2px"
       :model="items"
       class="!bg-transparent custom-menubar text-sm lg:text-md uppercase"
@@ -37,21 +39,69 @@
         </a>
       </template>
     </Menubar>
+
+    <!-- PanelMenu para vista móvil -->
+    <PanelMenu
+      v-else
+      :model="items"
+      class="custom-panelmenu text-sm lg:text-md uppercase !border-none"
+    >
+      <template #item="{ item, props, hasSubmenu }">
+        <router-link
+          class="hover:bg-gray-50/20"
+          v-if="item.route"
+          v-slot="{ href, navigate }"
+          :to="item.route"
+          custom
+        >
+          <a
+            v-ripple
+            :href="href"
+            v-bind="props.action"
+            @click="navigate"
+            class="text-white"
+          >
+            <span>{{ $t(item.label) }}</span>
+            <span class="pi pi-angle-right" v-if="item.items?.length > 0" />
+          </a>
+        </router-link>
+        <a
+          v-else
+          v-ripple
+          :href="item.url"
+          :target="item.target"
+          v-bind="props.action"
+        >
+          <span>{{ $t(item.label) }}</span>
+          <span v-if="hasSubmenu" class="pi pi-fw pi-angle-down" />
+        </a>
+      </template>
+    </PanelMenu>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, onBeforeUnmount, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import Menubar from "primevue/menubar";
-import Menu from "primevue/menu";
+import PanelMenu from "primevue/panelmenu";
 import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
-const router = useRouter();
-
-const service = useBrandService();
 import { Pagination } from "@/utils/entities/Pagination";
 
+const router = useRouter();
+const service = useBrandService();
+
+// Creamos una propiedad reactiva para el ancho de la ventana
+const windowWidth = ref(window.innerWidth);
+const isMobile = computed(() => windowWidth.value < 768); // threshold de 768px para móvil
+
+// Listener para actualizar el ancho de la ventana
+const onResize = () => {
+  windowWidth.value = window.innerWidth;
+};
+
 onMounted(async () => {
+  window.addEventListener("resize", onResize);
   const data = await service.getAll([], new Pagination(0, 100), []);
   items.value = [
     {
@@ -61,27 +111,22 @@ onMounted(async () => {
   ];
 });
 
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", onResize);
+});
+
 const items = ref([{ label: "brands" }]);
 
 function buildMenuItems(brands) {
-  const map = {};
-
   const menuItems = [];
-
   brands.forEach((br) => {
-    map[br.id] = {
+    menuItems.push({
       label: br.name,
-      // Se usa el icon proporcionado; en tu caso es una URL, pero
-      // podrías asignar iconos de PrimeVue u otro formato si lo requieres.
       icon: br.icon,
-      // Opcional: podrías agregar una propiedad de ruta o comando,
-      // por ejemplo: route: `/category/${cat.id}`
-      items: [], // Se llenará con los hijos, si existen.
+      items: [], // Puedes agregar sub-items si los tienes
       route: `/brand/${br.id}`,
-    };
-    menuItems.push(map[br.id]);
+    });
   });
-
   return menuItems;
 }
 </script>
@@ -89,10 +134,22 @@ function buildMenuItems(brands) {
 <style scoped>
 .custom-menubar {
   background-color: transparent;
-  border: none;
+  border: none !important;
   color: black !important;
 }
 
+.custom-panelmenu {
+  background-color: transparent;
+  border: none !important;
+  color: black !important;
+}
+
+::v-deep(.p-panelmenu-panel) {
+  background-color: #ffffff;
+  color: black !important;
+  border: none;
+}
+/* Estilos para Menubar y PanelMenu (ejemplo) */
 ::v-deep(.p-menubar-submenu) {
   background-color: #ffffff;
   color: black !important;
@@ -102,29 +159,20 @@ function buildMenuItems(brands) {
   background-color: transparent;
   color: black !important;
 }
-
 ::v-deep(.p-menubar-item-content) {
   background-color: transparent !important;
   color: black !important;
 }
-
 ::v-deep(.p-menubar-item-link:hover) {
   background-color: rgba(255, 255, 255, 0.27) !important;
-
   color: rgba(0, 0, 0, 0.47) !important;
 }
 ::v-deep(.p-menuitem-link) {
   background-color: transparent !important;
   color: black !important;
 }
-
 ::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
-  background: transparent; /* Fondo transparente */
-  color: black !important;
-}
-
-::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
-  background: transparent !important;
+  background: transparent;
   color: black !important;
 }
 </style>
