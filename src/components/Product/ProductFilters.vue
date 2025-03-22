@@ -66,7 +66,6 @@ const emit = defineEmits<{
 const isFilterPanelOpen = ref(false);
 
 const sortOptions = ref<SortOption[]>([
-  { label: "none", key: null },
   { label: "recent", key: "recent" },
   { label: "price_asc", key: "price_asc" },
   { label: "price_desc", key: "price_desc" },
@@ -115,10 +114,10 @@ function updateSort(_sort: string | null) {
       sort.value = [{ field: "created_at", order: 1 }];
     }
     if (_sort == "price_asc") {
-      sort.value = [{ field: "price", order: 1 }];
+      sort.value = [{ field: "price", order: -1 }];
     }
     if (_sort == "price_desc") {
-      sort.value = [{ field: "price", order: -1 }];
+      sort.value = [{ field: "price", order: 1 }];
     }
   }
   reloadProducts();
@@ -238,7 +237,7 @@ const lazyLister: IGenericLister<IProduct> = {
             </div>
 
             <!-- Filtro por rango de precios -->
-            <div class="mb-4 overflow-hidden">
+            <div class="mb-4">
               <label class="block text-sm font-medium mb-2">{{
                 $t("price_range")
               }}</label>
@@ -332,7 +331,7 @@ const lazyLister: IGenericLister<IProduct> = {
             <Button
               icon="pi pi-filter"
               :label="$t('filters')"
-              class="w-full !bg-lime-50 !text-black !border-none"
+              class="w-full !border-none pastel-btn"
               @click="isFilterPanelOpen = true"
             />
           </div>
@@ -395,18 +394,18 @@ const lazyLister: IGenericLister<IProduct> = {
         </div>
 
         <!-- Filtro por rango de precios -->
-        <div class="mb-4 overflow-hidden">
+        <div class="mb-4">
           <label class="block text-sm font-medium mb-2">{{
             $t("price_range")
           }}</label>
-          <div class="flex flex-row gap-2">
+          <div class="grid grid-cols-2 gap-2">
             <InputNumber
               v-model="filter.minPrice"
               @update:modelValue="(v) => handleFilterUpdate('minPrice', v)"
               :placeholder="$t('minimun')"
               mode="currency"
               currency="USD"
-              class="w-1/2 overflow-hidden"
+              class="!w-full"
             />
             <InputNumber
               v-model="filter.maxPrice"
@@ -414,7 +413,7 @@ const lazyLister: IGenericLister<IProduct> = {
               :placeholder="$t('maximun')"
               mode="currency"
               currency="USD"
-              class="w-1/2"
+              class=""
             />
           </div>
         </div>
@@ -487,5 +486,19 @@ const lazyLister: IGenericLister<IProduct> = {
 <style scoped>
 :deep(.p-select-option.p-select-option-selected.p-focus) {
   @apply !bg-lime-50 !text-black !border-none;
+}
+
+.pastel-btn {
+  background-color: rgba(68, 156, 168, 1) !important;
+  border: none !important;
+  color: white !important;
+  transition: all 0.3s ease-in-out;
+}
+.pastel-btn:hover {
+  background-color: rgba(68, 156, 168, 0.4) !important;
+}
+
+:deep(.p-inputtext) {
+  width: 100% !important;
 }
 </style>

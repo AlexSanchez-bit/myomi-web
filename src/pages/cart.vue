@@ -47,7 +47,7 @@
               >
                 {{ item.product.name }}
               </h2>
-              <p class="text-xs md:text-sm flex flex-row items-center my-1">
+              <p class="text-xs flex flex-row items-center my-1">
                 {{ $t("price") }}:
                 <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
                 {{
@@ -57,7 +57,7 @@
                 }}
                 {{ selected_currency?.name }}
               </p>
-              <p class="text-sm text-pink-500 flex flex-row items-center">
+              <p class="text-xs text-pink-500 flex flex-row items-center">
                 {{ $t("subtotal") }}:
                 <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
                 {{

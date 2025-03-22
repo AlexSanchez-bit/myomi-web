@@ -20,7 +20,7 @@
       >
         <template #title>
           <div class="flex flex-row justify-between items-center">
-            <span>{{ $t("monthly_gifts") }}</span>
+            <!-- <span class="w-full text-center">{{ $t("monthly_gifts") }}</span> -->
             <Button
               icon="pi pi-times"
               class="p-button-rounded p-button-text p-button-plain"
@@ -40,9 +40,8 @@
       v-if="isMobile"
       position="bottom"
       :style="{ height: '70dvh', borderRadius: '1rem 1rem 0 0' }"
-      :header="$t('monthly_gifts')"
     >
-      <div v-html="promotions"></div>
+      <div v-html="promotions" class="mb-8"></div>
     </Sidebar>
 
     <Img
@@ -81,10 +80,8 @@ onMounted(() => {
   window.addEventListener("scroll", () => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight;
 
-    const scrollPercentage =
-      (scrollTop / (documentHeight - windowHeight)) * 100;
+    const scrollPercentage = (scrollTop / (windowHeight + 300)) * 100;
 
     visible.value = scrollPercentage >= 65;
   });

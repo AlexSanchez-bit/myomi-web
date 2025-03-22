@@ -52,7 +52,7 @@
     </div>
 
     <div
-      class="flex-row gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden sm:flex"
+      class="flex-row gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden md:flex"
       :class="{
         'h-8 opacity-100': scrolled_ammount >= 0,
         'h-0 opacity-0': scrolled_ammount < 0 && scrolled > 50,
@@ -72,12 +72,7 @@
     </div>
   </nav>
 
-  <SideBar
-    v-model:visible="sidebarVisible"
-    position="top"
-    class="md:hidden"
-    style="height: auto"
-  >
+  <SideBar v-model:visible="sidebarVisible" position="right" class="md:hidden">
     <BrandMenu />
     <CategoryMenu />
     <ConcernMenu />

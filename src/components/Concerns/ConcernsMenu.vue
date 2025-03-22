@@ -43,6 +43,7 @@
     <!-- PanelMenu para vista móvil -->
     <PanelMenu
       v-else
+      v-model:expandedKeys="expandedKeys"
       :model="items"
       class="custom-panelmenu text-sm lg:text-md uppercase !border-none"
     >
@@ -105,6 +106,7 @@ onMounted(async () => {
   const data = await service.getAll([], new Pagination(0, 100), []);
   items.value = [
     {
+      key: "root",
       label: "concerns",
       items: buildMenuItems(data),
     },
@@ -115,7 +117,12 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", onResize);
 });
 
-const items = ref([{ label: "concerns" }]);
+const items = ref([
+  {
+    key: "root",
+    label: "concerns",
+  },
+]);
 
 function buildMenuItems(concerns) {
   const map = {};
@@ -136,6 +143,8 @@ function buildMenuItems(concerns) {
   });
   return menuItems;
 }
+
+const expandedKeys = ref({ root: true });
 </script>
 
 <style scoped>

@@ -8,14 +8,14 @@
       <div class="flex flex-row items-center gap-6 justify-center my-4">
         <router-link to="/login">
           <button
-            class="rounded-full px-6 bg-red-100/60 py-1 hover:scale-105 hover:shadow-sm transition-all duration-300"
+            class="rounded-full px-6 pastel-btn py-1 hover:scale-105 hover:shadow-sm transition-all duration-300"
           >
             {{ $t("login_yourself") }}
           </button>
         </router-link>
         <router-link to="/register">
           <button
-            class="rounded-full px-6 bg-red-100/60 py-1 hover:scale-105 hover:shadow-sm transition-all duration-300"
+            class="rounded-full px-6 pastel-btn py-1 hover:scale-105 hover:shadow-sm transition-all duration-300"
           >
             {{ $t("register_yourself") }}
           </button>
@@ -587,6 +587,16 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+.pastel-btn {
+  background-color: rgba(68, 156, 168, 0.2) !important;
+  border: none !important;
+  color: black !important;
+  transition: all 0.3s ease-in-out;
+}
+.pastel-btn:hover {
+  background-color: rgba(68, 156, 168, 0.4) !important;
+}
+
 .user-profile {
   max-width: 700px;
   margin: auto;

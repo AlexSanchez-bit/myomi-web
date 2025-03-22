@@ -15,12 +15,12 @@
         {{ $t("cart_summary") }}
       </h3>
       <div v-for="item in cart.cart_items" :key="item.product.id" class="mb-4">
-        <p class="font-thin">
+        <p class="">
           <span class="line-clamp-1 font-medium">
             {{ item.product.name }}
           </span>
           <small class="">
-            - {{ item.quantity }} x
+            {{ item.quantity }} x
             <!-- <img -->
             <!--   class="w-3 h-3 inline-block" -->
             <!--   :src="selected_currency?.icon" -->

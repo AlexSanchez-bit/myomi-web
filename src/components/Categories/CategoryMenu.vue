@@ -43,6 +43,7 @@
     <!-- PanelMenu para vista móvil -->
     <PanelMenu
       v-else
+      v-model:expandedKeys="expandedKeys"
       :model="items"
       class="custom-panelmenu text-sm lg:text-md uppercase !border-none"
     >
@@ -105,6 +106,7 @@ onMounted(async () => {
   const data = await service.getAll([], new Pagination(0, 100), []);
   items.value = [
     {
+      key: "root",
       label: "categories",
       items: buildMenuItems(data),
     },
@@ -115,7 +117,7 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", onResize);
 });
 
-const items = ref([{ label: "categories" }]);
+const items = ref([{ key: "root", label: "categories" }]);
 
 // Función para transformar el listado de categorías en items para el menú
 function buildMenuItems(categories) {
@@ -154,6 +156,8 @@ function buildMenuItems(categories) {
 
   return menuItems;
 }
+
+const expandedKeys = ref({ root: true });
 </script>
 
 <style scoped>

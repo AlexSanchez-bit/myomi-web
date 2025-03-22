@@ -95,13 +95,16 @@ const props = defineProps<{
 // Breakpoints para el slider:
 
 const default_bp = {
-  0: { slidesPerView: 1, spaceBetween: 0 }, // Móvil: 1 slide (100% del contenedor)
+  0: { slidesPerView: 1, spaceBetween: 1 }, // Móvil: 1 slide (100% del contenedor)
   540: { slidesPerView: 1.5, spaceBetween: 0 }, // Móvil: 1 slide (100% del contenedor)
+  700: { slidesPerView: 1.8, spaceBetween: 0 }, // Móvil: 1 slide (100% del contenedor)
   859: { slidesPerView: 2.3, spaceBetween: 1 }, // Tablet horizontal: 3 slides
   1050: { slidesPerView: 2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1080: { slidesPerView: 2.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
   1200: { slidesPerView: 3, spaceBetween: 1 }, // Tablet horizontal: 3 slides
   1400: { slidesPerView: 3.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
-  1700: { slidesPerView: 4.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1700: { slidesPerView: 4.2, spaceBetween: 1 }, // Tablet horizontal: 3 slides
+  1800: { slidesPerView: 4.5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
   2000: { slidesPerView: 5, spaceBetween: 1 }, // Tablet horizontal: 3 slides
 };
 

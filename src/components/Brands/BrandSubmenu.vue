@@ -44,6 +44,7 @@
     <PanelMenu
       v-else
       :model="items"
+      v-model:expandedKeys="expandedKeys"
       class="custom-panelmenu text-sm lg:text-md uppercase !border-none"
     >
       <template #item="{ item, props, hasSubmenu }">
@@ -105,8 +106,10 @@ onMounted(async () => {
   const data = await service.getAll([], new Pagination(0, 100), []);
   items.value = [
     {
+      key: "root",
       label: "brands",
       items: buildMenuItems(data),
+      expanded: true,
     },
   ];
 });
@@ -115,7 +118,7 @@ onBeforeUnmount(() => {
   window.removeEventListener("resize", onResize);
 });
 
-const items = ref([{ label: "brands" }]);
+const items = ref([{ key: "root", label: "brands" }]);
 
 function buildMenuItems(brands) {
   const menuItems = [];
@@ -125,10 +128,13 @@ function buildMenuItems(brands) {
       icon: br.icon,
       items: [], // Puedes agregar sub-items si los tienes
       route: `/brand/${br.id}`,
+      expanded: true,
     });
   });
   return menuItems;
 }
+
+const expandedKeys = ref({ root: true });
 </script>
 
 <style scoped>
