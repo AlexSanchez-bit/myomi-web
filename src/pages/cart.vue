@@ -500,6 +500,7 @@ const loadCart = async () => {
   );
   processing.value = false;
   payment_types.value = paymentResp || [];
+  console.log(payment_types.value);
   if (payment_types.value.length > 0) {
     selected_payment_type.value = payment_types.value[0];
   }

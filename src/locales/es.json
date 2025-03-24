@@ -135,5 +135,6 @@
   "requested_change": "Cambio solicitado",
   "all_rights_reserved": "Todos los derechos reservados",
   "concerns": "Preocupaciones",
-  "monthly_gifts": "Regalos del mes"
+  "monthly_gifts": "Regalos del mes",
+  "select_currency_type": "Selecciona la moneda a pagar"
 }

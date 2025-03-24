@@ -57,6 +57,7 @@ const service = useCurrencyService();
 const store = useCurrencyStore();
 onMounted(async () => {
   const resp = await service.getAll([], new Pagination(0, 100), []);
+  console.log(resp);
   selected_currency.value = resp[0];
   store.change_currency(resp[0]);
   items.value = [

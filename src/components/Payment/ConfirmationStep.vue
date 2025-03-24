@@ -78,7 +78,7 @@
         <!-- /> -->
         {{
           selected_location?.delivery_price *
-          selected_payment_type.delivery_currency.change_value
+          selected_payment_type.delivery_currency?.change_value
         }}
         <span>{{ selected_payment_type.delivery_currency?.name }}</span>
       </p>
