@@ -370,7 +370,6 @@ async function fetchUserProfile() {
   if (resp) {
     user.value = resp;
     const { data, error } = await service.getContacts(userData.id);
-    console.log(data, error);
     if (!error) {
       contacts.value = data;
     }
@@ -387,7 +386,6 @@ async function saveProfile() {
   }
   user.value.profile_picture = image_url;
   const resp = await service.updateUser(userData.id, user.value as IUser);
-  console.log(resp);
   editMode.value = false;
   loading.value = false;
 }

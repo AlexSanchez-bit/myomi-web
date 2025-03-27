@@ -15,74 +15,81 @@ const props = defineProps<{
 }>();
 
 const loading = ref(false);
-
 const stripe = ref(null);
 const elements = ref(null);
 const cardElement = ref(null);
 const clientSecret = ref("");
 const messagingElement = ref(null);
+const cardComplete = ref(false);
+const cardError = ref("");
 
 onMounted(async () => {
   loading.value = true;
   stripe.value = await loadStripe(stripeKey);
   loading.value = false;
+
   elements.value = stripe.value.elements({
     appearance: { theme: "flat" },
   });
+
   cardElement.value = elements.value.create("card");
   cardElement.value.mount("#card-element");
 
+  cardElement.value.on("change", (event) => {
+    cardComplete.value = event.complete;
+    cardError.value = event.error ? event.error.message : "";
+  });
+
   messagingElement.value = elements.value.create("paymentMethodMessaging", {
-    paymentMethodType: "card", // Puedes ajustar este valor según el método principal
-    layout: "horizontal", // Opciones: "auto", "horizontal" o "vertical"
-    iconStyle: "default", // Opciones: "default" o "minimal"
+    paymentMethodType: "card",
+    layout: "horizontal",
+    iconStyle: "default",
     currency: props.currency_name.toUpperCase(),
     countryCode: "US",
-    amount: 100,
-    // Otras opciones de configuración según la documentación
+    amount: props.total * 100,
   });
   messagingElement.value.mount("#payment-messaging");
 });
 
 const handlePayment = async () => {
+  if (!cardComplete.value) {
+    cardError.value =
+      "Por favor, ingrese los datos de la tarjeta correctamente.";
+    return;
+  }
+
   loading.value = true;
   const { data: payIntentData, error: payIntentError } =
     await supabase.functions.invoke("create-payment-intent", {
       method: "POST",
-      body: {
-        ...props,
-      },
+      body: { ...props },
     });
+
   loading.value = false;
-  if (!payIntentError) {
-    clientSecret.value = payIntentData.clientSecret;
+  if (payIntentError) {
+    cardError.value = "Error al generar el pago.";
+    return;
+  }
 
-    loading.value = true;
-    const { paymentIntent, error } = await stripe.value.confirmCardPayment(
-      clientSecret.value,
-      {
-        payment_method: {
-          card: cardElement.value,
-        },
-      },
-    );
+  clientSecret.value = payIntentData.clientSecret;
+  loading.value = true;
+  const { paymentIntent, error } = await stripe.value.confirmCardPayment(
+    clientSecret.value,
+    {
+      payment_method: { card: cardElement.value },
+    },
+  );
+  loading.value = false;
 
-    loading.value = false;
-    if (error || paymentIntent.status !== "succeeded") {
-      console.error("Error en el pago:", error);
-      emit("error_on_payment");
-    } else if (paymentIntent.status === "succeeded") {
-      console.log("Payment succeeded:", paymentIntent);
-      emit("created_payment", paymentIntent.id);
-    }
+  if (error || paymentIntent.status !== "succeeded") {
+    cardError.value = error?.message || "El pago no pudo completarse.";
+    emit("error_on_payment");
+  } else {
+    emit("created_payment", paymentIntent.id);
   }
 };
 
-const emit = defineEmits([
-  "created_payment",
-  "error_on_payment",
-  "create_order",
-]);
+const emit = defineEmits(["created_payment", "error_on_payment"]);
 </script>
 
 <template>
@@ -91,6 +98,7 @@ const emit = defineEmits([
     <div class="form-group">
       <label for="card-element">{{ $t("credit_or_debit_card") }}</label>
       <div id="card-element" class="card-input"></div>
+      <p v-if="cardError" class="error-message">{{ cardError }}</p>
       <div id="payment-messaging" class="messaging-input"></div>
       <p class="form-hint">{{ $t("data_will_be_secure_and_encrypted") }}</p>
     </div>
@@ -98,6 +106,7 @@ const emit = defineEmits([
       type="submit"
       class="btn-pay"
       :loading="loading"
+      :disabled="!cardComplete || loading"
       :label="`💳 ${$t('make_pay')} ${props.total.toFixed(2)} ${props.currency_name.toUpperCase()}`"
     >
     </Button>
@@ -105,6 +114,12 @@ const emit = defineEmits([
 </template>
 
 <style scoped>
+/* Mensaje de error */
+.error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: 5px;
+}
 /* Contenedor del formulario */
 .payment-form {
   max-width: 400px;

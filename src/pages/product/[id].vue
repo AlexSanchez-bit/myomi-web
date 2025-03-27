@@ -245,7 +245,6 @@ const primaryColor = "#000000";
 
 const route = useRoute();
 const productService = useProductService();
-import { Pagination } from "@/utils/entities/Pagination";
 import ProductItem from "@/components/Product/ProductItem.vue";
 import Sliders from "@/components/Sliders.vue";
 
@@ -260,7 +259,6 @@ const cart_quantity = ref<number>(0);
 const quantity = computed({
   get: () => cart_quantity.value,
   set: (value: number) => {
-    console.log(value);
     if ((value >= 0 && value <= product?.value?.stock) ?? 0) {
       cart_quantity.value = value;
     }
@@ -287,18 +285,6 @@ onMounted(async () => {
 
 function incrementQuantity() {
   quantity.value++;
-}
-
-function decrementQuantity() {
-  quantity.value--;
-}
-
-function addToCart() {
-  if (quantity.value == 0) return;
-  // Aquí debes implementar la lógica para agregar el producto al carrito
-  console.log(
-    `Adding product "${product.value?.name}" with quantity ${quantity.value} to cart.`,
-  );
 }
 </script>
 

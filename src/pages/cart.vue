@@ -497,7 +497,6 @@ const loadCart = async () => {
   );
   processing.value = false;
   payment_types.value = paymentResp || [];
-  console.log(payment_types.value);
   if (payment_types.value.length > 0) {
     selected_payment_type.value = payment_types.value[0];
   }
@@ -531,7 +530,6 @@ const computedTotal = computed(() => {
 const updateQuantity = async (item: any, change: number) => {
   processing.value = true;
   updating.value = item.product.id;
-  console.error(change);
   const resp: any = await store.updateProductQuantity(item.product.id, change);
   if (resp && !resp.error) {
     updating.value = null;

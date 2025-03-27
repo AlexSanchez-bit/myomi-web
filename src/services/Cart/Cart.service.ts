@@ -61,6 +61,10 @@ export class CartService extends ListerService<ICart> {
     return await supabase.from("cart_items").select("*").eq("cart_id", cart_id);
   }
 
+  getCachedCartItems() {
+    return this.cart_items;
+  }
+
   async getDetails(cart_id: string | number) {
     const { authenticated, sessionId } = useAuthStore();
     let query = supabase
@@ -79,12 +83,6 @@ export class CartService extends ListerService<ICart> {
       .from("cart_items,product(name,images)")
       .select("*")
       .eq("cart_id", cart_id);
-
-    if (!resp.error) {
-      resp.data.forEach((cartItem) => {
-        console.log(cartItem);
-      });
-    }
 
     return resp;
   }

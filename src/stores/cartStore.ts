@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { useToastStorage } from "./ToasterStorage";
 import { i18n } from "@/setup";
+import { useI18n } from "vue-i18n";
 
 export const useCartStore = defineStore("cart-store", () => {
   const cartService = new CartService();
@@ -61,11 +62,40 @@ export const useCartStore = defineStore("cart-store", () => {
     }
   };
 
+  const restoreCart = async () => {
+    const t = i18n.global.t;
+
+    const savedProducts = cartService.getCachedCartItems();
+
+    const { error: cart_error } = await getMyCart();
+
+    if (cart_error) {
+      useToastStorage().notify(
+        "error",
+        t("error"),
+        t(cart_error.message),
+        3000,
+      );
+    } else {
+      await Promise.all(
+        savedProducts.map(async (item) => {
+          const resp = await cartService.addProductToCart(
+            item.product.id,
+            cart_id.value,
+            item.quantity,
+          );
+        }),
+      );
+      quantity.value = savedProducts.length;
+    }
+  };
+
   return {
     quantity,
     loading,
     getMyCart,
     clearCart,
     updateProductQuantity,
+    restoreCart,
   };
 });

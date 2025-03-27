@@ -143,7 +143,6 @@ const register = async () => {
   if (error) {
     notify("error", "error", t(error.message), 4000);
   }
-  console.log(data, error);
   loading.value = false;
 };
 </script>

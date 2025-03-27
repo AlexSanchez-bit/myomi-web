@@ -184,10 +184,10 @@ async function create_payment(payment_id: string) {
   notify("success", t("puchase_successfull"), "", 3000);
 }
 
-function error_on_payment() {
+async function error_on_payment() {
   notify("error", t("there_was_an_error_paying"), "", 3000);
-  router.push("/");
-  store.getMyCart();
+  await store.restoreCart();
+  // router.push("/cart");
 }
 
 async function create_order() {
