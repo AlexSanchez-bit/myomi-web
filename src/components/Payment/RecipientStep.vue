@@ -55,11 +55,13 @@
       <!-- Municipio (fijado según la localización) -->
       <div class="mb-4">
         <InputText
+          v-if="recipient.municipality"
           v-model="recipient.municipality.name"
           :placeholder="$t('municipality')"
           class="w-full"
           disabled
         />
+        <Skeleton class="w-full" v-else />
         <small v-if="isMunicipalityError" class="p-error">{{
           $t("field_required")
         }}</small>
@@ -94,7 +96,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeMount } from "vue";
 import { useLocationService } from "@/composables/Location/useLocationService";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
@@ -138,7 +140,7 @@ const handleSelectContact = (contact) => {
 };
 
 // Cargar la localización y fijar el municipio
-onMounted(async () => {
+onBeforeMount(async () => {
   if (props.locationId) {
     const location = await useLocationService().getAll(
       [
@@ -152,7 +154,7 @@ onMounted(async () => {
       [],
     );
     if (location && location.length > 0) {
-      recipient.value.municipality = location[0].name;
+      recipient.value.municipality = location[0];
     }
   }
 });

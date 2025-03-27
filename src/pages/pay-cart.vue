@@ -186,6 +186,8 @@ async function create_payment(payment_id: string) {
 
 function error_on_payment() {
   notify("error", t("there_was_an_error_paying"), "", 3000);
+  router.push("/");
+  store.getMyCart();
 }
 
 async function create_order() {
