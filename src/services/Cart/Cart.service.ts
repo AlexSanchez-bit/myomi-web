@@ -13,7 +13,11 @@ export interface ICart {
 }
 
 export class CartService extends ListerService<ICart> {
-  private cart_items: { product: Partial<IProduct>; quantity: number }[] = [];
+  private cart_items: {
+    product_id?: string;
+    product: Partial<IProduct>;
+    quantity: number;
+  }[] = [];
   constructor() {
     super("cart", ["*"]);
   }
@@ -139,7 +143,7 @@ export class CartService extends ListerService<ICart> {
         }
         // Actualizar el array local removiendo el item
         this.cart_items = this.cart_items.filter(
-          (item) => item.product_id !== product_id,
+          (item) => item.product.id !== product_id,
         );
         return existingItem;
       } else {

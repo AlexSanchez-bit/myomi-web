@@ -14,7 +14,7 @@
             {{ item.step }}
           </span>
           <span class="p-steps-title !w-24 text-center">{{
-            $t(item.label)
+            $t(item.label as string)
           }}</span>
         </div>
       </template>
@@ -104,7 +104,7 @@ const delivery_location = ref<number | null>(null);
 const needed_change = ref(0);
 
 // Obtener el ID de la localización desde los query params
-const locationId = computed(() => route.query.location_id as string);
+const locationId = computed(() => parseInt(route.query.location_id as string));
 
 // Paso actual
 const currentStep = ref(1);

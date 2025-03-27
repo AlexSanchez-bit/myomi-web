@@ -49,7 +49,7 @@ onMounted(async () => {
 
 const props = defineProps<{
   filters: Filters;
-  default_filter: Filter;
+  default_filter: Filter[];
 }>();
 
 const filter = ref({ ...props.filters });
@@ -91,7 +91,7 @@ import ProductItem from "@/components/Product/ProductItem.vue";
 import { Filter } from "@/utils/entities/Filter";
 import type { Sorter } from "@/utils/entities/Sorters";
 
-const filter_array = ref<Filter[]>([props.default_filter]);
+const filter_array = ref<Filter[]>(props.default_filter);
 const lazyScroll = ref<any>();
 const sort = ref<Sorter[]>([]);
 

@@ -52,7 +52,7 @@
 
 <script setup lang="ts">
 import { computed, defineProps } from "vue";
-import type { IProduct } from "@/interfaces/IProduct";
+import type { IProduct } from "@/services/Shops/Products/Products.service";
 import CartAddButton from "../Cart/CartAddButton.vue";
 
 // Importa componentes de PrimeVue (si no están registrados globalmente)

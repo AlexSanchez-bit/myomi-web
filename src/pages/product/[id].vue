@@ -18,7 +18,7 @@
               :src="selectedImage ?? '/noimage.webp'"
               alt="Product"
               class="w-full h-72 object-cover"
-              @error="(e) => (e.target.src = '/noimage.webp')"
+              @error="(e) => ((e.target as any).src = '/noimage.webp')"
             />
           </div>
           <!-- Miniaturas -->
@@ -30,7 +30,7 @@
               class="w-16 h-16 rounded cursor-pointer border hover:border-blue-500"
               :class="{ 'border-blue-500': img === selectedImage }"
               @click="selectedImage = img"
-              @error="(e) => (e.target.src = '/noimage.webp')"
+              @error="(e) => ((e.target as any).src = '/noimage.webp')"
             />
           </div>
 
@@ -281,7 +281,7 @@ onMounted(async () => {
   const { data: materials, error: materialsError } =
     await productService.getMaterials(route.params.id as string);
   if (!materialsError && materials) {
-    productMateriasl.value = materials || [];
+    productMateriasl.value = materials || ([] as any);
   }
 });
 

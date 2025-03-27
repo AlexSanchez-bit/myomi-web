@@ -50,11 +50,13 @@ const brand = ref<IBrand | null>(null);
 
 const toast = useToastStorage();
 
-const brandFilter = {
-  field: "brand",
-  matchMode: FilterMatchMode.IN,
-  value: [route.params.id],
-};
+const brandFilter = [
+  {
+    field: "brand",
+    matchMode: FilterMatchMode.IN,
+    value: [route.params.id],
+  },
+];
 
 onMounted(async () => {
   brand.value = await service.getDetails(parseInt(route.params.id as string));

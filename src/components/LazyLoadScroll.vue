@@ -41,7 +41,8 @@
 
 <script setup lang="ts">
 import { Skeleton } from "primevue";
-import type { IGenericLister } from "@/utils/IGenericLister";
+import type { IGenericLister } from "@/utils/entities/IGenericLister";
+
 const props = defineProps<{
   service: IGenericLister<any>;
   filter: any;

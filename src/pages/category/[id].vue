@@ -73,9 +73,11 @@ onMounted(async () => {
   sub_category.value = resp;
 });
 
-const categoryFilter = {
-  field: "product_category.category_id",
-  matchMode: FilterMatchMode.IN,
-  value: [parseInt(route.params.id as string)],
-};
+const categoryFilter = [
+  {
+    field: "product_category.category_id",
+    matchMode: FilterMatchMode.IN,
+    value: [parseInt(route.params.id as string)],
+  },
+];
 </script>

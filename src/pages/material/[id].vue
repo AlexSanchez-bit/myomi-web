@@ -8,10 +8,8 @@
 </template>
 <script setup lang="ts">
 import SKeleton from "primevue/skeleton";
-import {
-  type IMaterial,
-  useMaterialService,
-} from "@/composables/Shop/Material/useMaterialService";
+import { useMaterialService } from "@/composables/Shop/Material/useMaterialService";
+import { type IMaterial } from "@/services/Shops/Material/Material.service";
 import { onMounted, ref } from "vue";
 
 const props = defineProps<{ material_id: string }>();

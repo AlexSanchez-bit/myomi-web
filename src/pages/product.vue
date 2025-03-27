@@ -1,7 +1,10 @@
 <template>
   <div class="min-h-screen my-8">
     <div class="w-full">
-      <ProductFilters :default_filter="[]" :filters="default_filter">
+      <ProductFilters
+        :default_filter="[] as Filter[]"
+        :filters="default_filter"
+      >
       </ProductFilters>
     </div>
   </div>
@@ -11,6 +14,7 @@
 import ProductFilters from "@/components/Product/ProductFilters.vue";
 import { useRoute } from "vue-router";
 import { ref } from "vue";
+import { Filter } from "@/utils/entities/Filter";
 
 const route = useRoute();
 

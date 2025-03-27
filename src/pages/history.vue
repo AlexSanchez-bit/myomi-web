@@ -28,15 +28,13 @@
 import Tabs from "primevue/tabs";
 import TabList from "primevue/tablist";
 import Tab from "primevue/tab";
-import TabPanels from "primevue/tabpanels";
-import TabPanel from "primevue/tabpanel";
 import LazyLoadScroll from "@/components/LazyLoadScroll.vue";
 import { useOrderService } from "@/composables/Order/useOrderService";
 import type { IOrder } from "@/services/Order/OrderService";
 import type { IGenericLister } from "@/utils/entities/IGenericLister";
 import { Pagination } from "@/utils/entities/Pagination";
-import { IResponseModel } from "@/utils/entities/ResponseModel";
-import { IListResponse } from "@/utils/entities/IListResponse";
+import type { IResponseModel } from "@/utils/entities/ResponseModel";
+import type { IListResponse } from "@/utils/entities/IListResponse";
 import OrderCard from "@/components/Order/OrderCard.vue";
 const service = useOrderService();
 import { useAuthStore } from "@/stores/AuthStore";

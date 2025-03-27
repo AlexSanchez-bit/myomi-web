@@ -28,7 +28,7 @@ const loading = ref(false);
 
 const addProductToCart = async (quantity: number = 1) => {
   loading.value = true;
-  const resp = await updateProductQuantity(props.product_id, quantity);
+  const resp: any = await updateProductQuantity(props.product_id, quantity);
   loading.value = false;
   if (resp && !resp.message) {
     notify(

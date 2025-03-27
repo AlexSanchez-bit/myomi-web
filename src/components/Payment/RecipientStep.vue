@@ -55,7 +55,7 @@
       <!-- Municipio (fijado según la localización) -->
       <div class="mb-4">
         <InputText
-          v-model="recipient.municipality"
+          v-model="recipient.municipality.name"
           :placeholder="$t('municipality')"
           class="w-full"
           disabled
@@ -104,7 +104,7 @@ import type { IContact } from "@/services/Users/User.service";
 import { useAuthStore } from "@/stores/AuthStore";
 
 const props = defineProps({
-  locationId: { type: String, required: true },
+  locationId: { type: Number, required: true },
 });
 
 const loading = ref(false);

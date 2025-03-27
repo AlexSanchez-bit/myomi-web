@@ -386,7 +386,7 @@ async function saveProfile() {
     image_url = img_resp;
   }
   user.value.profile_picture = image_url;
-  const resp = await service.updateUser(userData.id, user.value);
+  const resp = await service.updateUser(userData.id, user.value as IUser);
   console.log(resp);
   editMode.value = false;
   loading.value = false;
@@ -394,7 +394,7 @@ async function saveProfile() {
 
 let originalData: IUser | null = null;
 function startEdit() {
-  originalData = { ...user.value };
+  originalData = { ...(user.value as IUser) };
   editMode.value = true;
 }
 

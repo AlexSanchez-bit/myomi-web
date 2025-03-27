@@ -17,7 +17,7 @@
           :src="category.icon ?? '/noimage.webp'"
           alt=""
           class="w-full h-full object-cover"
-          @error="(e) => (e.target.src = '/noimage.webp')"
+          @error="(e) => ((e.target as any).src = '/noimage.webp')"
         />
       </picture>
 

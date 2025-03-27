@@ -165,12 +165,12 @@
                 {{ slotProps.option.name }}
               </div>
             </template>
-            <template #selectedOption="slotProps">
-              <div class="flex flex-row items-center">
-                {{ slotProps.option.name }}
-                <!-- <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" /> -->
-              </div>
-            </template>
+            <!-- <template #selectedOption="slotProps"> -->
+            <!--   <div class="flex flex-row items-center"> -->
+            <!--     {{ slotProps.option.name }} -->
+            <!-- <img class="w-3 h-3" :src="slotProps.option?.icon" alt="" />  -->
+            <!--   </div> -->
+            <!-- </template> -->
           </Dropdown>
         </div>
 
@@ -227,6 +227,8 @@
                 {{ selected_payment_type.delivery_currency?.name }})
               </div>
             </template>
+            <!--
+
             <template #selectedOption="slotProps">
               <div
                 class="flex flex-row items-center"
@@ -234,7 +236,6 @@
               >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
-                <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
                 {{
                   (
                     slotProps.option.delivery_price *
@@ -250,11 +251,6 @@
               >
                 {{ slotProps.option.name }}
                 ({{ $t("cost") }}:
-                <!-- <img -->
-                <!--   class="w-3 h-3" -->
-                <!--   :src="selected_payment_type.delivery_currency?.icon" -->
-                <!--   alt="" -->
-                <!-- /> -->
                 {{
                   (
                     slotProps.option.delivery_price *
@@ -264,6 +260,7 @@
                 {{ selected_payment_type.delivery_currency?.name }})
               </div>
             </template>
+--->
           </Dropdown>
         </div>
 
@@ -535,7 +532,7 @@ const updateQuantity = async (item: any, change: number) => {
   processing.value = true;
   updating.value = item.product.id;
   console.error(change);
-  const resp = await store.updateProductQuantity(item.product.id, change);
+  const resp: any = await store.updateProductQuantity(item.product.id, change);
   if (resp && !resp.error) {
     updating.value = null;
     cart.value.total_price += change * item.product.price;
@@ -551,8 +548,8 @@ const updateQuantity = async (item: any, change: number) => {
         return i;
       });
     }
-  } else if (resp.error) {
-    notify("error", t("stock_not_enought"), resp.error.message, 4000);
+  } else if ((resp as any).message) {
+    notify("error", t("stock_not_enought"), "", 4000);
   }
   processing.value = false;
 };

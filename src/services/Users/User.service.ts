@@ -3,7 +3,7 @@ import { ListerService } from "@/utils/service/TableService";
 import { type ILocation } from "@/services/Location/LocationService";
 
 export interface IUser {
-  id: string;
+  id?: string;
   email: string;
   phone_number: string;
   profile_picture: string;
