@@ -23,12 +23,7 @@ export const useCartStore = defineStore("cart-store", () => {
       const { data: cart_data, error: cart_error } =
         await cartService.createCart();
       if (cart_error) {
-        useToastStorage().notify(
-          "error",
-          t("error"),
-          t(cart_error.message),
-          3000,
-        );
+        console.log(cart_error);
       } else {
         cart_id.value = cart_data.id;
         quantity.value = 0;
