@@ -5,9 +5,8 @@
         v-if="product"
         class="text-md md:text-2xl text-center w-full uppercase my-3 font-bold"
         :style="{ color: primaryColor }"
-      >
-        {{ product.name }}
-      </h2>
+        v-html="formattedName"
+      ></h2>
       <div v-if="product" class="flex flex-col md:flex-row gap-6">
         <!-- Galería de imágenes -->
 
@@ -100,7 +99,9 @@
         </div>
 
         <!-- Detalles del producto -->
-        <div class="w-full md:w-1/2 flex flex-col justify-between">
+        <div
+          class="w-full md:w-1/2 md:h-96 md:overflow-y-auto flex flex-col justify-between"
+        >
           <div>
             <!-- Nombre y precio -->
 
@@ -108,7 +109,7 @@
             <div class="mt-4" v-if="product.long_description">
               <div
                 class="prose transition-all duration-700"
-                :class="{ 'line-clamp-3': !descriptionExpanded }"
+                :class="{ 'line-clamp-[9]': !descriptionExpanded }"
                 v-html="product.long_description"
               ></div>
               <button
@@ -116,7 +117,7 @@
                   !descriptionExpanded && product.long_description?.length > 100
                 "
                 @click="descriptionExpanded = true"
-                class="text-sm text-blue-600 mt-1 focus:outline-none"
+                class="text-sm text-blue-600 mt-1 focus:outline-none md:hidden"
               >
                 {{ $t("show_more") }}
               </button>
@@ -125,7 +126,7 @@
                   descriptionExpanded && product.long_description?.length > 100
                 "
                 @click="descriptionExpanded = false"
-                class="text-sm text-blue-600 mt-1 focus:outline-none"
+                class="text-sm text-blue-600 mt-1 focus:outline-none md:hidden"
               >
                 {{ $t("show_less") }}
               </button>
@@ -266,6 +267,13 @@ const quantity = computed({
 });
 
 onMounted(async () => {
+  window.onresize = (ev: any) => {
+    console.log(ev.target.innerWidth);
+    if (ev.target.innerWidth > 760) {
+      descriptionExpanded.value = true;
+    }
+  };
+
   const { data, error } = await productService.getDetails(
     route.params.id as string,
   );
@@ -286,6 +294,11 @@ onMounted(async () => {
 function incrementQuantity() {
   quantity.value++;
 }
+
+const formattedName = computed(() => {
+  console.log(product.value?.name.includes("\n"));
+  return product.value?.name.replaceAll("\n", "<br>");
+});
 </script>
 
 <style scoped>

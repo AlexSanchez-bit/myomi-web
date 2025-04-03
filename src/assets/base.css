@@ -14,9 +14,23 @@
 
 @font-face {
   font-family: "Jost";
-  src: url("@/assets/fonts/Jost-VariableFont_wght.ttf") format("ttf");
+  src: url("@/assets/fonts/Jost-VariableFont_wght.ttf") format("truetype");
   font-weight: 900;
   font-style: black;
+}
+
+@font-face {
+  font-family: "corean-cosmetics";
+  src: url("@/assets/fonts/corean-cosmetics.ttf") format("truetype");
+  font-weight: 900;
+  font-style: medium;
+}
+
+@font-face {
+  font-family: "myomi-font";
+  src: url("@/assets/fonts/myomi-font.ttf") format("truetype");
+  font-weight: 900;
+  font-style: medium;
 }
 
 @font-face {

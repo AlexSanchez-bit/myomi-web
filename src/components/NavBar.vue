@@ -15,14 +15,26 @@
           src="/logo/logo.png"
           class="h-12 sm:h-20 opacity-1 transition-all duration-200"
         />
+        <div class="flex flex-col gap-[0px] items-center triangles">
+          <span class="ml-2 flex flex-row">
+            <p class="text-myomi">MYOM</p>
+            ː
+            <p class="text-myomi">I</p>
+          </span>
+          <span class="ml-2 corean-cosmetics text-[0.4rem] text-zinc-700"
+            >Cosmético Coreano</span
+          >
+        </div>
       </router-link>
 
       <span class="w-full flex-1 px-3 hidden sm:block">
         <SearchBar />
       </span>
 
-      <div class="flex-row items-center gap-3 sm:!text-xl flex">
-        <span class="w-full flex-1 px-3 md:hidden">
+      <div
+        class="flex-row items-center gap-2 critic-phones sm:gap-3 sm:!text-xl flex"
+      >
+        <span class="w-full flex-1 critic-padding px-3 md:hidden">
           <SearchBar />
         </span>
         <!-- <LanguageSelector class="brightness-200 mb-0" /> -->
@@ -30,14 +42,11 @@
         <router-link :to="{ name: 'cart' }">
           <OverlayBadge
             :value="quantity"
-            class="scale-75"
+            class="scale-75 critic-phones"
             size="small"
             severity="danger"
           >
-            <i
-              class="pi-shopping-cart pi scale-[150%]"
-              style="font-size: 1.3rem"
-            ></i>
+            <i class="pi-shopping-cart pi text-[1.3rem] scale-[150%]"></i>
           </OverlayBadge>
         </router-link>
         <router-link :to="{ name: 'user.profile' }">
@@ -52,7 +61,7 @@
     </div>
 
     <div
-      class="flex-row gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden md:flex"
+      class="flex-row gap-1 sm:gap-3 items-center w-full overflow-hidden transition-all duration-500 hidden md:flex"
       :class="{
         'h-8 opacity-100': scrolled_ammount >= 0,
         'h-0 opacity-0': scrolled_ammount < 0 && scrolled > 50,
@@ -134,5 +143,33 @@ watch(
 <style scoped>
 a {
   text-transform: uppercase;
+}
+
+.text-myomi {
+  font-family: "myomi-font", serif;
+  letter-spacing: 0.1em;
+}
+.corean-cosmetics {
+  font-family: "corean-cosmetics";
+}
+
+@media (max-width: 400px) {
+  .text-myomi {
+    font-size: 0.8rem !important;
+  }
+  .corean-cosmetics {
+    font-size: 0.4rem !important;
+  }
+  .triangles {
+    font-size: 0.8rem !important;
+  }
+}
+@media (max-width: 400px) {
+  .critic-phones {
+    font-size: 0.7rem !important;
+  }
+  .critic-padding {
+    @apply px-0.5;
+  }
 }
 </style>

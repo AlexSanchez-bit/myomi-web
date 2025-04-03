@@ -16,17 +16,23 @@
           Redes Sociales
         </h4>
         <div class="flex justify-center gap-1">
-          <Button
-            icon="pi pi-facebook"
-            size="normal"
-            class="p-button-rounded p-button-secondary !bg-transparent hover-animation"
-            aria-label="Facebook"
-          />
-          <Button
-            icon="pi pi-instagram"
-            class="p-button-rounded p-button-secondary !bg-transparent hover-animation"
-            aria-label="Instagram"
-          />
+          <a href="https://www.facebook.com/share/18dgr1AL12/">
+            <Button
+              icon="pi pi-facebook"
+              size="normal"
+              class="p-button-rounded p-button-secondary !bg-transparent hover-animation"
+              aria-label="Facebook"
+            />
+          </a>
+          <a
+            href="https://www.instagram.com/myomi_cuba?igsh=MTh4azN5dHJtY2ZmZg%3D%3D&utm_source=qr"
+          >
+            <Button
+              icon="pi pi-instagram"
+              class="p-button-rounded p-button-secondary !bg-transparent hover-animation"
+              aria-label="Instagram"
+            />
+          </a>
         </div>
       </div>
 

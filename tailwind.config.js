@@ -25,6 +25,9 @@ export default {
         salmon: "var(--secondary-color-salmon)",
         cyan: "var(--secondary-color-cyan)",
       },
+      fontFamily: {
+        myomi: ['"myomi-font"', "sans-serif"], // Define tu fuente personalizada
+      },
     },
   },
   variants: {

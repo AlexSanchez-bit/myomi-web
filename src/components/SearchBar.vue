@@ -40,7 +40,7 @@
     <!-- Versión móvil -->
     <div class="w-full flex-1 scale-80 md:hidden">
       <i
-        class="pi-search sm:!hidden pi scale-[150%] cursor-pointer"
+        class="pi-search sm:!hidden pi scale-[150%] cursor-pointer critic-mobiles"
         style="font-size: 0.8rem"
         @click="visibleTop = true"
       ></i>
@@ -231,5 +231,11 @@ function onInputSearch() {
 ::v-deep .p-autocomplete-input {
   width: 100%;
   border-radius: 6rem;
+}
+
+@media (max-width: 500px) {
+  .critic-mobiles {
+    font-size: 0.5rem !important;
+  }
 }
 </style>

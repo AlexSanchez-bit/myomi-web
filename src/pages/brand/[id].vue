@@ -4,7 +4,7 @@
       <div class="h-60 mb-4 w-full relative">
         <Img
           :src="brand?.layer_image ?? ''"
-          imageClass="w-full h-60 object-contain"
+          imageClass="w-full h-60 object-cover"
         >
         </Img>
         <a
