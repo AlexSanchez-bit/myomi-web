@@ -274,6 +274,10 @@ onMounted(async () => {
     }
   };
 
+  if (window.innerWidth > 760) {
+    descriptionExpanded.value = true;
+  }
+
   const { data, error } = await productService.getDetails(
     route.params.id as string,
   );
@@ -296,8 +300,7 @@ function incrementQuantity() {
 }
 
 const formattedName = computed(() => {
-  console.log(product.value?.name.includes("\n"));
-  return product.value?.name.replaceAll("\n", "<br>");
+  return product.value?.name.replace(/(\r\n|\n|\r)/g, "<br>");
 });
 </script>
 
