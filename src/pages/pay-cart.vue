@@ -69,7 +69,6 @@ import { useRoute, useRouter } from "vue-router";
 import Steps from "primevue/steps";
 import ConfirmationStep from "@/components/Payment/ConfirmationStep.vue";
 import RecipientStep from "@/components/Payment/RecipientStep.vue";
-import PaymentStep from "@/components/Payment/PaymentStep.vue";
 import PaymentStepPaypal from "@/components/Payment/PaymentStepPaypal.vue";
 import { useCartStore } from "@/stores/cartStore";
 import { useLocationService } from "@/composables/Location/useLocationService";
@@ -182,7 +181,7 @@ const order_id = ref(null);
 async function create_payment(payment_id: string) {
   router.push("/");
   store.getMyCart();
-  notify("success", t("puchase_successfull"), "", 3000);
+  notify("success", t("puchase_successfull"), t("will_contact_you"), 3000);
 }
 
 async function error_on_payment() {

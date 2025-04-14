@@ -34,11 +34,11 @@ onMounted(() => {
   paypal
     .Buttons({
       style: {
-        layout: "vertical", // o 'horizontal'
-        color: "white", // opciones: 'gold', 'blue', 'silver', 'white', 'black'
-        shape: "pill", // opciones: 'rect', 'pill'
-        label: "pay", // opciones: 'paypal', 'checkout', 'buynow', 'pay', 'installment'
-        height: 45, // altura en píxeles
+        layout: "vertical",
+        color: "white",
+        shape: "pill",
+        label: "pay",
+        height: 45,
       },
       // 1) Crear la orden en Supabase
       createOrder: async () => {

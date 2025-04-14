@@ -56,6 +56,13 @@
         {{ $t("payment_method") }}:
         {{ selected_payment_type?.name }}
       </p>
+      <p
+        class="font-medium"
+        v-if="selected_payment_type.external && selected_payment_type.fee > 0"
+      >
+        {{ $t("payment_method_fee") }}:
+        {{ selected_payment_type?.fee }}
+      </p>
       <p class="font-medium">
         {{ $t("delivery_location") }}: {{ selected_location?.name }}
       </p>
@@ -71,11 +78,6 @@
       </p>
       <p class="text-pink-700" v-if="!selected_payment_type.delivery_included">
         {{ $t("delivery_price") }}:
-        <!-- <img -->
-        <!--   class="w-3 h-3 inline-block" -->
-        <!--   :src="selected_payment_type.delivery_currency?.icon" -->
-        <!--   alt="" -->
-        <!-- /> -->
         {{
           selected_location?.delivery_price *
           selected_payment_type.delivery_currency?.change_value
@@ -93,7 +95,7 @@
         v-if="selected_payment_type.delivery_included"
       >
         <span class="mr-2"> {{ $t("total_to_pay") }}: </span>
-        <!-- <img class="w-3 h-3" :src="selected_currency?.icon" alt="" /> -->
+
         <span>
           {{ (computedTotal * selected_currency?.change_value).toFixed(2) }}
           {{ selected_currency?.name }}
@@ -181,9 +183,19 @@ const props = defineProps({
 
 const change = defineModel<number>("change");
 
+const computedTotalWithoutFee = computed(() => {
+  let baseTotal = props.cart ? props.cart.total_price : 0;
+  baseTotal += props.selected_location.delivery_price;
+  return baseTotal;
+});
+
 const computedTotal = computed(() => {
   let baseTotal = props.cart ? props.cart.total_price : 0;
   baseTotal += props.selected_location.delivery_price;
+
+  if (props.selected_payment_type.value?.fee > 0) {
+    baseTotal += props.selected_payment_type.value.fee;
+  }
   return baseTotal;
 });
 

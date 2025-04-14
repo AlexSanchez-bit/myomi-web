@@ -126,18 +126,30 @@
             <div
               v-for="payment in payment_types"
               :key="payment.id"
-              class="flex items-center mb-2 w-full p-2 rounded"
+              class="flex flex-col items-start mb-2 w-full p-2 rounded"
             >
-              <RadioButton
-                v-model="selected_payment_type"
-                :value="payment"
-                :disabled="processing"
-                class="mr-2 pastel-btn"
-              />
-              <span class="text-md medium text-pink-700">
-                <img class="w-5 h-5 inline-block" :src="payment?.icon" alt="" />
-                {{ payment.name }}
-              </span>
+              <div class="flex items-center">
+                <RadioButton
+                  v-model="selected_payment_type"
+                  :value="payment"
+                  :disabled="processing"
+                  class="mr-2 pastel-btn"
+                />
+                <span class="text-md medium text-pink-700">
+                  <img
+                    class="w-5 h-5 inline-block"
+                    :src="payment?.icon"
+                    alt=""
+                  />
+                  {{ payment.name }}
+                </span>
+              </div>
+
+              <small
+                v-if="payment.external && payment.fee > 0"
+                class="text-gray-600/80 text-xs"
+                >{{ t("extra_charges_may_be_applied") }}</small
+              >
             </div>
           </div>
         </div>

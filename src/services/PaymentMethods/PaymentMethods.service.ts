@@ -10,6 +10,7 @@ export interface IPaymentType {
   delivery_currency: ICurrency;
   allowed_currencies: { currency: ICurrency }[];
   may_need_change: boolean;
+  fee: number;
 }
 
 export class PaymentTypeService extends ListerService<IPaymentType> {
