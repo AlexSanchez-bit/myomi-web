@@ -44,7 +44,7 @@
       />
 
       <!-- Paso 3: Efectuar el pago -->
-      <PaymentStep
+      <PaymentStepPaypal
         v-else-if="currentStep === 3"
         :contact="receiver"
         :currency_id="selected_currency.id"
@@ -70,6 +70,7 @@ import Steps from "primevue/steps";
 import ConfirmationStep from "@/components/Payment/ConfirmationStep.vue";
 import RecipientStep from "@/components/Payment/RecipientStep.vue";
 import PaymentStep from "@/components/Payment/PaymentStep.vue";
+import PaymentStepPaypal from "@/components/Payment/PaymentStepPaypal.vue";
 import { useCartStore } from "@/stores/cartStore";
 import { useLocationService } from "@/composables/Location/useLocationService";
 import { usePaymentTypeService } from "@/composables/PaymentTypes/usePaymentTypes";
