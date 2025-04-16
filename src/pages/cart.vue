@@ -542,23 +542,33 @@ const computedTotal = computed(() => {
 const updateQuantity = async (item: any, change: number) => {
   processing.value = true;
   updating.value = item.product.id;
+  //optimistic update
+  cart.value.cart_items = cart.value.cart_items.map((i: any) => {
+    if (i.product.id === item.product.id) {
+      return { ...i, quantity: item.quantity + change };
+    }
+    return i;
+  });
+
   const resp: any = await store.updateProductQuantity(item.product.id, change);
   if (resp && !resp.error) {
     updating.value = null;
     cart.value.total_price += change * item.product.price;
+
     if (change + item.quantity <= 0) {
       cart.value.cart_items = cart.value.cart_items.filter(
         (i: any) => i.product.id !== item.product.id,
       );
-    } else {
-      cart.value.cart_items = cart.value.cart_items.map((i: any) => {
-        if (i.product.id === item.product.id) {
-          return { ...i, quantity: item.quantity + change };
-        }
-        return i;
-      });
     }
   } else if ((resp as any).message) {
+    //optimistic action rollback
+    cart.value.cart_items = cart.value.cart_items.map((i: any) => {
+      if (i.product.id === item.product.id) {
+        return { ...i, quantity: item.quantity + change };
+      }
+      return i;
+    });
+
     notify("error", t("stock_not_enought"), "", 4000);
   }
   processing.value = false;

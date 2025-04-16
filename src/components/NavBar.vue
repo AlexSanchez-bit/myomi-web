@@ -72,6 +72,7 @@
       <ConcernMenu />
 
       <router-link
+        v-show="false"
         class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black p-2 rounded-sm cursor-pointer lg:text-md hidden sm:block uppercase"
         to="/about_us"
         custom
@@ -87,6 +88,7 @@
     <ConcernMenu />
 
     <router-link
+      v-show="false"
       class="hover:bg-gray-50/20 hover:text-zinc-950/40 text-black rounded-sm cursor-pointer uppercase"
       to="/about_us"
       custom

@@ -186,8 +186,6 @@ async function create_payment(payment_id: string) {
 
 async function error_on_payment() {
   notify("error", t("there_was_an_error_paying"), "", 3000);
-  await store.restoreCart();
-  // router.push("/cart");
 }
 
 async function create_order() {
