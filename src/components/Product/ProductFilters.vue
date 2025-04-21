@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onBeforeMount } from "vue";
 import Button from "primevue/button";
 import Drawer from "primevue/drawer";
 import { type Filters } from "./Filters";
@@ -22,6 +22,9 @@ const materialService = useMaterialService();
 const classService = useCategoryService();
 const brandService = useBrandService();
 const concernService = useConcernsService();
+onBeforeMount(() => {
+  updateFilters(filter.value);
+});
 
 onMounted(async () => {
   availableMaterials.value = await materialService.getAll(

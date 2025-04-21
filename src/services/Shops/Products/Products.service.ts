@@ -2,6 +2,9 @@ import { supabase } from "@/setup";
 import { ListerService } from "@/utils/service/TableService";
 import type { PostgrestSingleResponse } from "@supabase/supabase-js";
 import type { IBrand } from "../Brand/Brand.service";
+import type { Filter } from "@/utils/entities/Filter";
+import type { Pagination } from "@/utils/entities/Pagination";
+import type { Sorter } from "@/utils/entities/Sorters";
 
 export interface IProduct {
   id?: string;
@@ -31,8 +34,8 @@ export class ProductsService extends ListerService<IProduct> {
       "images",
       "short_description",
       "product_category!inner(category_id)",
-      "product_materials!left(material_id)",
       "product_concern!inner(concern_id)",
+      "product_materials!left(material_id)",
     ]);
   }
 
@@ -59,6 +62,44 @@ export class ProductsService extends ListerService<IProduct> {
     }
 
     return { data, error } as PostgrestSingleResponse<IProduct>;
+  }
+
+  async getAllTotalCount(
+    filters: Filter<any>[],
+    pagination: Pagination,
+    orders: Sorter[],
+  ): Promise<any> {
+    if (
+      filters.length > 0 &&
+      filters.find((el) => el.field == "product_materials.material_id")
+    ) {
+      this.search_fields[this.search_fields.length - 1] =
+        "product_materials!inner(material_id)";
+    }
+    const resp = super.getAllTotalCount(filters, pagination, orders);
+    this.search_fields[this.search_fields.length - 1] =
+      "product_materials!left(material_id)";
+    return resp;
+  }
+
+  async getAll(
+    filters: Filter<any>[],
+    pagination: Pagination,
+    orders: Sorter[],
+  ): Promise<any[]> {
+    console.log(filters);
+    alert("aa");
+    if (
+      filters.length > 0 &&
+      filters.find((el) => el.field == "product_materials.material_id")
+    ) {
+      this.search_fields[this.search_fields.length - 1] =
+        "product_materials!inner(material_id)";
+    }
+    const resp = super.getAll(filters, pagination, orders);
+    this.search_fields[this.search_fields.length - 1] =
+      "product_materials!left(material_id)";
+    return resp;
   }
 
   async getMaterials(id: string | number) {
