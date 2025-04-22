@@ -1,4 +1,4 @@
-.p1 {
+.description p {
   display: block;
   margin-block-start: 1em;
   margin-block-end: 1em;
@@ -9,13 +9,50 @@
   font-family: Verdana, Arial, Helvetica, sans-serif;
   font-size: 18px;
   font-weight: normal !important ;
+  font-style: normal !important ;
   line-height: 1.3;
 }
 
-.p1 strong {
+.description .p1 {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  unicode-bidi: isolate;
+  color: #000000;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: normal !important ;
+  font-style: normal !important ;
+  line-height: 1.3;
+}
+
+.description li {
+  display: list-item;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  unicode-bidi: isolate;
+  color: #000000;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 18px;
+  font-weight: normal !important ;
+  font-style: normal !important ;
+  line-height: 1.3;
+}
+
+.description ul,
+.description ol {
+  list-style: revert !important;
+  padding-left: 1em !important;
+}
+
+.description strong {
   font-weight: bold !important;
   color: #000000;
   font-family: Verdana, Arial, Helvetica, sans-serif;
-  font-size: 19px;
+  font-size: 21px;
   line-height: 1.3;
 }

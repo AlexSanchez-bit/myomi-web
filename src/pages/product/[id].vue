@@ -108,7 +108,7 @@
             <!-- Descripción larga truncada -->
             <div class="mt-4" v-if="product.long_description">
               <div
-                class="prose transition-all duration-700"
+                class="prose transition-all duration-700 description"
                 :class="{ 'line-clamp-[9]': !descriptionExpanded }"
                 v-html="product.long_description"
               ></div>
