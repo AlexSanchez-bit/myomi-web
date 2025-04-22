@@ -87,8 +87,6 @@ export class ProductsService extends ListerService<IProduct> {
     pagination: Pagination,
     orders: Sorter[],
   ): Promise<any[]> {
-    console.log(filters);
-    alert("aa");
     if (
       filters.length > 0 &&
       filters.find((el) => el.field == "product_materials.material_id")

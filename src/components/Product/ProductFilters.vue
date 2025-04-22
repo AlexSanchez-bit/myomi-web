@@ -22,9 +22,6 @@ const materialService = useMaterialService();
 const classService = useCategoryService();
 const brandService = useBrandService();
 const concernService = useConcernsService();
-onBeforeMount(() => {
-  updateFilters(filter.value);
-});
 
 onMounted(async () => {
   availableMaterials.value = await materialService.getAll(
