@@ -1,1 +1,0 @@
-import{M as r,aF as t}from"./index-CdbKeSxe.js";class o extends r{constructor(){super("order",["*","products:order_product!inner(*,product(*))","payment_type(*)"])}async createOrder(e){return await t.functions.invoke("create_order",{method:"POST",body:e})}}const s=new o,d=()=>s;export{d as u};
