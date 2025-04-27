@@ -154,11 +154,6 @@ swiper-container {
   width: 100%;
 }
 
-/* Eliminamos el width forzado en cada slide para que Swiper lo calcule */
-swiper-slide {
-  /* Sin reglas forzadas de ancho */
-}
-
 /* Para móviles, forzamos que cada slide tenga el 100% del ancho */
 @media (max-width: 575px) {
   swiper-slide {

@@ -1,19 +1,16 @@
 <template>
   <div class="relative">
     <div class="[grid-area:main] w-full box-border">
-      <div ref="prevLoad" />
-      <div
-        v-show="!is_loading || current_page > 1"
-        :class="displayClass ?? 'flex flex-col gap-2'"
-      >
+      <div :class="displayClass ?? 'flex flex-col gap-2'">
         <slot
           v-for="(item, index) in items"
-          :key="index"
+          :key="`item-${index}`"
           :item="item"
           name="item"
         >
           {{ item }}
         </slot>
+
         <div
           v-if="items.length == 0"
           class="text-center text-gray-300 flex items-center justify-center h-36 w-full"
@@ -22,19 +19,16 @@
             <h6 class="w-full">{{ $t("nothing_to_show") }}</h6>
           </slot>
         </div>
-      </div>
 
-      <div
-        v-if="is_loading"
-        class="min-h-screen"
-        :class="displayClass ?? 'flex flex-col gap-2'"
-      >
-        <slot v-for="i in 10" :key="i" name="skeletons">
+        <div ref="nextLoad" />
+        <slot
+          v-for="i in current_page < all_pages ? 12 : 0"
+          :key="`index-${i}`"
+          name="skeletons"
+        >
           <Skeleton class="w-full h-36" />
         </slot>
       </div>
-
-      <div ref="nextLoad" />
     </div>
   </div>
 </template>
@@ -71,10 +65,9 @@ const toast = useToastStorage();
 const handlePrevIntersection = (entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      if (current_page.value - 2 > 1) {
-        current_page.value -= 3;
-        items.value = [];
-        loadData();
+      if (current_page.value >= 1) {
+        current_page.value -= 1;
+        loadData(-1);
       }
     }
   });
@@ -84,7 +77,7 @@ const handlePostIntersection = (entries) => {
     if (entry.isIntersecting) {
       if (current_page.value < all_pages.value) {
         current_page.value += 1;
-        loadData();
+        loadData(1);
       }
     }
   });
@@ -94,17 +87,17 @@ onMounted(() => {
   loadData();
   const observerPrev = new IntersectionObserver(handlePrevIntersection, {
     root: null, // Usa el viewport completo como área de visualización
-    threshold: 0.5, // Ejecuta el callback cuando el 10% del elemento esté en pantalla
+    threshold: 0.2, // Ejecuta el callback cuando el 10% del elemento esté en pantalla
   });
   const observerPost = new IntersectionObserver(handlePostIntersection, {
     root: null, // Usa el viewport completo como área de visualización
-    threshold: 0.5, // Ejecuta el callback cuando el 10% del elemento esté en pantalla
+    threshold: 0.2, // Ejecuta el callback cuando el 10% del elemento esté en pantalla
   });
 
   // Comenzamos a observar el elemento
-  if (prevLoad.value) {
-    observerPrev.observe(prevLoad.value);
-  }
+  // if (prevLoad.value) {
+  //   observerPrev.observe(prevLoad.value);
+  // }
   if (nextLoad.value) {
     observerPost.observe(nextLoad.value);
   }
@@ -112,7 +105,7 @@ onMounted(() => {
 
 const { GetAll } = props.service;
 
-async function loadData() {
+async function loadData(order: number = 1) {
   is_loading.value = true;
 
   const { data, error } = await GetAll(
@@ -124,8 +117,7 @@ async function loadData() {
   is_loading.value = false;
 
   if (data) {
-    items.value = [...items.value.slice(-20), ...data.items];
-    current_page.value = data.currentPage;
+    items.value = [...items.value, ...data.items];
     all_pages.value = data.totalPages;
   } else {
     if (Array.isArray(error.message)) {
