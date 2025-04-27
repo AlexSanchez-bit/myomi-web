@@ -1,83 +1,16 @@
 <template>
   <div class="not-found">
-    <h1 class="title">¡Oops! Parece que te perdiste... 🐰</h1>
+    <h1 class="title">¡Oops! Parece que te perdiste...</h1>
 
     <!-- Contenedor de Mimi -->
     <div class="mimi-container">
-      <svg
-        class="mimi"
-        viewBox="0 0 200 200"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <!-- Orejas -->
-        <ellipse
-          cx="70"
-          cy="40"
-          rx="18"
-          ry="45"
-          fill="#FFD700"
-          stroke="#E6B800"
-          stroke-width="3"
-        />
-        <ellipse
-          cx="130"
-          cy="40"
-          rx="18"
-          ry="45"
-          fill="#FFD700"
-          stroke="#E6B800"
-          stroke-width="3"
-        />
-
-        <!-- Cabeza -->
-        <circle
-          cx="100"
-          cy="90"
-          r="50"
-          fill="#FFD700"
-          stroke="#E6B800"
-          stroke-width="3"
-        />
-
-        <!-- Cachetes -->
-        <circle cx="65" cy="110" r="12" fill="white" opacity="0.9" />
-        <circle cx="135" cy="110" r="12" fill="white" opacity="0.9" />
-
-        <!-- Cuerpo -->
-        <ellipse
-          cx="100"
-          cy="150"
-          rx="45"
-          ry="50"
-          fill="#FFD700"
-          stroke="#E6B800"
-          stroke-width="3"
-        />
-
-        <!-- Pancita blanca -->
-        <ellipse cx="100" cy="165" rx="25" ry="30" fill="white" opacity="0.9" />
-
-        <!-- Ojos -->
-        <circle cx="85" cy="85" r="5" fill="black" />
-        <circle cx="115" cy="85" r="5" fill="black" />
-
-        <!-- Nariz -->
-        <ellipse cx="100" cy="100" rx="5" ry="3" fill="black" />
-
-        <!-- Boca -->
-        <path
-          d="M 95 105 Q 100 115, 105 105"
-          stroke="black"
-          stroke-width="2"
-          fill="none"
-        />
-      </svg>
+      <img src="/mymi.png" alt="" class="scale-95 lg:h-96" />
 
       <span class="error-text">404</span>
     </div>
 
     <p class="message">
-      Mimi no encuentra esta página, pero te puede llevar a casa 🏡
+      <span>MYMːI</span> no encuentra esta página, pero te puede llevar a casa
     </p>
 
     <!-- Botón para volver -->
@@ -127,7 +60,7 @@
     transform: translateY(0);
   }
   50% {
-    transform: translateY(-20px);
+    transform: translateY(-40px);
   }
 }
 
@@ -140,7 +73,7 @@
   font-size: 80px;
   font-weight: bold;
   color: #ffcc00;
-  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2);
+  text-shadow: 0px 0px 15px rgba(253, 235, 0, 0.2);
 }
 
 /* Mensaje */
