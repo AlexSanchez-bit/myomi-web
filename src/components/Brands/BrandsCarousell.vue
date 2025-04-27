@@ -79,11 +79,10 @@ onMounted(async () => {
   object-fit: contain;
 }
 
-/* Vista móvil: iconos a la mitad de su tamaño */
 @media (max-width: 575px) {
   .marquee-item img {
-    width: 45px;
-    height: 45px;
+    width: 97px;
+    height: 97px;
   }
 }
 

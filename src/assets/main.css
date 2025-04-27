@@ -35,3 +35,26 @@ body {
   --surface-ground: transparent; /* Fondo del Menubar */
   --text-color: black; /* Color del texto */
 }
+
+/* ::-webkit-scrollbar { */
+/*   width: 0.6rem; */
+/*   transition: all 0.7s ease-in-out; */
+/* } */
+/* ::-webkit-scrollbar:hover { */
+/*   width: 0.8rem; */
+/* } */
+/**/
+/* ::-webkit-scrollbar-track { */
+/*   background: rgba(252, 233, 126, 1); */
+/* } */
+/**/
+/* ::-webkit-scrollbar-thumb { */
+/*   background: rgba(255, 255, 255, 0.8); */
+/*   border-radius: 180px; */
+/*   transition: all 0.3s ease-in-out; */
+/* } */
+/**/
+/* ::-webkit-scrollbar-thumb:hover { */
+/*   background: rgba(252, 233, 126, 1); */
+/*   width: 15px; */
+/* } */

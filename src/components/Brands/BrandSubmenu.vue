@@ -5,7 +5,7 @@
       v-if="!isMobile"
       breakpoint="2px"
       :model="items"
-      class="!bg-transparent custom-menubar text-sm lg:text-md uppercase"
+      class="!bg-transparent custom-menubar text-sm lg:text-md uppercase !overflow-y-auto"
     >
       <template #item="{ item, props, hasSubmenu }">
         <router-link
@@ -180,5 +180,9 @@ const expandedKeys = ref({ root: true });
 ::v-deep .p-menubar .p-menuitem.p-highlight > .p-menuitem-content {
   background: transparent;
   color: black !important;
+}
+:deep(.p-menubar-submenu) {
+  @apply !overflow-y-auto;
+  @apply max-h-[70dvh];
 }
 </style>

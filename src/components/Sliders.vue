@@ -29,9 +29,11 @@
       class="min-h-80 w-full"
     >
       <swiper-slide v-for="(item, index) in skeletonItems" :key="index">
-        <div class="relative w-full h-[26rem]">
-          <Skeleton class="!h-80" />
-        </div>
+        <slot name="skeletons">
+          <div class="relative w-full h-[26rem]">
+            <Skeleton class="!h-80" />
+          </div>
+        </slot>
       </swiper-slide>
     </swiper-container>
 
@@ -49,7 +51,7 @@
         clickable: true,
         dynamicBullets: true,
       }"
-      :navigation="true"
+      :navigation="arrows ?? true"
       class="w-full"
     >
       <swiper-slide v-for="(promotion, index) in promotions" :key="index">
@@ -62,7 +64,6 @@
       <swiper-button-prev class="custom-prev">
         <template #button-prev>
           <i class="fas fa-chevron-left"></i>
-          a
         </template>
       </swiper-button-prev>
       <swiper-button-next slot="button-next" class="custom-next">
@@ -90,6 +91,8 @@ const props = defineProps<{
   filters: Filter[];
   orders: Sorter[];
   breakpoints?: any;
+  pages?: number;
+  arrows?: boolean;
 }>();
 
 // Breakpoints para el slider:
@@ -135,7 +138,7 @@ onMounted(async () => {
 
   const resp = await props.service.getAll(
     props.filters,
-    new Pagination(0, 10),
+    new Pagination(0, props.pages ?? 10),
     props.orders,
   );
   loading.value = false;

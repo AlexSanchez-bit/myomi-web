@@ -1,35 +1,45 @@
 <template>
-  <div
-    class="transition-all duration-1000 ease-in-outflex flex flex-wrap gap-3 items-center justify-start px-3"
+  <Sliders
+    :service="service"
+    :filters="filters"
+    :orders="[]"
+    class="max-h-24"
+    :pages="100"
+    :arrows="false"
   >
-    <div class="w-40 h-40" v-for="i in loading ? 6 : 0" :key="i">
-      <Skeleton class="w-full !h-full" style=""></Skeleton>
-    </div>
-
-    <router-link
-      :to="{ name: 'category.details', params: { id: category.id } }"
-      class="w-40 h-40 rounded-xl overflow-hidden relative category cursor-pointer"
-      v-for="category in categories"
-      :key="category.id"
-    >
-      <picture>
-        <img
-          :src="category.icon ?? '/noimage.webp'"
-          alt=""
-          class="w-full h-full object-cover"
-          @error="(e) => ((e.target as any).src = '/noimage.webp')"
-        />
-      </picture>
-
-      <div
-        class="absolute top-0 left-0 w-full h-full bg-zinc-950/35 flex items-center justify-center"
+    <template #header> </template>
+    <template #item="{ item: category }">
+      <router-link
+        :to="{ name: 'category.details', params: { id: category.id } }"
       >
-        <p class="text-white text-xl">
-          {{ category.name }}
-        </p>
+        <div
+          class="!w-24 !h-24 rounded-xl overflow-hidden relative category cursor-pointer"
+        >
+          <picture class="h-12">
+            <img
+              :src="category.icon ?? '/noimage.webp'"
+              alt=""
+              class="w-full h-full object-cover"
+              @error="(e) => ((e.target as any).src = '/noimage.webp')"
+            />
+          </picture>
+
+          <div
+            class="absolute top-0 left-0 w-full h-full bg-zinc-950/35 flex items-center justify-center"
+          >
+            <p class="text-white text-xl">
+              {{ category.name }}
+            </p>
+          </div>
+        </div>
+      </router-link>
+    </template>
+    <template #skeletons>
+      <div class="!w-24 !h-24">
+        <Skeleton class="w-full !h-full" style=""></Skeleton>
       </div>
-    </router-link>
-  </div>
+    </template>
+  </Sliders>
 </template>
 <script setup lang="ts">
 import { useCategoryService } from "@/composables/Shop/Category/useCategoryService";
@@ -38,9 +48,9 @@ import { Pagination } from "@/utils/entities/Pagination";
 import Skeleton from "primevue/skeleton";
 import { onMounted, ref } from "vue";
 import { FilterMatchMode } from "@primevue/core/api";
+import Sliders from "../Sliders.vue";
 
 const service = useCategoryService();
-const categories = ref<ICategory[]>([]);
 const loading = ref(false);
 
 const props = defineProps<{
@@ -48,6 +58,13 @@ const props = defineProps<{
 }>();
 const onscreen = ref(false);
 const container = ref();
+const filters = ref([
+  {
+    field: "parent",
+    matchMode: FilterMatchMode.EQUALS,
+    value: props.parent_category,
+  },
+]);
 
 onMounted(async () => {
   loading.value = true;
@@ -60,23 +77,6 @@ onMounted(async () => {
   // Comenzamos a observar el elemento
   if (container.value) {
     observer.observe(container.value);
-  }
-
-  const resp = await service.getAll(
-    [
-      {
-        field: "parent",
-        matchMode: FilterMatchMode.EQUALS,
-        value: props.parent_category,
-      },
-    ],
-    new Pagination(0, 100),
-    [],
-  );
-  loading.value = false;
-
-  if (resp) {
-    categories.value = resp;
   }
 });
 </script>
