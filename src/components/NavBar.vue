@@ -67,9 +67,9 @@
         'h-0 opacity-0': scrolled_ammount < 0 && scrolled > 50,
       }"
     >
-      <BrandMenu />
       <CategoryMenu />
       <ConcernMenu />
+      <BrandMenu />
 
       <router-link
         v-show="false"
@@ -83,9 +83,9 @@
   </nav>
 
   <SideBar v-model:visible="sidebarVisible" position="right" class="md:hidden">
-    <BrandMenu />
     <CategoryMenu />
     <ConcernMenu />
+    <BrandMenu />
 
     <router-link
       v-show="false"
