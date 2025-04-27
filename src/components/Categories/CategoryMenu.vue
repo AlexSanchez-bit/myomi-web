@@ -129,6 +129,7 @@ function buildMenuItems(categories) {
     map[cat.id] = {
       label: cat.name,
       icon: cat.icon,
+      key: `${cat.id}`,
       items: [],
       route: `/category/${cat.id}`,
     };
@@ -139,6 +140,8 @@ function buildMenuItems(categories) {
     if (cat.parent) {
       if (map[cat.parent]) {
         map[cat.parent].items.push(map[cat.id]);
+        expandedKeys.value[`${cat.parent}`] = true;
+        console.log(expandedKeys.value);
       }
     } else {
       menuItems.push(map[cat.id]);

@@ -12,7 +12,7 @@
         </slot>
 
         <div
-          v-if="items.length == 0"
+          v-if="items.length == 0 && !is_loading"
           class="text-center text-gray-300 flex items-center justify-center h-36 w-full"
         >
           <slot>
@@ -22,7 +22,7 @@
 
         <div ref="nextLoad" />
         <slot
-          v-for="i in current_page < all_pages ? 12 : 0"
+          v-for="i in current_page < all_pages || is_loading ? 12 : 0"
           :key="`index-${i}`"
           name="skeletons"
         >
