@@ -28,7 +28,7 @@ const default_filter = ref({
 if (route.query?.concern) {
   default_filter.value.concerns = [parseInt(route.query?.concern as string)];
   filter_list.value.push({
-    field: "product_materials.material_id",
+    field: "product_concern.concern_id",
     matchMode: FilterMatchMode.IN,
     value: [parseInt(route.query.concern as string)],
   });

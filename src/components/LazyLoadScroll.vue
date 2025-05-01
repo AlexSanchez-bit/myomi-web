@@ -20,13 +20,18 @@
           </slot>
         </div>
 
-        <div ref="nextLoad" />
+        <div ref="nextLoad">
+          <Skeleton
+            class="!w-full !h-full"
+            v-if="current_page < all_pages - 1 || is_loading"
+          />
+        </div>
         <slot
-          v-for="i in current_page < all_pages || is_loading ? 12 : 0"
+          v-for="i in current_page < all_pages - 1 || is_loading ? 12 : 0"
           :key="`index-${i}`"
           name="skeletons"
         >
-          <Skeleton class="w-full h-36" />
+          <Skeleton class="!w-full !h-full" />
         </slot>
       </div>
     </div>
@@ -75,7 +80,7 @@ const handlePrevIntersection = (entries) => {
 const handlePostIntersection = (entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      if (current_page.value < all_pages.value) {
+      if (current_page.value < all_pages.value - 1) {
         current_page.value += 1;
         loadData(1);
       }
@@ -108,6 +113,7 @@ const { GetAll } = props.service;
 async function loadData(order: number = 1) {
   is_loading.value = true;
 
+  console.log(current_page.value, all_pages.value);
   const { data, error } = await GetAll(
     current_page.value,
     pages_count.value,
@@ -130,8 +136,10 @@ async function loadData(order: number = 1) {
 
 const apply_filters = (nfilter?: any) => {
   current_page.value = 0;
+  all_pages.value = 1;
   items.value = [];
   filter.value = nfilter ?? filter.value;
+  window.scrollTo(0, 0);
   loadData();
 };
 
