@@ -80,7 +80,7 @@ const handlePrevIntersection = (entries) => {
 const handlePostIntersection = (entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      if (current_page.value < all_pages.value) {
+      if (!is_loading.value && current_page.value < all_pages.value) {
         current_page.value += 1;
         loadData(1);
       }
