@@ -23,11 +23,11 @@
         <div ref="nextLoad">
           <Skeleton
             class="!w-full !h-full"
-            v-if="current_page < all_pages - 1 || is_loading"
+            v-if="current_page < all_pages || is_loading"
           />
         </div>
         <slot
-          v-for="i in current_page < all_pages - 1 || is_loading ? 12 : 0"
+          v-for="i in current_page < all_pages || is_loading ? 12 : 0"
           :key="`index-${i}`"
           name="skeletons"
         >
@@ -80,7 +80,7 @@ const handlePrevIntersection = (entries) => {
 const handlePostIntersection = (entries) => {
   entries.forEach((entry) => {
     if (entry.isIntersecting) {
-      if (current_page.value < all_pages.value - 1) {
+      if (current_page.value < all_pages.value) {
         current_page.value += 1;
         loadData(1);
       }
