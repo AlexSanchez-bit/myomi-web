@@ -4,18 +4,15 @@
     <Steps :model="steps" :activeIndex="currentStep - 1" :readonly="true">
       <template #item="{ item }">
         <div class="flex flex-col bg-white items-center">
-          <span
-            class="p-steps-number bg-[#449ca8] z-30"
-            :class="{
-              'bg-[#30a3af] text-white': currentStep >= item.step,
-              'bg-[#449ca8] text-white': currentStep < item.step,
-            }"
-          >
+          <span class="p-steps-number bg-[#449ca8] z-30" :class="{
+            'bg-[#30a3af] text-white': currentStep >= item.step,
+            'bg-[#449ca8] text-white': currentStep < item.step,
+          }">
             {{ item.step }}
           </span>
           <span class="p-steps-title !w-24 text-center">{{
             $t(item.label as string)
-          }}</span>
+            }}</span>
         </div>
       </template>
     </Steps>
@@ -23,42 +20,20 @@
     <!-- Contenido del paso actual -->
     <div class="mt-8">
       <!-- Paso 1: Confirmación de la compra -->
-      <ConfirmationStep
-        v-if="currentStep === 1"
-        :cart="cart"
-        :selected_payment_type="selected_payment_type"
-        :selected_currency="selected_currency"
-        :selected_location="selected_location"
-        @next="currentStep++"
-        @back="goBack"
-        v-model:change="needed_change"
-      />
+      <ConfirmationStep v-if="currentStep === 1" :cart="cart" :selected_payment_type="selected_payment_type"
+        :selected_currency="selected_currency" :selected_location="selected_location" @next="currentStep++"
+        @back="goBack" v-model:change="needed_change" />
 
       <!-- Paso 2: Información del destinatario -->
-      <RecipientStep
-        v-else-if="currentStep === 2"
-        v-model="receiver"
-        :location-id="locationId"
-        @next="handlePayment"
-        @back="currentStep--"
-      />
+      <RecipientStep v-else-if="currentStep === 2" v-model="receiver" :location-id="locationId" @next="handlePayment"
+        @back="currentStep--" />
 
       <!-- Paso 3: Efectuar el pago -->
-      <PaymentStepPaypal
-        v-else-if="currentStep === 3"
-        :contact="receiver"
-        :currency_id="selected_currency.id"
-        :payment_type_id="selected_payment_type.id"
-        :change="needed_change"
-        :currency_name="selected_currency.name"
-        :location_id="selected_location.id"
-        :total="cart.total_price + selected_location.delivery_price"
-        @created_payment="create_payment"
-        @create_order="create_order"
-        @error_on_payment="error_on_payment"
-        @confirm="handlePayment"
-        @back="currentStep--"
-      />
+      <PaymentStepPaypal v-else-if="currentStep === 3" :contact="receiver" :currency_id="selected_currency.id"
+        :payment_type_id="selected_payment_type.id" :change="needed_change" :currency_name="selected_currency.name"
+        :location_id="selected_location.id" :total="cart.total_price + selected_location.delivery_price"
+        @created_payment="create_payment" @create_order="create_order" @error_on_payment="error_on_payment"
+        @confirm="handlePayment" @back="currentStep--" />
     </div>
   </div>
 </template>
@@ -221,7 +196,7 @@ const handlePayment = async () => {
   if (resp.data.success) {
     router.push("/");
     store.getMyCart();
-    window.location.href = `https://wa.me/5352058774/?text=${encodeURIComponent(whatsapp_message())}`;
+    window.location.href = `https://wa.me/50272812/?text=${encodeURIComponent(whatsapp_message())}`;
     notify("success", t("puchase_successfull"), "", 3000);
   } else {
     notify("error", resp.data.error, "", 3000);
@@ -283,6 +258,7 @@ ${t("total")}: ${total} ${selected_currency.value.name}
   color: #449ca8 !important;
   transition: all 0.3s ease-in-out;
 }
+
 .pastel-btn:hover {
   background-color: rgba(255, 182, 193, 0.4) !important;
 }
