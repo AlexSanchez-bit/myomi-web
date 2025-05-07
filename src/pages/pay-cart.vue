@@ -12,7 +12,7 @@
           </span>
           <span class="p-steps-title !w-24 text-center">{{
             $t(item.label as string)
-            }}</span>
+          }}</span>
         </div>
       </template>
     </Steps>

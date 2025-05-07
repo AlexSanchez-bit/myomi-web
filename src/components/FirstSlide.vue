@@ -33,10 +33,13 @@ onMounted(() => {});
         class="flex-1 transform w-full"
       >
         <template #item="{ data }">
-          <div class="w-full">
+          <div class="w-full img-background"
+            :style="`background-image:url('${data}');background-color:rgba(10,10,10,0.4);`"
+          >
             <Img
               :src="data"
-              imageClass="object-cover   z-10 w-full h-[70dvh]"
+              :draggable="false"
+              imageClass=" object-scale-down  z-10 w-full h-[70dvh] img-backlog"
             />
           </div>
         </template>
@@ -75,5 +78,15 @@ onMounted(() => {});
   .h-mid-screen {
     height: 50vh !important;
   }
+}
+
+.img-background{
+  background-size:cover;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(40px);
+  background-color:rgba(10,10,10,0.4) 
+}
+:deep(.img-backlog){
+    backdrop-filter: blur(3px)!important;
 }
 </style>
