@@ -73,14 +73,16 @@
         <!--   :src="selected_currency?.icon" -->
         <!--   alt="" -->
         <!-- /> -->
-        {{ selected_location?.delivery_price }}
+        {{ (selected_location?.delivery_price).toFixed(2) }}
         <span>{{ selected_currency?.name }}</span>
       </p>
       <p class="text-pink-700" v-if="!selected_payment_type.delivery_included">
         {{ $t("delivery_price") }}:
         {{
-          selected_location?.delivery_price *
+        (          selected_location?.delivery_price *
           selected_payment_type.delivery_currency?.change_value
+).toFixed(2)
+          
         }}
         <span>{{ selected_payment_type.delivery_currency?.name }}</span>
       </p>
