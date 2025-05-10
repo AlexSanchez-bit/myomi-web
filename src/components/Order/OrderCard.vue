@@ -20,7 +20,7 @@
         {{ order.currency?.name }}
         <i v-if="order.delivery_payment">
           +
-          {{ order.delivery_payment * order.delivery_currency?.change_value }}
+          {{( order.delivery_payment * order.delivery_currency?.change_value ).toFixed(2)}}
           {{ order.delivery_currency?.name }} ({{ $t("delivery") }})
         </i>
       </p>
@@ -93,7 +93,7 @@
         </p>
         <p>
           <strong>{{ $t("order.contactCity") }}:</strong>
-          {{ order.contact.municipality }}
+          {{ order.contact.municipality.name }}
         </p>
       </div>
     </transition>
