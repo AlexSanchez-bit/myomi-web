@@ -1,99 +1,112 @@
 <template>
-  <div class="marquee">
-    <div class="marquee__inner">
-      <!-- Primera copia de la lista -->
-      <router-link
-        v-for="(item, index) in items"
-        :key="'original-' + index"
-        :to="`/brand/${item.id}`"
-        class="marquee-item"
-      >
-        <img :src="item.icon" alt="Icono" />
-      </router-link>
-      <!-- Segunda copia para lograr el efecto continuo -->
-      <router-link
-        v-for="(item, index) in items"
-        :key="'duplicate-' + index"
-        :to="`/brand/${item.id}`"
-        class="marquee-item"
-      >
-        <img :src="item.icon" alt="Icono" />
+  <div class="brand-carousel">
+    <div class="carousel-track">
+      <router-link v-for="(item, index) in duplicatedItems" :key="index" :to="`/brand/${item.id}`"
+        class="carousel-item relative">
+        <img :src="item.icon" class="image-mask " :alt="`Brand ${item.id}`" />
+        <!-- :style="`filter:${getColorFilter(index)}`" /> -->
+
+
       </router-link>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import { useBrandService } from "@/composables/Shop/Brand/useBrandService";
-import { Pagination } from "@/utils/entities/Pagination";
-
+import { ref, onMounted, computed } from 'vue';
+import { useBrandService } from '@/composables/Shop/Brand/useBrandService';
+import { Pagination } from '@/utils/entities/Pagination';
+import { FilterMatchMode } from "@primevue/core/api";
 const items = ref([]);
 const service = useBrandService();
 
 onMounted(async () => {
-  const data = await service.getAll([], new Pagination(0, 100), []);
+  const data = await service.getAll([
+    {
+      field: 'name',
+      matchMode: FilterMatchMode.NOT_EQUALS,
+      value: 'Otras'
+    }
+  ], new Pagination(0, 1000), []);
+  console.log(data)
   if (data) {
-    // Se asume que cada icono ocupa 90px de ancho + 20px de margen = 110px
+    // Si hay muy pocos, duplicamos internamente también
     const iconWidth = 110;
     const requiredCount = Math.ceil(window.innerWidth / iconWidth) + 2;
     let finalData = [];
-    // Si la cantidad de datos es insuficiente para cubrir el ancho, se replica la lista.
     if (data.length < requiredCount) {
       while (finalData.length < requiredCount) {
         finalData.push(...data);
       }
       finalData = finalData.slice(0, requiredCount);
     } else {
-      finalData = data;
+      finalData = [...data, ...data];
     }
     items.value = finalData;
   }
 });
+
+const duplicatedItems = computed(() => items.value.concat(items.value));
+
+// Genera colores aleatorios
+function getRandomColor() {
+  const r = Math.floor(Math.random() * 255) + 24;
+  const g = Math.floor(Math.random() * 255) + 24;
+  const b = Math.floor(Math.random() * 255) + 24;
+  return `rgb(${r}, ${b}, ${g})`;
+}
+
+// Este truco usa filtros CSS para recolorear imágenes negras
+const colorCache = new Map();
+function getColorFilter(index) {
+  if (!colorCache.has(index)) {
+    const color = getRandomColor();
+    colorCache.set(index, `brightness(${Math.floor(Math.random() * 3) + 1}) saturate(${Math.floor(Math.random() * 5) + 1}%) sepia(${Math.floor(Math.random() * 5) + 1}%) hue-rotate(${Math.floor(Math.random() * 360)}deg)`);
+  }
+  return colorCache.get(index);
+}
+
+
 </script>
 
 <style scoped>
-.marquee {
-  width: 100%;
+.brand-carousel {
   overflow: hidden;
+  width: 100%;
   position: relative;
 }
 
-/* Usamos inline-block y white-space: nowrap para evitar espacios adicionales */
-.marquee__inner {
-  display: inline-block;
-  white-space: nowrap;
-  animation: marquee 30s linear infinite;
-  font-size: 0; /* Elimina espacios en blanco entre inline-blocks */
+.carousel-track {
+  display: flex;
+  animation: scroll 30s linear infinite;
+  will-change: transform;
 }
 
-.marquee-item {
-  display: inline-block;
+.carousel-item {
+  flex: 0 0 auto;
   margin: 0 10px;
-  font-size: initial; /* Restaura el tamaño de fuente para el contenido */
 }
 
-.marquee-item img {
+.carousel-item img {
   width: 90px;
   height: 90px;
   object-fit: contain;
 }
 
 @media (max-width: 575px) {
-  .marquee-item img {
+  .carousel-item img {
     width: 97px;
     height: 97px;
   }
 }
 
-/* La animación mueve el contenedor desde 0 hasta -50% de su ancho total, 
-   es decir, el ancho de una copia completa, lo que permite un loop sin espacios */
-@keyframes marquee {
+@keyframes scroll {
   0% {
     transform: translateX(0);
   }
+
   100% {
-    transform: translateX(-50%);
+    transform: translateX(-100%);
   }
 }
 </style>
