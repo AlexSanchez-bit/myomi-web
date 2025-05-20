@@ -1,10 +1,10 @@
 <template>
   <div class="min-h-screen">
     <div class="w-full">
-      <div class="h-60 mb-4 w-full relative">
+      <div class="h-32 pb-3 md:h-60 mb-4 w-full relative">
         <Img
           :src="brand?.layer_image ?? null"
-          imageClass="w-full h-60  object-scale-down md:object-cover"
+          imageClass="w-full h-full   object-cover"
         >
         </Img>
         <a
