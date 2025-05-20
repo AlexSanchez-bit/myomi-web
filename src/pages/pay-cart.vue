@@ -206,12 +206,13 @@ const handlePayment = async () => {
 
 function whatsapp_message() {
   const total = selected_payment_type.value.delivery_included
-    ? cart.value.total_price + cart.value.delivery_price
-    : cart.value.total_price;
+    ? (cart.value.total_price + cart.value.delivery_price * selected_currency.value.change_value).toFixed(2)
+    : (cart.value.total_price * selected_currency.value.change_value).toFixed(2);
+
 
   const delivery_payment = selected_payment_type.value.delivery_included
     ? null
-    : selected_location.value.delivery_price;
+    : (selected_location.value.delivery_price * selected_payment_type.value.delivery_currency?.change_value).toFixed(2);
 
   return `
  ${t("buy_resume")}
