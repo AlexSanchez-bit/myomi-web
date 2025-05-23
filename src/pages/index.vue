@@ -3,26 +3,17 @@
     <PromotionsButton :promotions="promotions" />
     <FirstSlide :images="carousellImages" />
     <BrandsCarousell />
-    <Sliders
-      class="my-3"
-      :service="service"
-      :filters="[]"
-      :orders="[
-        {
-          field: 'sales',
-          order: 0,
-        },
-      ]"
-    >
+    <Sliders class="my-3" :service="service" :filters="[]" :orders="[
+      {
+        field: 'sales',
+        order: 0,
+      },
+    ]">
       <template #header>
-        <h6
-          class="text-4xl text-center mt-6 decoration-black text-black uppercase"
-        >
+        <h6 class="text-4xl text-center mt-6 decoration-black text-black uppercase">
           {{ $t("best_sellers") }}
         </h6>
-        <p
-          class="underline text-center mb-6 text-zinc-800 decoration-black mt-4 cursor-pointer uppercase"
-        >
+        <p class="underline text-center mb-6 text-zinc-800 decoration-black mt-4 cursor-pointer uppercase">
           <router-link to="/product">
             {{ $t("see_all") }}
           </router-link>
@@ -37,26 +28,17 @@
     <div class="overflow-hidden w-full h-[50dvh] my-12">
       <Img :src="promotionalImage" imageClass="w-full h-[50dvh] object-cover" />
     </div>
-    <Sliders
-      class="my-3"
-      :service="service"
-      :filters="[]"
-      :orders="[
-        {
-          field: 'created_at',
-          order: 0,
-        },
-      ]"
-    >
+    <Sliders class="my-3" :service="service" :filters="[]" :orders="[
+      {
+        field: 'created_at',
+        order: 0,
+      },
+    ]">
       <template #header>
-        <h6
-          class="text-4xl text-center mt-6 decoration-black text-black uppercase"
-        >
+        <h6 class="text-4xl text-center mt-6 decoration-black text-black uppercase">
           {{ $t("recently_added") }}
         </h6>
-        <p
-          class="underline text-center mb-6 text-zinc-800 decoration-black mt-4 cursor-pointer uppercase"
-        >
+        <p class="underline text-center mb-6 text-zinc-800 decoration-black mt-4 cursor-pointer uppercase">
           <router-link to="/category">
             {{ $t("see_all") }}
           </router-link>

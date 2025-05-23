@@ -1,0 +1,1 @@
+import{Q as e}from"./index-B_e2xQ2c.js";class r extends e{constructor(){super("payment_type",["*,allowed_currencies:payment_type_currency!inner(currency(*)),delivery_currency:currency(*)"])}buildSelect(){return this.builder.select(this.search_fields.join(" , "),{count:"exact"})}}const c=new r,s=()=>c;export{s as u};

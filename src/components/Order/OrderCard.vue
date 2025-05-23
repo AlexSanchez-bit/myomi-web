@@ -2,15 +2,11 @@
   <div class="order-card">
     <div class="order-header">
       <h3>{{ $t("order.orderNumber") }}{{ order.id }}</h3>
-      <span
-        class="status"
-        :class="{
-          'bg-green-400/60': order.status == 'PAID',
-          'bg-red-400/60': order.status == 'CANCELLED',
-          'bg-yellow-200/60': order.status == 'CREATED',
-        }"
-        >{{ getStatusText(order.status) }}</span
-      >
+      <span class="status" :class="{
+        'bg-green-400/60': order.status == 'PAID',
+        'bg-red-400/60': order.status == 'CANCELLED',
+        'bg-yellow-200/60': order.status == 'CREATED',
+      }">{{ getStatusText(order.status) }}</span>
     </div>
 
     <div class="order-info">
@@ -20,18 +16,14 @@
         {{ order.currency?.name }}
         <i v-if="order.delivery_payment">
           +
-          {{( order.delivery_payment * order.delivery_currency?.change_value ).toFixed(2)}}
+          {{ (order.delivery_payment * order.delivery_currency?.change_value).toFixed(2) }}
           {{ order.delivery_currency?.name }} ({{ $t("delivery") }})
         </i>
       </p>
       <p class="flex items-center gap-1 flex-row">
         <strong>{{ $t("order.paymentMethod") }}:</strong>
         <span class="flex items-center flex-row">
-          <img
-            v-if="order.payment_type?.icon"
-            :src="order.payment_type.icon"
-            class="payment-icon"
-          />
+          <img v-if="order.payment_type?.icon" :src="order.payment_type.icon" class="payment-icon" />
           {{ order.payment_type?.name || $t("order.unknown") }}
         </span>
       </p>
@@ -105,8 +97,14 @@ import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+import { usePaymentTypeService } from "@/composables/PaymentTypes/usePaymentTypes";
+import { useCurrencyService } from "@/composables/Currency/useCurrencyService";
+import { Pagination } from "@/utils/entities/Pagination";
 
 const { t } = useI18n();
+
+const paymetTypeService = usePaymentTypeService()
+const currencyService = useCurrencyService()
 
 const props = defineProps({
   order: {
@@ -144,110 +142,332 @@ const toggleDetails = () => {
 // Función para generar la factura
 const generateInvoice = async () => {
   if (!props.order) return;
+  const order = props?.order || {};
 
   const doc = new jsPDF();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const pageWidth = doc.internal.pageSize.getWidth();
 
-  // Agregar logo
-  const logoPath = "/logo/logo-pdf.PNG";
-  const imgWidth = 50;
-  const imgHeight = 50;
+  const lightYellow = "#fbea84";
+  const defaultTextColor = "#000000";
+  const lightGray = "#CCCCCC";
+
+  let currentY = 10;
+
+  // 1. Logo (Top-Left)
+  const logoPath = "/logo/logo_invoice.png"; // As in your original code
+  const logoImgWidth = 40;
+  const logoImgHeight = 35;
+  const logoX = 15;
+  const logoY = 15;
 
   try {
-    const img = new Image();
+    const img = new Image(); // Browser environment Image object
     img.src = logoPath;
     await new Promise((resolve, reject) => {
       img.onload = () => {
-        doc.addImage(img, "PNG", 140, 8, imgWidth, imgHeight);
+        doc.addImage(img, "PNG", logoX, logoY, logoImgWidth - 1, logoImgHeight);
         resolve();
       };
-      img.onerror = reject;
+      img.onerror = (err) => {
+        console.error("Error loading logo, drawing placeholder:", err);
+        // Fallback: Draw a placeholder styled like the logo if image fails
+        doc.setFillColor("#FDB813"); // Orange color from image logo
+        doc.ellipse(logoX + logoImgWidth / 2, logoY + logoImgHeight / 2, logoImgWidth / 2, logoImgHeight / 2.2, 'F'); // Oval shape
+        doc.setTextColor("#FFFFFF"); // White text
+        doc.setFontSize(6);
+        doc.setFont("helvetica", "bold");
+        doc.text("MYOM:I", logoX + logoImgWidth / 2, logoY + logoImgHeight / 2 - 1.5, { align: 'center' });
+        doc.setFontSize(4.5);
+        doc.setFont("helvetica", "normal");
+        doc.text("Cosmetico Coreano", logoX + logoImgWidth / 2, logoY + logoImgHeight / 2 + 2, { align: 'center' });
+        resolve(); // Resolve even if placeholder is drawn
+      };
     });
   } catch (error) {
-    console.error("Error cargando el logo:", error);
+    console.error("Exception during logo processing:", error);
+    // Fallback placeholder code again, just in case promise setup itself fails
+    doc.setFillColor("#FDB813");
+    doc.ellipse(logoX + logoImgWidth / 2, logoY + logoImgHeight / 2, logoImgWidth / 2, logoImgHeight / 2.2, 'F');
+    doc.setTextColor("#FFFFFF");
+    doc.setFontSize(6);
+    doc.setFont("helvetica", "bold");
+    doc.text("MYOM:I", logoX + logoImgWidth / 2, logoY + logoImgHeight / 2 - 1.5, { align: 'center' });
+    doc.setFontSize(4.5);
+    doc.setFont("helvetica", "normal");
+    doc.text("Cosmetico Coreano", logoX + logoImgWidth / 2, logoY + logoImgHeight / 2 + 2, { align: 'center' });
   }
+  currentY = logoY + logoImgHeight + 10;
 
-  // Variables de conversión
-  const currencyName = props.order.currency?.name || "USD";
-  const currencyRate = props.order.currency?.change_value || 1;
+  // 2. "FACTURA" title, NÚMERO, FECHA (Top-Right)
+  const facturaTitleX = pageWidth - 75; // X position for "FACTURA"
+  doc.setFontSize(28);
+  doc.setFont("helvetica", "normal"); // The image font isn't extremely bold here
+  doc.setTextColor(defaultTextColor);
+  doc.text("FACTURA", facturaTitleX, 30);
 
-  // Información principal
-  doc.setFontSize(18);
-  doc.text(`Factura - Orden #${props.order.id}`, 14, 20);
+  doc.setFontSize(10);
+  const numeroLabel = "NÚMERO :";
+  const fechaLabel = "FECHA :";
+  // Using static data from image, replace with order.id / order.created_at as needed
+  const invoiceNum = order.id.toString();
+  const invoiceDateStr = new Date(order.created_at).toLocaleDateString('en-GB'); // 'en-GB' for dd/mm/yyyy
 
-  doc.setFontSize(12);
-  doc.text(`Cliente: ${props.order.contact?.name || "No disponible"}`, 14, 30);
-  doc.text(
-    `Teléfono: ${props.order.contact?.phone_number || "No disponible"}`,
-    14,
-    38,
-  );
-  doc.text(
-    `Dirección: ${props.order.contact?.address || "No disponible"}, ${props.order.contact?.municipality || ""}`,
-    14,
-    46,
-  );
-  doc.text(
-    `Fecha: ${new Date(props.order.created_at).toLocaleDateString()}`,
-    14,
-    54,
-  );
-  doc.text(
-    `Método de Pago: ${props.order.payment_type?.name || "No disponible"}`,
-    14,
-    62,
-  );
+  const labelX = pageWidth - 70; // X for labels "NÚMERO:", "FECHA:"
+  const valueX = pageWidth - 45; // X for actual number and date
 
-  // Tabla de productos
-  if (props.order.products?.length) {
-    const productsData = props.order.products.map((product, index) => [
-      product.product?.name || "Producto eliminado",
-      `$${(product.price * currencyRate).toFixed(2)} ${currencyName}`,
-      product.quantity || 1,
-      `$${(product.price * product.quantity * currencyRate).toFixed(2)} ${currencyName}`,
-    ]);
+  doc.text(numeroLabel, labelX, 40);
+  doc.text(invoiceNum, valueX, 40);
+  doc.text(fechaLabel, labelX, 46); // Increased spacing
+  doc.text(invoiceDateStr, valueX, 46);
 
-    autoTable(doc, {
-      startY: 70,
-      head: [["Producto", "Precio Unit.", "Cantidad", "Subtotal"]],
-      headStyles: {
-        fillColor: [255, 238, 169],
-        textColor: [0, 0, 0],
-      },
-      body: productsData,
-    });
+  currentY = Math.max(currentY, 46 + 15);
 
-    let finalY = doc.lastAutoTable.finalY || 80;
+  // 3. "Datos de Cliente"
+  doc.setFontSize(16);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(defaultTextColor);
+  doc.text("Datos de Cliente", 15, currentY);
+  currentY += 7;
 
-    // Total
-    doc.setFontSize(14);
-    doc.text(
-      `Total: $${(props.order.total * currencyRate).toFixed(2)} ${currencyName}`,
-      14,
-      finalY + 10,
-    );
-    finalY += 10;
+  const clientData = [
+    { label: "Nombre y Apellido :", value: order.contact?.name },
+    { label: "Número de telefono :", value: order.contact?.phone_number },
+    { label: "Dirección actual :", value: `${order.contact?.address}, ${order.contact.municipality.name}` },
+  ];
 
-    // Pago de envío si existe
-    if (
-      props.order.delivery_payment !== null &&
-      props.order.delivery_currency
-    ) {
-      const deliveryTotal = (
-        props.order.delivery_payment *
-        props.order.delivery_currency.change_value
-      ).toFixed(2);
-      doc.text(
-        `Pago de Envío: $${deliveryTotal} ${props.order.delivery_currency.name}`,
-        14,
-        finalY + 10,
-      );
+  const dataLabelX = 15;
+  const dataValueBgX = 60;
+  const dataValueX = dataValueBgX + 2; // Text start with padding
+  const dataValueBgWidth = pageWidth - 30;
+  const clientDataLineHeight = 7;
+
+  doc.setFontSize(10);
+  doc.setFont("helvetica", "normal");
+  clientData.forEach(item => {
+    doc.setFillColor(lightYellow);
+    doc.rect(15, currentY, dataValueBgWidth, clientDataLineHeight, "F");
+
+
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(defaultTextColor);
+    doc.text(item.label, dataLabelX + 3, currentY + clientDataLineHeight * 0.65);
+
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(defaultTextColor);
+    doc.text(item.value, dataValueX + 3, currentY + clientDataLineHeight * 0.65);
+    currentY += clientDataLineHeight + 1.5; // Spacing
+  });
+  currentY += 5;
+
+  // 4. Products Table
+  const currencyName = order.currency?.name;
+  const currencyRate = order.currency?.change_value;
+
+  const products = order.products
+
+  const tableData = products.map(p => {
+    const price = p.price || 0;
+    const quantity = p.quantity || 1;
+    return [
+      p.product?.name || "Producto no disponible",
+      `$ ${(price * currencyRate).toFixed(2)}`,
+      quantity,
+      `${(price * quantity * currencyRate).toFixed(2)} ${currencyName}`
+    ];
+  });
+
+  const subtotalAmount = products.reduce((sum, p) => {
+    const price = p.price || 0;
+    const quantity = p.quantity || 1;
+    return sum + (price * quantity * currencyRate);
+  }, 0);
+
+  autoTable(doc, {
+    startY: currentY,
+    head: [["PRODUCTO", "PRECIO", "CANT.", "TOTAL"]],
+    body: tableData,
+    foot: [
+      [{ content: 'SUBTOTAL', colSpan: 3, styles: { halign: 'center', fontStyle: 'bold', cellPadding: { right: 2, top: 2 } } },
+      { content: `${subtotalAmount.toFixed(2)} ${currencyName}`, styles: { halign: 'right', fontStyle: 'bold' } }]
+    ],
+    theme: 'grid', // 'grid' for visible lines like image
+    headStyles: {
+      fillColor: [255, 255, 255], // White background
+      textColor: defaultTextColor,
+      fontStyle: 'bold',
+      lineWidth: 0.1,
+      lineColor: [180, 180, 180], // Lighter gray lines for header
+      halign: 'center'
+    },
+    bodyStyles: {
+      lineWidth: 0.1,
+      lineColor: [180, 180, 180], // Lighter gray lines for body
+      textColor: defaultTextColor,
+      cellPadding: { top: 1.5, right: 2, bottom: 1.5, left: 2 }
+    },
+    footStyles: {
+      fillColor: [255, 255, 255],
+      lineWidth: 0.1,
+      lineColor: [180, 180, 180],
+      textColor: defaultTextColor,
+      fontStyle: 'bold',
+    },
+    columnStyles: {
+      0: { halign: 'left', cellWidth: 'auto' }, // PRODUCTO
+      1: { halign: 'right', cellWidth: 30 },    // PRECIO
+      2: { halign: 'center', cellWidth: 20 },   // CANT.
+      3: { halign: 'right', cellWidth: 35 }     // TOTAL
+    },
+    margin: { left: 15, right: 15 },
+    tableLineWidth: 0.1,
+    tableLineColor: [180, 180, 180],
+  });
+
+  currentY = (doc).lastAutoTable.finalY + 10;
+
+  // 5. "PROMOCIÓN" and "DOMICILIO/SUBTOTAL/CAMBIO" Section
+  const promoX = 15;
+  const DscX = pageWidth / 2 + 15; // Domicilio/Subtotal/Cambio X
+
+  doc.setFontSize(9); // Smaller font for these sections as per image
+  let promoColY = currentY;
+
+  doc.setFont("helvetica", "bold");
+  doc.text("Tipo de pago", promoX, promoColY);
+  promoColY += 5;
+  doc.setFont("helvetica", "normal");
+  const paymentTypes = await paymetTypeService.getAll([], new Pagination(0, 100), [])
+  const promotions = [ // Replace with dynamic data if available
+    ...paymentTypes.map(pt => ({ label: pt.name, checked: pt.id === order.payment_type?.id })),
+  ];
+
+  promotions.forEach(promo => {
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(defaultTextColor);
+    doc.rect(promoX, promoColY - 2.5, 2.5, 2.5, "S"); // Checkbox square
+    if (promo.checked) {
+      doc.setFont("helvetica", "bold");
+      doc.text("x", promoX + 0.6, promoColY - 0.5); // 'x' inside checkbox
+      doc.setFont("helvetica", "normal");
     }
-  } else {
-    doc.text("No hay productos en esta orden.", 14, 80);
+    doc.text(promo.label, promoX + 4, promoColY - 0.5);
+    promoColY += 5;
+  });
+
+  let DscColY = currentY;
+  doc.setFont("helvetica", "bold");
+  doc.text("DOMICILIO", DscX, DscColY);
+  doc.text(`${(order.delivery_payment * order.delivery_currency.change_value).toFixed(2)} ${order.delivery_currency.name}`, DscX + 35, DscColY);
+  DscColY += 5;
+
+  doc.text("SUBTOTAL", DscX, DscColY);
+  const subtotalText = `${subtotalAmount.toFixed(2)} ${currencyName}`;
+  const subtotalValueX = DscX + 35; // Position for the subtotal value
+  const subtotalYellowBoxWidth = 30; // Width of yellow box for subtotal
+
+  doc.setFillColor(lightYellow);
+  doc.rect(subtotalValueX - 2, DscColY - 3.5, subtotalYellowBoxWidth, 5, "F");
+  doc.setFont("helvetica", "normal");
+  doc.setTextColor(defaultTextColor);
+  doc.text(subtotalText, subtotalValueX, DscColY);
+  DscColY += 5;
+
+  doc.setFont("helvetica", "bold");
+  doc.text("CAMBIO", DscX, DscColY);
+  doc.text(`${order.change_value ?? ''} ${order.change_value ? order.currency.name : ''}`, subtotalValueX, DscColY - 0.5);
+
+  currentY = Math.max(promoColY, DscColY) + 7;
+
+  // Line separator
+  doc.setDrawColor(lightGray);
+  doc.setLineWidth(0.3);
+  doc.line(15, currentY, pageWidth - 15, currentY);
+  currentY += 7;
+
+  // 6. "MONEDA DE PAGO" and Bank Details
+  let monedaPagoColY = currentY;
+  doc.setFont("helvetica", "bold");
+  doc.text("MONEDA DE PAGO", promoX, monedaPagoColY);
+  monedaPagoColY += 5;
+  doc.setFont("helvetica", "normal");
+
+  // Determine selected payment method (e.g., from order.payment_type.name or default to USD)
+  const selectedcurrency = (order.currency?.name || "USD").toUpperCase();
+  const currencies = await currencyService.getAll([], new Pagination(0, 20), [])
+  const paymentMethods = currencies.map(c => ({ label: c.name, checked: selectedcurrency == c.name }));
+
+  paymentMethods.forEach(method => {
+    doc.setLineWidth(0.2);
+    doc.setDrawColor(defaultTextColor);
+    doc.rect(promoX, monedaPagoColY - 2.5, 2.5, 2.5, "S");
+    if (method.checked) {
+      doc.setFont("helvetica", "bold");
+      doc.text("x", promoX + 0.6, monedaPagoColY - 0.5);
+      doc.setFont("helvetica", "normal");
+    }
+    doc.text(method.label, promoX + 4, monedaPagoColY - 0.5);
+    monedaPagoColY += 5;
+  });
+
+  // Bank Details (MYOM:I COSMETICO COREANO)
+  let bankDetailsColY = currentY;
+  const bankBoxX = DscX; // Align with DOMICILIO column
+  const bankBoxWidth = pageWidth - bankBoxX - 15;
+  const bankBoxCellHeight = 6;
+  const bankTextVPadding = bankBoxCellHeight * 0.7;
+
+  doc.setLineWidth(0.1);
+  doc.setDrawColor(defaultTextColor);
+
+  doc.rect(bankBoxX, bankDetailsColY, bankBoxWidth, bankBoxCellHeight, "S");
+  doc.setFont("helvetica", "bold");
+  doc.text("MYOM:I COSMETICO COREANO", bankBoxX + bankBoxWidth / 2, bankDetailsColY + bankTextVPadding, { align: 'center' });
+  bankDetailsColY += bankBoxCellHeight;
+
+  doc.setFont("helvetica", "normal");
+  const bankDetailsTextX = bankBoxX + 2;
+  const bankDetailsValueX = bankBoxX + 23; // X for the account numbers etc.
+
+  doc.rect(bankBoxX, bankDetailsColY, bankBoxWidth, bankBoxCellHeight, "S");
+  doc.text("Cuenta CUP:", bankDetailsTextX, bankDetailsColY + bankTextVPadding);
+  doc.text(order.bank_details?.cup_account || "9205 1299 7355 0818", bankDetailsValueX, bankDetailsColY + bankTextVPadding);
+  bankDetailsColY += bankBoxCellHeight;
+
+  doc.rect(bankBoxX, bankDetailsColY, bankBoxWidth, bankBoxCellHeight, "S");
+  doc.text("Confirmación:", bankDetailsTextX, bankDetailsColY + bankTextVPadding);
+  doc.text(order.bank_details?.confirmation_phone || "+52 56569237", bankDetailsValueX, bankDetailsColY + bankTextVPadding);
+
+  currentY = Math.max(monedaPagoColY, bankDetailsColY) + 15;
+
+  // 7. "GRACIAS POR SU COMPRA" Footer
+  const graciasText = "GRACIAS POR SU COMPRA";
+  doc.setFontSize(14); // Slightly smaller than FACTURA title but prominent
+  doc.setFont("roboto", "bold");
+  const graciasRectHeight = 9;
+
+  // Position near bottom or after content.
+  // If fixed at bottom and there's not enough space, add new page or adjust.
+  if (currentY + graciasRectHeight + 5 > pageHeight - 10) { // 10 for bottom margin
+    // If content is too close to bottom, move gracias to new page or adjust Y
+    // For simplicity, let's ensure it's not too low, or it might be on next page if content is long
+    if (pageHeight - currentY < 25) { // Not much space left
+      doc.addPage();
+      currentY = 15; // Reset Y for new page
+    }
   }
 
-  // Guardar el PDF
-  doc.save(`Factura_Orden_${props.order.id || "sin_id"}.pdf`);
+
+  doc.setFillColor(lightYellow);
+  doc.rect(15, currentY, pageWidth - 30, graciasRectHeight, "F");
+
+  doc.setTextColor(defaultTextColor);
+  doc.text(graciasText, pageWidth / 2, currentY + graciasRectHeight * 0.7, { align: 'center' });
+
+  // Save the PDF
+  const fileName = `Factura_MYOM_${order.id || "preview"}.pdf`;
+  doc.save(fileName);
+  console.log(`${fileName} generated.`);
 };
 </script>
 
@@ -347,6 +567,7 @@ button:hover {
     opacity 0.3s ease,
     transform 0.3s ease;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
