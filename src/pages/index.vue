@@ -26,7 +26,12 @@
     </Sliders>
 
     <div class="overflow-hidden w-full h-[50dvh] my-12">
-      <Img :src="promotionalImage" imageClass="w-full h-[50dvh] object-cover" />
+
+      <div class="w-full img-background"
+        :style="`background-image:url('${promotionalImage}');background-color:rgba(10,10,10,0.4);`">
+        <Img :src="promotionalImage" :draggable="false"
+          imageClass=" object-scale-down  z-10 w-full h-[50dvh] img-backlog" />
+      </div>
     </div>
     <Sliders class="my-3" :service="service" :filters="[]" :orders="[
       {
@@ -91,3 +96,15 @@ function threeDaysAgo() {
   return threeDaysAgo;
 }
 </script>
+<style scoped>
+.img-background {
+  background-size: cover;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(40px);
+  background-color: rgba(10, 10, 10, 0.4)
+}
+
+:deep(.img-backlog) {
+  backdrop-filter: blur(3px) !important;
+}
+</style>
