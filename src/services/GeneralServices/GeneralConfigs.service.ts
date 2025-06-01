@@ -5,6 +5,9 @@ export interface IGeneralConfigs {
   carousell_images?: string[];
   promotional_image?: string;
   month_promotion?: string;
+  transfermovil_check_number: string;
+  transfermovil_card_number: string;
+
 }
 
 export class GeneralConfigService extends ListerService<IGeneralConfigs> {
@@ -13,6 +16,8 @@ export class GeneralConfigService extends ListerService<IGeneralConfigs> {
       "carousell_images",
       "promotional_image",
       "month_promotion",
+      "transfermovil_check_number",
+      "transfermovil_card_number"
     ]);
   }
 }

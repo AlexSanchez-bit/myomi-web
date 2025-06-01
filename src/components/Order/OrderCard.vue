@@ -43,9 +43,9 @@
       <button @click="toggleDetails">
         {{ showDetails ? $t("order.hideDetails") : $t("order.viewDetails") }}
       </button>
-      <button @click="generateInvoice">
+      <Button @click="generateInvoice" :loading="loading">
         {{ $t("order.generateInvoice") }}
-      </button>
+      </Button>
     </div>
 
     <!-- Sección expandible con transición -->
@@ -100,11 +100,10 @@ import autoTable from "jspdf-autotable";
 import { usePaymentTypeService } from "@/composables/PaymentTypes/usePaymentTypes";
 import { useCurrencyService } from "@/composables/Currency/useCurrencyService";
 import { Pagination } from "@/utils/entities/Pagination";
+import { useGeneralConfigService } from "@/composables/GeneralConfigs/useGeneralConfigService";
+import Button from 'primevue/button'
 
 const { t } = useI18n();
-
-const paymetTypeService = usePaymentTypeService()
-const currencyService = useCurrencyService()
 
 const props = defineProps({
   order: {
@@ -112,6 +111,10 @@ const props = defineProps({
     required: true,
   },
 });
+
+const paymetTypeService = usePaymentTypeService()
+const currencyService = useCurrencyService()
+const generalConfigService = useGeneralConfigService()
 
 const showDetails = ref(false);
 
@@ -122,6 +125,7 @@ const totalProducts = computed(() =>
 
 // Formatear Fecha
 const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
+const loading = ref(false)
 
 // Estado de la orden
 const getStatusText = (status) => {
@@ -142,6 +146,7 @@ const toggleDetails = () => {
 // Función para generar la factura
 const generateInvoice = async () => {
   if (!props.order) return;
+  loading.value = true
   const order = props?.order || {};
 
   const doc = new jsPDF();
@@ -358,13 +363,14 @@ const generateInvoice = async () => {
   let DscColY = currentY;
   doc.setFont("helvetica", "bold");
   doc.text("DOMICILIO", DscX, DscColY);
-  doc.text(`${(order.delivery_payment * order.delivery_currency.change_value).toFixed(2)} ${order.delivery_currency.name}`, DscX + 35, DscColY);
+  const delivery_text = `${(order.delivery_payment * order.delivery_currency.change_value).toFixed(2)} ${order.delivery_currency.name}`
+  doc.text(delivery_text, DscX + 35, DscColY);
   DscColY += 5;
 
   doc.text("SUBTOTAL", DscX, DscColY);
-  const subtotalText = `${subtotalAmount.toFixed(2)} ${currencyName}`;
+  const subtotalText = `${subtotalAmount.toFixed(2)} ${currencyName} ${order.payment_type?.delivery_included ? '' : '+ ' + delivery_text}`;
   const subtotalValueX = DscX + 35; // Position for the subtotal value
-  const subtotalYellowBoxWidth = 30; // Width of yellow box for subtotal
+  const subtotalYellowBoxWidth = subtotalText.length * 2; // Width of yellow box for subtotal
 
   doc.setFillColor(lightYellow);
   doc.rect(subtotalValueX - 2, DscColY - 3.5, subtotalYellowBoxWidth, 5, "F");
@@ -429,14 +435,17 @@ const generateInvoice = async () => {
   const bankDetailsTextX = bankBoxX + 2;
   const bankDetailsValueX = bankBoxX + 23; // X for the account numbers etc.
 
+  const [{ transfermovil_card_number, transfermovil_check_number }] = await generalConfigService.getAll([], new Pagination(0, 1), [])
+  console.log(transfermovil_card_number, transfermovil_check_number)
+
   doc.rect(bankBoxX, bankDetailsColY, bankBoxWidth, bankBoxCellHeight, "S");
   doc.text("Cuenta CUP:", bankDetailsTextX, bankDetailsColY + bankTextVPadding);
-  doc.text(order.bank_details?.cup_account || "9205 1299 7355 0818", bankDetailsValueX, bankDetailsColY + bankTextVPadding);
+  doc.text(transfermovil_card_number, bankDetailsValueX, bankDetailsColY + bankTextVPadding);
   bankDetailsColY += bankBoxCellHeight;
 
   doc.rect(bankBoxX, bankDetailsColY, bankBoxWidth, bankBoxCellHeight, "S");
   doc.text("Confirmación:", bankDetailsTextX, bankDetailsColY + bankTextVPadding);
-  doc.text(order.bank_details?.confirmation_phone || "+52 56569237", bankDetailsValueX, bankDetailsColY + bankTextVPadding);
+  doc.text(transfermovil_check_number, bankDetailsValueX, bankDetailsColY + bankTextVPadding);
 
   currentY = Math.max(monedaPagoColY, bankDetailsColY) + 15;
 
@@ -467,8 +476,10 @@ const generateInvoice = async () => {
   // Save the PDF
   const fileName = `Factura_MYOM_${order.id || "preview"}.pdf`;
   doc.save(fileName);
+  loading.value = false
   console.log(`${fileName} generated.`);
 };
+
 </script>
 
 <style scoped>
@@ -507,6 +518,8 @@ const generateInvoice = async () => {
   display: flex;
   justify-content: space-between;
   margin-top: 12px;
+  width: 100%;
+  gap: 3rem;
 }
 
 button {

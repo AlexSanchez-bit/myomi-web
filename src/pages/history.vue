@@ -8,12 +8,8 @@
         <Tab value="CANCELED">{{ $t("canceled") }}</Tab>
       </TabList>
     </Tabs>
-    <LazyLoadScroll
-      ref="lazyScroll"
-      :service="lazyLister"
-      :filter="filter"
-      display-class="flex flex-wrap gap-2 p-4 justify-center items-center"
-    >
+    <LazyLoadScroll ref="lazyScroll" :service="lazyLister" :filter="filter"
+      display-class="flex flex-wrap gap-2 p-4 justify-start items-start">
       <template #item="{ item }">
         <OrderCard :order="item" class="mx-auto w-full" />
       </template>
@@ -53,10 +49,10 @@ watch(currentTab, async () => {
   const nv = currentTab.value;
   (filter.value = nv
     ? {
-        field: "status",
-        matchMode: FilterMatchMode.EQUALS,
-        value: nv,
-      }
+      field: "status",
+      matchMode: FilterMatchMode.EQUALS,
+      value: nv,
+    }
     : {}),
     await lazyScroll.value.apply_filters(filter.value);
 });
