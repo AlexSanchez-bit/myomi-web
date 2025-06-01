@@ -250,18 +250,27 @@ const generateInvoice = async () => {
   doc.setFontSize(10);
   doc.setFont("helvetica", "normal");
   clientData.forEach(item => {
+    const valueMaxWidth = dataValueBgWidth / 2; // Resta un margen interior
+    const valueLines = doc.splitTextToSize(item.value, valueMaxWidth);
+
+    // Calcular la altura total necesaria en función de la línea más larga
+    const linesCount = valueLines.length
+    const blockHeight = (linesCount) * (linesCount > 1 ? 5 : clientDataLineHeight);
+
+    // Fondo
     doc.setFillColor(lightYellow);
-    doc.rect(15, currentY, dataValueBgWidth, clientDataLineHeight, "F");
+    doc.rect(15, currentY, dataValueBgWidth, blockHeight, "F");
 
-
+    // Texto
     doc.setFont("helvetica", "bold");
     doc.setTextColor(defaultTextColor);
     doc.text(item.label, dataLabelX + 3, currentY + clientDataLineHeight * 0.65);
 
     doc.setFont("helvetica", "normal");
     doc.setTextColor(defaultTextColor);
-    doc.text(item.value, dataValueX + 3, currentY + clientDataLineHeight * 0.65);
-    currentY += clientDataLineHeight + 1.5; // Spacing
+    doc.text(valueLines, dataValueX + 3, currentY + clientDataLineHeight * 0.65, { maxWidth: valueMaxWidth });
+
+    currentY += blockHeight + 1.5; // Espaciado
   });
   currentY += 5;
 
