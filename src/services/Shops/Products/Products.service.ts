@@ -34,7 +34,7 @@ export class ProductsService extends ListerService<IProduct> {
       "images",
       "short_description",
       "product_category!inner(category_id)",
-      "product_concern!inner(concern_id)",
+      "product_concern!left(concern_id)",
       "product_materials!left(material_id)",
     ]);
   }
@@ -76,6 +76,16 @@ export class ProductsService extends ListerService<IProduct> {
       this.search_fields[this.search_fields.length - 1] =
         "product_materials!inner(material_id)";
     }
+
+    if (
+      filters.length > 0 &&
+      filters.find((el) => el.field == "product_concern.concern_id")
+    ) {
+      this.search_fields[this.search_fields.length - 2] =
+        "product_concern!inner(concern_id)";
+    }
+
+
     const resp = super.getAllTotalCount(filters, pagination, orders);
     this.search_fields[this.search_fields.length - 1] =
       "product_materials!left(material_id)";
