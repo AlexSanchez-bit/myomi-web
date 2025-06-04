@@ -5,93 +5,57 @@
     </h2>
 
     <!-- Formulario de destinatario -->
-    <div
-      class="p-4 border rounded-lg shadow-md bg-pink-100/30 backdrop-blur-md"
-    >
+    <div class="p-4 border rounded-lg shadow-md bg-pink-100/30 backdrop-blur-md">
       <!-- Nombre con icono de usuario -->
       <div class="mb-4">
         <div class="relative">
-          <InputText
-            v-model="recipient.name"
-            :placeholder="$t('name')"
-            class="w-full pl-10"
-          />
-          <i
-            v-if="!anonymous"
+          <InputText v-model="recipient.name" :placeholder="$t('name_lastname')" class="w-full pl-10" />
+          <i v-if="!anonymous"
             class="pi pi-user absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 cursor-pointer rounded-full bg-blue-100/60 p-2"
-            @click="openContactDialog"
-            v-tooltip.bottom="$t('select_a_contact')"
-          ></i>
+            @click="openContactDialog" v-tooltip.bottom="$t('select_a_contact')"></i>
         </div>
         <small v-if="isNameError" class="p-error">{{
           $t("field_required")
-        }}</small>
+          }}</small>
       </div>
 
       <!-- Teléfono -->
       <div class="mb-4">
-        <InputText
-          v-model="recipient.phone_number"
-          :placeholder="$t('phone')"
-          class="w-full"
-        />
+        <InputText v-model="recipient.phone_number" :placeholder="$t('phone')" class="w-full" />
         <small v-if="isPhoneError" class="p-error">{{
           $t("field_required")
-        }}</small>
+          }}</small>
       </div>
 
       <!-- Dirección -->
       <div class="mb-4">
-        <InputText
-          v-model="recipient.address"
-          :placeholder="$t('address')"
-          class="w-full"
-        />
+        <InputText v-model="recipient.address" :placeholder="$t('address')" class="w-full" />
         <small v-if="isAddressError" class="p-error">{{
           $t("field_required")
-        }}</small>
+          }}</small>
       </div>
 
       <!-- Municipio (fijado según la localización) -->
       <div class="mb-4">
-        <InputText
-          v-if="recipient.municipality"
-          v-model="recipient.municipality.name"
-          :placeholder="$t('municipality')"
-          class="w-full"
-          disabled
-        />
+        <InputText v-if="recipient.municipality" v-model="recipient.municipality.name" :placeholder="$t('municipality')"
+          class="w-full" disabled />
         <Skeleton class="w-full" v-else />
         <small v-if="isMunicipalityError" class="p-error">{{
           $t("field_required")
-        }}</small>
+          }}</small>
       </div>
     </div>
 
     <!-- Botones de navegación mejorados -->
     <div class="flex justify-between mt-6">
-      <Button
-        :label="$t('back')"
-        icon="pi pi-arrow-left"
-        class="p-button-secondary pastel-btn"
-        @click="$emit('back')"
-      />
-      <Button
-        :label="$t('pay')"
-        icon="pi pi-arrow-right"
-        iconPos="right"
-        class="p-button-primary pastel-btn"
-        :loading="loading"
-        @click="validateAndNext"
-      />
+      <Button :label="$t('back')" icon="pi pi-arrow-left" class="p-button-secondary pastel-btn"
+        @click="$emit('back')" />
+      <Button :label="$t('pay')" icon="pi pi-arrow-right" iconPos="right" class="p-button-primary pastel-btn"
+        :loading="loading" @click="validateAndNext" />
     </div>
 
     <!-- Dialog/SlideOver para seleccionar contactos -->
-    <ContactDialog
-      v-model="contactDialogVisible"
-      :locationId="locationId"
-      @select-contact="handleSelectContact"
-    />
+    <ContactDialog v-model="contactDialogVisible" :locationId="locationId" @select-contact="handleSelectContact" />
   </div>
 </template>
 
@@ -197,9 +161,11 @@ const validateAndNext = () => {
   color: black !important;
   transition: all 0.3s ease-in-out;
 }
+
 .pastel-btn:hover {
   background-color: rgba(68, 156, 168, 0.4) !important;
 }
+
 .p-error {
   @apply text-red-500;
 }

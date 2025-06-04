@@ -139,5 +139,6 @@
   "select_currency_type": "Selecciona la moneda a pagar",
   "payment_method_fee": "Impuesto de pago",
   "extra_charges_may_be_applied": "Puede aplicarse cargos adicionales",
-  "will_contact_you": "Nuestro equipo contactará con su contacto en breve."
+  "will_contact_you": "Nuestro equipo contactará con su contacto en breve.",
+  "name_lastname":"Nombre y Apellidos"
 }

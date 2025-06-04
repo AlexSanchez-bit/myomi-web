@@ -7,24 +7,19 @@
       </p>
       <div class="flex flex-row items-center gap-6 justify-center my-4">
         <router-link to="/login">
-          <button
-            class="rounded-full px-6 pastel-btn py-1 hover:scale-105 hover:shadow-sm transition-all duration-300"
-          >
+          <button class="rounded-full px-6 pastel-btn py-1 hover:scale-105 hover:shadow-sm transition-all duration-300">
             {{ $t("login_yourself") }}
           </button>
         </router-link>
         <router-link to="/register">
-          <button
-            class="rounded-full px-6 pastel-btn py-1 hover:scale-105 hover:shadow-sm transition-all duration-300"
-          >
+          <button class="rounded-full px-6 pastel-btn py-1 hover:scale-105 hover:shadow-sm transition-all duration-300">
             {{ $t("register_yourself") }}
           </button>
         </router-link>
       </div>
       <router-link to="/history" class="mx-auto mt-2">
         <div
-          class="flex flex-row justify-between mx-auto items-center border-zinc-500 shadow-lg hover:shadow-xl rounded-lg p-3 md:w-96 transition-all duration-500"
-        >
+          class="flex flex-row justify-between mx-auto items-center border-zinc-500 shadow-lg hover:shadow-xl rounded-lg p-3 md:w-96 transition-all duration-500">
           {{ $t("history") }}
           <i class="pi pi-caret-right"></i>
         </div>
@@ -46,74 +41,32 @@
       <!-- Perfil y gestión de contactos -->
       <div v-else class="profile-details">
         <!-- Perfil del usuario -->
-        <div
-          class="profile-card bg-pink-50 p-2 md:p-6 rounded-lg shadow-md w-full max-w-md"
-        >
+        <div class="profile-card bg-pink-50 p-2 md:p-6 rounded-lg shadow-md w-full max-w-md">
           <!-- Modo edición -->
           <div v-if="editMode" class="profile-form">
             <div class="relative inline-block">
-              <img
-                :src="profilePicturePreview"
-                alt="Foto de perfil"
-                class="profile-picture"
-              />
-              <button
-                @click="triggerFileSelect"
-                class="absolute inset-0 flex items-center justify-center bg-transparent hover:bg-gray-100/50 transition"
-              >
+              <img :src="profilePicturePreview" alt="Foto de perfil" class="profile-picture" />
+              <button @click="triggerFileSelect"
+                class="absolute inset-0 flex items-center justify-center bg-transparent hover:bg-gray-100/50 transition">
                 <i class="pi pi-upload text-2xl"></i>
               </button>
-              <input
-                ref="fileInput"
-                type="file"
-                class="hidden"
-                @change="onProfilePictureSelected"
-              />
+              <input ref="fileInput" type="file" class="hidden" @change="onProfilePictureSelected" />
             </div>
-            <InputText
-              v-model="user.name"
-              placeholder="Nombre"
-              class="input-field"
-            />
-            <InputText
-              v-model="user.last_name"
-              placeholder="Apellido"
-              class="input-field"
-            />
-            <InputText
-              v-model="user.email"
-              :placeholder="$t('email')"
-              class="input-field bg-gray-100"
-              disabled
-            />
-            <InputText
-              v-model="user.phone_number"
-              :placeholder="$t('phone')"
-              class="input-field"
-            />
+            <InputText v-model="user.name" placeholder="Nombre" class="input-field" />
+            <InputText v-model="user.last_name" placeholder="Apellido" class="input-field" />
+            <InputText v-model="user.email" :placeholder="$t('email')" class="input-field bg-gray-100" disabled />
+            <InputText v-model="user.phone_number" :placeholder="$t('phone')" class="input-field" />
             <div class="button-group mt-4">
-              <Button
-                :label="$t('save')"
-                icon="pi pi-check"
-                @click="saveProfile"
-                class="p-button-warning !bg-blue-200/60 !border-none !text-black"
-              />
-              <Button
-                :label="$t('cancel')"
-                icon="pi pi-times"
-                @click="cancelEdit"
-                class="p-button-warning !bg-red-200/60 !border-none !text-black"
-              />
+              <Button :label="$t('save')" icon="pi pi-check" @click="saveProfile"
+                class="p-button-warning !bg-blue-200/60 !border-none !text-black" />
+              <Button :label="$t('cancel')" icon="pi pi-times" @click="cancelEdit"
+                class="p-button-warning !bg-red-200/60 !border-none !text-black" />
             </div>
           </div>
 
           <!-- Modo visualización -->
           <div v-else class="flex flex-col justify-center items-center gap-3">
-            <img
-              :src="user.profile_picture ?? '/noimage.webp'"
-              alt="Foto de perfil"
-              class="profile-picture"
-            />
+            <img :src="user.profile_picture ?? '/noimage.webp'" alt="Foto de perfil" class="profile-picture" />
             <h2 class="text-2xl font-bold">
               {{ user.name }} {{ user.last_name }}
             </h2>
@@ -129,155 +82,95 @@
               </span>
             </p>
             <div class="button-group mt-4 flex flex-row gap-1">
-              <Button
-                :label="$t('edit_profile')"
-                icon="pi pi-pencil"
-                @click="startEdit"
-                class="p-button-warning !bg-blue-200/60 !border-none !text-black !text-xs md:!text-lg"
-              />
-              <Button
-                :label="$t('logout')"
-                icon="pi pi-sign-out"
-                class="p-button-warning !bg-red-200/60 !border-none !text-black !text-xs md:!text-lg"
-                @click="logout"
-              />
+              <Button :label="$t('edit_profile')" icon="pi pi-pencil" @click="startEdit"
+                class="p-button-warning !bg-blue-200/60 !border-none !text-black !text-xs md:!text-lg" />
+              <Button :label="$t('logout')" icon="pi pi-sign-out"
+                class="p-button-warning !bg-red-200/60 !border-none !text-black !text-xs md:!text-lg" @click="logout" />
             </div>
           </div>
         </div>
 
         <router-link to="/history" class="w-full px-2">
           <div
-            class="flex flex-row justify-between items-center border-zinc-200 shadow-lg hover:shadow-xl rounded-lg p-3 w-full transition-all duration-500"
-          >
+            class="flex flex-row justify-between items-center border-zinc-200 shadow-lg hover:shadow-xl rounded-lg p-3 w-full transition-all duration-500">
             {{ $t("history") }}
             <i class="pi pi-caret-right"></i>
           </div>
         </router-link>
 
         <!-- Gestión de contactos -->
-        <div
-          class="contacts-section mt-4 w-full max-w-lg bg-pink-50 p-6 rounded-lg border shadow-md"
-        >
+        <div class="contacts-section mt-4 w-full max-w-lg bg-pink-50 p-6 rounded-lg border shadow-md">
           <h3 class="text-xl font-bold text-pink-600 mb-4">
             {{ $t("contacts") }}
           </h3>
           <div class="mb-4">
-            <Button
-              :label="$t('add_contact')"
-              icon="pi pi-plus"
-              class="p-button-warning !bg-blue-200/60 !border-none !text-black"
-              @click="openAddContactDialog"
-            />
+            <Button :label="$t('add_contact')" icon="pi pi-plus"
+              class="p-button-warning !bg-blue-200/60 !border-none !text-black" @click="openAddContactDialog" />
           </div>
           <div v-if="contacts.length === 0" class="text-gray-600">
             {{ $t("no_contacts") }}
           </div>
           <div v-else class="space-y-4">
-            <div
-              v-for="contact in contacts"
-              :key="contact.id"
-              class="contact-item p-4 border rounded flex justify-between items-center bg-white flex-wrap gap-2"
-            >
+            <div v-for="contact in contacts" :key="contact.id"
+              class="contact-item p-4 border rounded flex justify-between items-center bg-white flex-wrap gap-2">
               <div class="flex flex-col gap-1 font-thin">
                 <p class="font-bold">{{ contact.name }}</p>
 
                 <p class="text-sm">
-                  <span class="font-bold">{{ $t("address") }}</span
-                  >: {{ contact.address }}
+                  <span class="font-bold">{{ $t("address") }}</span>: {{ contact.address }}
                 </p>
                 <p class="text-sm">
-                  <span class="font-bold">{{ $t("municipality") }}</span
-                  >: {{ contact.municipality.name }}
+                  <span class="font-bold">{{ $t("municipality") }}</span>: {{ contact.municipality.name }}
                 </p>
                 <p class="text-sm">
-                  <span class="font-bold">{{ $t("phone") }}</span
-                  >:
+                  <span class="font-bold">{{ $t("phone") }}</span>:
                   {{ contact.phone_number }}
                 </p>
               </div>
               <div class="flex gap-2 justify-end ml-auto">
-                <Button
-                  icon="pi pi-pencil"
-                  size="small"
-                  class="p-button-warning !bg-green-300/60 !border-none !text-black"
-                  @click="editContact(contact)"
-                />
-                <Button
-                  icon="pi pi-trash"
-                  size="small"
-                  class="p-button-danger !bg-red-200/60 !border-none !text-black"
-                  @click="promptDeleteContact(contact.id)"
-                />
+                <Button icon="pi pi-pencil" size="small"
+                  class="p-button-warning !bg-green-300/60 !border-none !text-black" @click="editContact(contact)" />
+                <Button icon="pi pi-trash" size="small" class="p-button-danger !bg-red-200/60 !border-none !text-black"
+                  @click="promptDeleteContact(contact.id)" />
               </div>
             </div>
           </div>
         </div>
 
         <!-- Diálogo para agregar/editar contacto -->
-        <Dialog
-          :header="$t('contact')"
-          v-model:visible="showContactDialog"
-          modal
-          :closable="false"
-        >
+        <Dialog :header="$t('contact')" v-model:visible="showContactDialog" modal :closable="false">
           <div class="contact-form space-y-4 min-w-96">
             <div>
-              <InputText
-                v-model="contactForm.name"
-                :placeholder="$t('name')"
-                class="w-full"
-              />
+              <InputText v-model="contactForm.name" :placeholder="$t('name_lastname')" class="w-full" />
               <small v-if="isNameError" class="p-error">{{
                 $t("field_required")
-              }}</small>
+                }}</small>
             </div>
             <div>
-              <InputText
-                v-model="contactForm.phone_number"
-                :placeholder="$t('phone')"
-                class="w-full"
-              />
+              <InputText v-model="contactForm.phone_number" :placeholder="$t('phone')" class="w-full" />
               <small v-if="isPhoneError" class="p-error">{{
                 $t("field_required")
-              }}</small>
+                }}</small>
             </div>
             <div>
-              <InputText
-                v-model="contactForm.address"
-                :placeholder="$t('address')"
-                class="w-full"
-              />
+              <InputText v-model="contactForm.address" :placeholder="$t('address')" class="w-full" />
               <small v-if="isAddressError" class="p-error">{{
                 $t("field_required")
-              }}</small>
+                }}</small>
             </div>
             <div>
-              <AutoComplete
-                v-model="contactForm.municipality"
-                :suggestions="municipalitySuggestions"
-                @complete="searchMunicipalities"
-                field="name"
-                optionLabel="name"
-                data-key="id"
-                :placeholder="$t('municipality')"
-                class="!w-full"
-              />
+              <AutoComplete v-model="contactForm.municipality" :suggestions="municipalitySuggestions"
+                @complete="searchMunicipalities" field="name" optionLabel="name" data-key="id"
+                :placeholder="$t('municipality')" class="!w-full" />
               <small v-if="isMunicipalityError" class="p-error">{{
                 $t("field_required")
-              }}</small>
+                }}</small>
             </div>
             <div class="flex justify-end gap-2">
-              <Button
-                :label="$t('save')"
-                class="p-button-warning !bg-blue-200/60 !border-none !text-black"
-                :loading="contact_loading"
-                @click="saveContact"
-              />
-              <Button
-                :label="$t('cancel')"
-                class="p-button-warning !border-none !bg-red-200/60 !text-black"
-                @click="closeContactDialog"
-              />
+              <Button :label="$t('save')" class="p-button-warning !bg-blue-200/60 !border-none !text-black"
+                :loading="contact_loading" @click="saveContact" />
+              <Button :label="$t('cancel')" class="p-button-warning !border-none !bg-red-200/60 !text-black"
+                @click="closeContactDialog" />
             </div>
           </div>
         </Dialog>
@@ -286,19 +179,10 @@
         <Dialog v-model:visible="showDeleteDialog" modal :closable="false">
           <p>{{ $t("confirm_delete_contact") }}</p>
           <div class="flex justify-end gap-2 mt-4">
-            <Button
-              :label="$t('cancel')"
-              icon="pi pi-times"
-              @click="cancelDeleteContact"
-              class="p-button-warning !bg-blue-200/60 !border-none !text-black"
-            />
-            <Button
-              :label="$t('confirm')"
-              icon="pi pi-check"
-              :loading="contact_loading"
-              @click="confirmDeleteContact"
-              class="p-button-danger !bg-red-200/60 !border-none !text-black"
-            />
+            <Button :label="$t('cancel')" icon="pi pi-times" @click="cancelDeleteContact"
+              class="p-button-warning !bg-blue-200/60 !border-none !text-black" />
+            <Button :label="$t('confirm')" icon="pi pi-check" :loading="contact_loading" @click="confirmDeleteContact"
+              class="p-button-danger !bg-red-200/60 !border-none !text-black" />
           </div>
         </Dialog>
       </div>
@@ -591,6 +475,7 @@ onMounted(async () => {
   color: black !important;
   transition: all 0.3s ease-in-out;
 }
+
 .pastel-btn:hover {
   background-color: rgba(68, 156, 168, 0.4) !important;
 }
