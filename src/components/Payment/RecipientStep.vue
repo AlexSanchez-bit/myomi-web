@@ -25,7 +25,7 @@
         <InputText v-model="recipient.phone_number" :placeholder="$t('phone')" class="w-full" @input="validate" />
         <small v-if="isPhoneError" class="p-error">{{
           $t("field_required")
-          }}</small>
+        }}</small>
       </div>
 
       <!-- Dirección -->
@@ -33,7 +33,7 @@
         <InputText v-model="recipient.address" :placeholder="$t('address')" class="w-full" @input="validate" />
         <small v-if="isAddressError" class="p-error">{{
           $t("field_required")
-          }}</small>
+        }}</small>
       </div>
 
       <!-- Municipio (fijado según la localización) -->
@@ -43,7 +43,7 @@
         <Skeleton class="w-full" v-else />
         <small v-if="isMunicipalityError" class="p-error">{{
           $t("field_required")
-          }}</small>
+        }}</small>
       </div>
     </div>
 
@@ -129,7 +129,7 @@ onBeforeMount(async () => {
   }
 });
 
-const regex = /^(([A-Za-zÁÉÍÓÚáéíóúñÑ]+ )+)[A-Za-zÁÉÍÓÚáéíóúñÑ]+$/
+const regex = /^(([A-Za-zÁÉÍÓÚáéíóúñÑ]+ )+)[A-Za-zÁÉÍÓÚáéíóúñÑ]*$/
 const validate = () => {
   isNameError.value = !(!!recipient.value.name ? regex.test(recipient.value.name) : false)
   isPhoneError.value = !recipient.value.phone_number;
