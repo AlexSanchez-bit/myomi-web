@@ -9,40 +9,41 @@
       <!-- Nombre con icono de usuario -->
       <div class="mb-4">
         <div class="relative">
-          <InputText v-model="recipient.name" :placeholder="$t('name_lastname')" class="w-full pl-10" />
+          <InputText v-model="recipient.name" :placeholder="$t('name_lastname')" class="w-full pl-10"
+            @input="validate" />
           <i v-if="!anonymous"
             class="pi pi-user absolute right-3 top-1/2 transform -translate-y-1/2 text-pink-500 cursor-pointer rounded-full bg-blue-100/60 p-2"
             @click="openContactDialog" v-tooltip.bottom="$t('select_a_contact')"></i>
         </div>
-        <small v-if="isNameError" class="p-error">{{
-          $t("field_required")
-          }}</small>
+        <small v-if="isNameError" class="p-error">
+          Indique su nombre y apellidos
+        </small>
       </div>
 
       <!-- Teléfono -->
       <div class="mb-4">
-        <InputText v-model="recipient.phone_number" :placeholder="$t('phone')" class="w-full" />
+        <InputText v-model="recipient.phone_number" :placeholder="$t('phone')" class="w-full" @input="validate" />
         <small v-if="isPhoneError" class="p-error">{{
           $t("field_required")
-          }}</small>
+        }}</small>
       </div>
 
       <!-- Dirección -->
       <div class="mb-4">
-        <InputText v-model="recipient.address" :placeholder="$t('address')" class="w-full" />
+        <InputText v-model="recipient.address" :placeholder="$t('address')" class="w-full" @input="validate" />
         <small v-if="isAddressError" class="p-error">{{
           $t("field_required")
-          }}</small>
+        }}</small>
       </div>
 
       <!-- Municipio (fijado según la localización) -->
       <div class="mb-4">
         <InputText v-if="recipient.municipality" v-model="recipient.municipality.name" :placeholder="$t('municipality')"
-          class="w-full" disabled />
+          class="w-full" disabled @input="validate" />
         <Skeleton class="w-full" v-else />
         <small v-if="isMunicipalityError" class="p-error">{{
           $t("field_required")
-          }}</small>
+        }}</small>
       </div>
     </div>
 
@@ -51,7 +52,7 @@
       <Button :label="$t('back')" icon="pi pi-arrow-left" class="p-button-secondary pastel-btn"
         @click="$emit('back')" />
       <Button :label="$t('pay')" icon="pi pi-arrow-right" iconPos="right" class="p-button-primary pastel-btn"
-        :loading="loading" @click="validateAndNext" />
+        :loading="loading" @click="validateAndNext" :disabled="!isValid" />
     </div>
 
     <!-- Dialog/SlideOver para seleccionar contactos -->
@@ -60,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeMount } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import { useLocationService } from "@/composables/Location/useLocationService";
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
@@ -86,6 +87,11 @@ const isNameError = ref(false);
 const isPhoneError = ref(false);
 const isAddressError = ref(false);
 const isMunicipalityError = ref(false);
+
+
+const isValid = computed(() => {
+  return isNameError.value && isNameError.value && isAddressError.value && isMunicipalityError.value
+})
 
 // Estado del Dialog/SlideOver
 const contactDialogVisible = ref(false);
@@ -122,6 +128,14 @@ onBeforeMount(async () => {
     }
   }
 });
+
+const regex = /^(([A-Za-zÁÉÍÓÚáéíóúñÑ]+ )+)[A-Za-zÁÉÍÓÚáéíóúñÑ]+$/
+const validate = () => {
+  isNameError.value = !(!!recipient.value.name ? regex.test(recipient.value.name) : false)
+  isPhoneError.value = !recipient.value.phone_number;
+  isAddressError.value = !recipient.value.address;
+  isMunicipalityError.value = !recipient.value.municipality;
+}
 
 // Validar y avanzar al siguiente paso
 const validateAndNext = () => {
