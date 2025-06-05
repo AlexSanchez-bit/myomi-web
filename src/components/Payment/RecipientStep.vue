@@ -25,7 +25,7 @@
         <InputText v-model="recipient.phone_number" :placeholder="$t('phone')" class="w-full" @input="validate" />
         <small v-if="isPhoneError" class="p-error">{{
           $t("field_required")
-        }}</small>
+          }}</small>
       </div>
 
       <!-- Dirección -->
@@ -33,7 +33,7 @@
         <InputText v-model="recipient.address" :placeholder="$t('address')" class="w-full" @input="validate" />
         <small v-if="isAddressError" class="p-error">{{
           $t("field_required")
-        }}</small>
+          }}</small>
       </div>
 
       <!-- Municipio (fijado según la localización) -->
@@ -43,7 +43,7 @@
         <Skeleton class="w-full" v-else />
         <small v-if="isMunicipalityError" class="p-error">{{
           $t("field_required")
-        }}</small>
+          }}</small>
       </div>
     </div>
 
@@ -90,7 +90,7 @@ const isMunicipalityError = ref(false);
 
 
 const isValid = computed(() => {
-  return isNameError.value && isNameError.value && isAddressError.value && isMunicipalityError.value
+  return !isNameError.value && !isNameError.value && !isAddressError.value && !isMunicipalityError.value
 })
 
 // Estado del Dialog/SlideOver
