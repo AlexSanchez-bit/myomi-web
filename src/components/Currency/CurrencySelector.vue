@@ -1,29 +1,15 @@
 <template>
-  <Button
-    type="button"
-    class="bg-transparent text-black border-none !p-0"
-    @click="toggle"
-    aria-haspopup="true"
-    aria-controls="overlay_menu"
-    unstyled
-  >
+  <Button type="button" class="bg-transparent text-black border-none !p-0" @click="toggle" aria-haspopup="true"
+    aria-controls="overlay_menu" unstyled>
     <span class="flex flex-row items-center gap-0.5 font-sans">
       <!-- <img :src="selected_currency.icon" alt="" class="w-3 h-3 object-fill" /> -->
       {{ selected_currency.name }}
     </span>
   </Button>
-  <Menu
-    ref="menu"
-    id="overlay_menu"
-    :model="items"
-    :popup="true"
-    unstyled
-    class="left-1 bg-darkblue rounded-xl w-24"
-  >
+  <Menu ref="menu" id="overlay_menu" :model="items" :popup="true" unstyled class="left-1 bg-darkblue rounded-xl w-24">
     <template #item="{ item }">
       <span
-        class="m-0 flex flex-row items-center gap-0.5 bg-darkblue !px-4 !py-1 rounded border-none cursor-pointer min-w-24 hover:bg-gray-50/20"
-      >
+        class="m-0 flex flex-row items-center gap-0.5 bg-darkblue !px-4 !py-1 rounded border-none cursor-pointer min-w-24 hover:bg-gray-50/20">
         <!-- <img :src="item.icon" alt="" class="w-3 h-3 object-fill" /> -->
         {{ item.name }}
       </span>
@@ -56,7 +42,11 @@ const service = useCurrencyService();
 
 const store = useCurrencyStore();
 onMounted(async () => {
-  const resp = await service.getAll([], new Pagination(0, 100), []);
+  const resp = await service.getAll([{
+    field: 'delivery_only',
+    matchMode: 'OR',
+    value: 'delivery_only.eq.false,delivery_only.is.null'
+  }], new Pagination(0, 100), []);
   console.log(resp);
   selected_currency.value = resp[0];
   store.change_currency(resp[0]);

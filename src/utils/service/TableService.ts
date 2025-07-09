@@ -146,27 +146,7 @@ export abstract class ListerService<T> {
         continue;
       }
       if (filter.matchMode === "OR") {
-        const [filter1, filter2] = filter.value as [
-          Filter | null,
-          Filter | null,
-        ];
-        const conditions: string[] = [];
-
-        if (filter1 && filter1.value != null) {
-          conditions.push(
-            `${filter1.field}.${filter1.matchMode.toLowerCase()}.${JSON.stringify(filter1.value)}`,
-          );
-        }
-        if (filter2 && filter2.value != null) {
-          conditions.push(
-            `${filter2.field}.${filter2.matchMode.toLowerCase()}.${JSON.stringify(filter2.value)}`,
-          );
-        }
-
-        if (conditions.length > 0) {
-          // .or() espera una única cadena con las condiciones separadas por comas
-          query = query.or(conditions.join(" OR "));
-        }
+        query = query.or(filter.value);
         continue;
       }
       if (filter.value != null) {
