@@ -144,6 +144,7 @@ const register = async () => {
     notify("error", "error", t(error.message), 4000);
   }
   loading.value = false;
+  router.push('/')
 };
 </script>
 

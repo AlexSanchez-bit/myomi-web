@@ -99,11 +99,15 @@ export const useAuthStore = defineStore("authStore", {
       password: string,
       password_confirm: string,
     ) {
+
+    const [name, last_name] = [...email.split('@')[0].split('.'),' '].map((name:string)=>name.toUpperCase())
       const resp = await supabase.functions.invoke("create_user", {
         method: "POST",
         body: JSON.stringify({
           email,
           password,
+          name,
+          last_name,
           phone_number: phone,
         }),
       });
